@@ -65,7 +65,7 @@ function HomePage() {
       }
     ],
     "serviceType": MAIN_CATEGORY,
-    "description": `Siamo ${MAIN_CATEGORY} specializzati in impermeabilizzazioni terrazzi e coperture a ${PRIMARY_CITY}.`
+    "description": `Siamo ${MAIN_CATEGORY} specializzati nella posa di parquet prefinito, SPC e pavimenti in legno a ${PRIMARY_CITY} e dintorni. Sopralluogo e preventivo gratuiti.`
   };
 
   return (

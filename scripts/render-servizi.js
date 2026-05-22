@@ -9,6 +9,7 @@ import { Routes, Route } from 'react-router-dom';
 const canonicalBase = 'https://www.posaparquetmilano.it/servizi/';
 const canonicalHome = 'https://www.posaparquetmilano.it/';
 const servicesDir = path.resolve('src/pages/servizi');
+const distDir = path.resolve('dist');
 const distIndexPath = path.resolve('dist/index.html');
 const distImgDir = path.resolve('dist/img');
 const imageCopyMap = new Map();
@@ -217,7 +218,83 @@ async function generateStaticPages() {
       }
     }
 
-    console.log(`[render-servizi] Generate ${generated} pagine statiche in ${servicesDir}`);
+    // --- GENERA LANDING PAGE STANDALONE /posaparquet ---
+    try {
+      const { default: PosaParquetPage } = await vite.ssrLoadModule('/src/pages/PosaParquetPage.jsx');
+
+      const landingLocation = '/posaparquet';
+      const landingMarkup = renderToString(
+        React.createElement(
+          StaticRouter,
+          { location: landingLocation },
+          React.createElement(
+            Routes,
+            null,
+            React.createElement(
+              Route,
+              { path: '/', element: React.createElement(App) },
+              React.createElement(Route, {
+                index: true,
+                element: React.createElement('div'),
+              }),
+              React.createElement(Route, {
+                path: 'posaparquet',
+                element: React.createElement(PosaParquetPage),
+              }),
+            ),
+          ),
+        ),
+      );
+      const rewrittenLandingMarkup = rewriteMarkupAssets(landingMarkup);
+      const landingTitle = 'Posa Parquet Prefinito a Milano | Preventivo Gratuito';
+      const landingDescription = 'Posa parquet prefinito a Milano: incollaggio professionale, sopralluogo gratuito e prezzi trasparenti. Squadra specializzata di parquettisti a Milano e dintorni.';
+      const landingCanonical = 'https://www.posaparquetmilano.it/posaparquet';
+
+      const landingHtml = [
+        '<!DOCTYPE html>',
+        '<html lang="it">',
+        '<head>',
+        '  <meta charset="utf-8">',
+        '  <meta name="viewport" content="width=device-width, initial-scale=1">',
+        `  <title>${escapeHtml(landingTitle)}</title>`,
+        `  <meta name="description" content="${escapeHtml(landingDescription)}">`,
+        `  <link rel="canonical" href="${landingCanonical}">`,
+        `  <link rel="prefetch" href="${canonicalHome}">`,
+        stylesheetHref ? `  <link rel="stylesheet" href="${stylesheetHref}">` : '',
+        scriptAttributes
+          ? `  <script type="module"${scriptAttributes.crossorigin ? ' crossorigin' : ''} src="${scriptAttributes.src}"></script>`
+          : '',
+        '</head>',
+        '<body>',
+        `  <div id="root">${rewrittenLandingMarkup}</div>`,
+        '</body>',
+        '</html>',
+        '',
+      ]
+        .filter(Boolean)
+        .join('\n');
+
+      const landingDir = path.join(distDir, 'posaparquet');
+      await ensureDir(landingDir);
+      await fs.writeFile(path.join(landingDir, 'index.html'), landingHtml, 'utf8');
+      generated += 1;
+      console.log('[render-servizi] Landing page /posaparquet generata con successo');
+    } catch (landingError) {
+      console.warn('[render-servizi] Errore nella generazione della landing /posaparquet:', landingError.message);
+    }
+
+    // Copia immagini registrate per le landing pages
+    if (imageCopyMap.size > 0) {
+      await ensureDir(distImgDir);
+      for (const [sourcePath, targetPath] of imageCopyMap.entries()) {
+        try {
+          await ensureDir(path.dirname(targetPath));
+          await fs.copyFile(sourcePath, targetPath);
+        } catch { /* già copiato */ }
+      }
+    }
+
+    console.log(`[render-servizi] Generate ${generated} pagine statiche totali`);
   } finally {
     await vite.close();
   }

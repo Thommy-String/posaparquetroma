@@ -37,6 +37,9 @@ function buildUrl(relativePath) {
   return url.toString();
 }
 
+// Landing page standalone (fuori da /servizi/) da includere nella sitemap
+const EXTRA_LANDING_DIRS = ['posaparquet'];
+
 async function generateSitemap() {
   const urls = [canonicalHost];
   let serviceCount = 0;
@@ -51,6 +54,16 @@ async function generateSitemap() {
 
     urls.push(...serviceUrls);
     serviceCount = serviceUrls.length;
+  }
+
+  // Aggiungi landing page standalone
+  for (const dir of EXTRA_LANDING_DIRS) {
+    const landingIndex = path.join(distRoot, dir, 'index.html');
+    if (await exists(landingIndex)) {
+      const relative = path.relative(distRoot, landingIndex).replace(/\\/g, '/');
+      urls.push(buildUrl(relative));
+      serviceCount += 1;
+    }
   }
 
   const xml = [

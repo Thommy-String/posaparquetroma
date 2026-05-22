@@ -51,36 +51,36 @@ const HeroComparisonCards = () => {
             className="h-48 md:h-64 w-full"
             beforeImg={beaPrima} 
             afterImg={beaDopo} 
-            price="€680" 
-            timeDisplay="1 giorno" 
-            label="Guaina Balcone"
+            price="€430" 
+            timeDisplay="5 ore" 
+            label="Posa SPC Milano"
           />
 
            <ComparisonCard 
             className="h-48 md:h-64 w-full"
             beforeImg={nelyPrima} 
             afterImg={nelyDopo} 
-            price="€2.400" 
+            price="€1.950" 
             timeDisplay="2 Giorni" 
-            label="Lastrico Solare"
+            label="Parquet a Spina"
            />
 
            <ComparisonCard 
             className="h-48 md:h-64 w-full"
             beforeImg={prima5} 
             afterImg={dopo5} 
-            price="€1.800" 
-            timeDisplay="2 Giorni" 
-            label="Terrazzo Piano"
+            price="€2.002" 
+            timeDisplay="3 Giorni" 
+            label="Prefinito Incollato"
            />
 
            <ComparisonCard 
             className="h-48 md:h-64 w-full"
             beforeImg={prima2} 
             afterImg={dopo2} 
-            price="€3.200" 
+            price="€1.750" 
             timeDisplay="3 Giorni" 
-            label="Copertura Piana"
+            label="Rovere Naturale"
            />
 
        </div>

@@ -99,8 +99,8 @@ function Header() {
       .sort((a, b) => (a.order || 0) - (b.order || 0));
   }, []);
 
-  // Controlla se siamo su una service page
-  const isServicePage = location.pathname.startsWith('/servizi/');
+  // Controlla se siamo su una service page (inclusa la landing page /posaparquet)
+  const isServicePage = location.pathname.startsWith('/servizi/') || location.pathname.startsWith('/posaparquet');
 
   return (
     <>
