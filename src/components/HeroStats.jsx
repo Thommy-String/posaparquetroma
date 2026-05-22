@@ -1,4 +1,5 @@
 import React from 'react';
+import { Check } from 'lucide-react';
 import rovereNaturale from '../assets/images/parquet/rovereNaturale.webp';
 import rovereMielato from '../assets/images/parquet/rovereMielato.webp';
 import rovereSpinaItaliana from '../assets/images/parquet/rovereNaturaleSpinaItaliana.webp';
@@ -17,30 +18,32 @@ const parquetImages = [
 
 function HeroStats() {
   return (
-    <div className="flex items-center gap-4 pt-3">
+    <div className="flex flex-col gap-4 pt-2 items-center text-center">
       
-      {/* Face-pile parquet */}
-      <div className="flex -space-x-2.5">
-        {parquetImages.slice(0, 5).map((img, index) => (
-          <div key={index} className="relative transition-transform hover:-translate-y-1 duration-300">
+      {/* Face-pile parquet - Cerchi più grandi */}
+      <div className="flex items-center -space-x-3">
+        {parquetImages.slice(0, 6).map((img, index) => (
+          <div key={index} className="relative transition-transform hover:scale-110 duration-300">
             <img
-              className="h-8 w-8 rounded-full border-2 border-white object-cover shadow-sm"
+              className="h-10 w-10 rounded-full border-2 border-white object-cover shadow-md"
               src={img.src}
               alt={img.alt}
             />
           </div>
         ))}
-        <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-slate-900 text-[9px] font-black text-white shadow-sm z-10">
-          +300
-        </div>
       </div>
 
-      {/* Stat badge — stile Stencil Pastel */}
-      <div className="flex flex-col leading-none gap-0.5">
-        <span className="text-[11px] font-[900] uppercase tracking-tighter text-slate-900">
-          284+ parquet posati <span className="bg-yellow-50 text-yellow-800 px-1 py-0.5 border border-yellow-100 rounded-sm text-[10px] inline-block transform -rotate-1">ogni anno</span>
-        </span>
-        <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Lombardia &amp; Milano</span>
+      {/* Stat text - Minimalista e pulito */}
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center justify-center gap-2">
+          <p className="text-[15px] font-bold text-slate-900">
+            314+ parquet installati
+          </p>
+          <Check className="w-5 h-5 text-green-500 flex-shrink-0" strokeWidth={3} />
+        </div>
+        <p className="text-[13px] text-slate-500">
+          ogni anno a Milano e dintorni
+        </p>
       </div>
     </div>
   );

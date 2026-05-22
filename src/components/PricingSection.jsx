@@ -69,7 +69,7 @@ const getCategory = (service) => {
   return 'prefinito'; // default
 };
 
-function PricingSection({ defaultCategory = 'wood' }) {
+function PricingSection({ defaultCategory = 'all' }) {
   const [selectedService, setSelectedService] = useState(null); // Per i servizi standard (Calcolatore)
   const [selectedExtra, setSelectedExtra] = useState(null);     // Per gli extra (Popup info)
   const [activeCategory, setActiveCategory] = useState(defaultCategory);

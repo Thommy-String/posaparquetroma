@@ -160,15 +160,15 @@ function RecentWorks({ service, category, title, showFilter = false }) {
                 {/* Sezione Intestazione */}
                 <div className="mb-10 text-center">
                     <div className="inline-block bg-black text-white px-4 py-1 uppercase font-black tracking-widest text-xs mb-6 transform -rotate-1 rounded-md">
-                        A Milano e Dintorni
+                        a milano e dintorni
                     </div>
                     <h2 className="text-[36px] md:text-[56px] font-black uppercase tracking-tighter leading-[1.0] max-w-3xl mx-auto text-black">
                         NEL 2025 ABBIAMO POSATO PIÙ DI{' '}
                         <span className="relative inline-block">
-                            <span className="relative z-10">2.595</span>
+                            <span className="relative z-10">2.597</span>
                             <span className="absolute inset-x-0 bottom-0 h-3 md:h-4 bg-[#FFF176] -z-0 -rotate-1 rounded-sm"></span>
                         </span>
-                        {' '}PACCHI DI SPC.{' '} <br />
+                        {' '}PACCHI DI PARQUET{' '} <br />
                         <span className="text-black/40 text-[0.6em] tracking-tight">QUALSIASI MARCHIO E FORMATO.</span>
                     </h2>
                 </div>

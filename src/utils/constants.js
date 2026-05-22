@@ -25,11 +25,13 @@ export const SCHEMA_GEO = {
 
 // Queste DEVONO corrispondere alle Categorie Secondarie del tuo GBP
 export const GBP_CATEGORIES = [
-  "Posa parquet prefinito a Milano",
-  "Installazione pavimento SPC a click",
-  "Posa pavimento laminato",
+  "Posa parquet prefinito",
+  "Posa parquet prefinito flottante",
+  "Posa parquet a spina",
+  "Posa parquet laminato",
+  "Posa battiscopa",
   "Rivestimento scale in parquet",
-  "Posa battiscopa Milano",
+  "Posa SPC",
 ];
 
 // Queste sono le AREE DI SERVIZIO che hai inserito nel GBP

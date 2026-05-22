@@ -107,8 +107,8 @@ export const pricingData = [
   {
     id: 'laminato',
     name: 'Posa Laminato',
-    price: '€15',
-    pricePerMq: 15,
+    price: '€17',
+    pricePerMq: 17,
     unit: '/mq',
     timeFactorPerMq: 0.025, 
     mediaType: 'video',

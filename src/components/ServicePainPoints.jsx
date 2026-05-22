@@ -56,7 +56,7 @@ const PAIN_POINTS = {
       number: '03',
       tag: 'Prezzo Blindato',
       headline: 'Il prezzo non cambia. Mai.',
-      body: 'Preventivo vincolante. Nessun acconto, nessuna sorpresa. Paghi solo a lavoro finito e verificato.',
+      body: 'Preventivo vincolante. Nessun acconto, nessuna sorpresa. Paghi solo una parte dopo l\'inizio della posa.',
       stat: '€0 anticipati',
       accentColor: 'emerald',
     },

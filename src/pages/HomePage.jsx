@@ -84,6 +84,9 @@ function HomePage() {
       {/* Sezione Lavori Recenti */}
       <RecentWorks showFilter={true} />
 
+      {/* FAQ HOMEPAGE GENERICHE - Subito dopo le recensioni */}
+      <ServiceFAQ service={{ slug: 'home-general' }} />
+
       {/* Below-fold sections — caricamento diretto (bundle unico, zero waterfall) */}
       <PricingSection />
 
@@ -93,9 +96,6 @@ function HomePage() {
       <section id="check-sottofondo" className="scroll-mt-28">
         <QuickFloorConsult />
       </section>
-
-      {/* FAQ HOMEPAGE GENERICHE */}
-      <ServiceFAQ service={{ slug: 'home-general' }} />
 
       <DescrizioneMainCategories />
     </>

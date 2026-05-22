@@ -1338,17 +1338,19 @@ function InstallationQuiz({ service }) {
                   <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
                     Scelti da 347+ famiglie a Milano
                   </p>
-                  <div className="max-w-xl mx-auto rounded-2xl overflow-hidden border border-slate-200 bg-white h-[220px]">
-                    <div className="scale-75 origin-top-left w-[133%] h-[133%] -mt-4">
-                      <div className="flex items-center justify-center gap-4 py-2 opacity-50 grayscale">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-4" />
-                        <div className="flex gap-0.5">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-current text-black" />
-                          ))}
-                        </div>
+                  <div className="max-w-xl mx-auto rounded-2xl overflow-hidden border border-slate-200 bg-gradient-to-br from-blue-50 to-white p-6">
+                    <div className="flex items-center justify-center gap-3">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-5 opacity-70" />
+                      <div className="flex gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        ))}
                       </div>
+                      <span className="text-sm font-bold text-slate-700 ml-1">4.9/5</span>
                     </div>
+                    <p className="text-xs text-slate-500 mt-3 leading-relaxed">
+                      "Professionali, puntuali e meticolosi. Hanno trasformato completamente la nostra casa."
+                    </p>
                   </div>
                 </div>
               )}

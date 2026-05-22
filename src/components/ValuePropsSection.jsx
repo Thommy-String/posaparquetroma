@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2, Banknote, ShieldCheck, Sofa, UserCheck, Messa
 const ValuePropsSection = () => {
   const props = [
     {
-      title: "TI FIDARESTI DI UN ACCONTO? NOI NO. PAGHI SOLO A LAVORO FINITO.",
+      title: "TI FIDARESTI DI UN ACCONTO? NOI NO. PAGHI SOLO DOPO CHE INIZIAMO.",
       tag: "ACCONTO ZERO",
       tagColor: "bg-blue-100 text-blue-700",
       buttonColor: "bg-blue-50",
