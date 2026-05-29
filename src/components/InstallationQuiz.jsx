@@ -54,8 +54,9 @@ const MIN_TOTAL = {
   battiscopa_high: 300,
 };
 
-// Minimo ml per rimozione battiscopa vecchio (sotto 49ml → prezzo a corpo)
-const RIM_BAT_MIN_ML = 49;
+// Minimo ml per rimozione battiscopa vecchio (sotto 40ml → prezzo a corpo €80)
+const RIM_BAT_MIN_ML = 40;
+const RIM_BAT_MIN_PRICE = 80;
 
 // --- CONFIGURAZIONE PREZZI ---
 const POSA_PRICES = {
@@ -508,18 +509,20 @@ function InstallationQuiz({ service }) {
     // --- NUOVO CALCOLO BATTISCOPA AGGIUNTIVO ---
     if (add_battiscopa === 'si' && !isBattiscopa) {
         const unitPrice = POSA_PRICES.base.battiscopa_low;
-        const rawCost = unitPrice * effectiveMq;
+        const BAT_MIN_ML = 40;
+        const batMinApplied = unitValue < BAT_MIN_ML;
         const batMinTotal = MIN_TOTAL['battiscopa_low']; // €300
-        const cost = Math.max(rawCost, batMinTotal);
+        const rawCost = unitPrice * effectiveMq;
+        const cost = batMinApplied ? batMinTotal : rawCost;
         variableItems.push({
           label: 'Posa Battiscopa',
           quantity: effectiveMq,
           unitType: 'ml',
           unitPrice,
           unitDisplay: 'ml',
-          displayQuantity: 'Prezzo a corpo',
+          displayQuantity: batMinApplied ? 'Prezzo a corpo' : `~${effectiveMq}ml (stima)`,
           total: cost,
-          isMinTotalApplied: true,
+          isMinTotalApplied: batMinApplied,
         });
         total += cost;
     }
@@ -527,17 +530,16 @@ function InstallationQuiz({ service }) {
     // --- RIMOZIONE BATTISCOPA VECCHIO ---
     if (rimozione_battiscopa === 'si' && !isBattiscopa) {
         const unitPrice = POSA_PRICES.variables.rimozione_battiscopa_ml;
-        const rimMinTotal = unitPrice * RIM_BAT_MIN_ML;
-        const rawCost = unitPrice * effectiveMq;
-        const rimMinApplied = effectiveMq < RIM_BAT_MIN_ML;
-        const cost = rimMinApplied ? rimMinTotal : rawCost;
+        const rimMinApplied = unitValue < RIM_BAT_MIN_ML;
+        const rawCost = unitPrice * unitValue;
+        const cost = rimMinApplied ? RIM_BAT_MIN_PRICE : rawCost;
         variableItems.push({
           label: 'Rimozione Battiscopa Vecchio',
           quantity: effectiveMq,
           unitType: 'ml',
           unitPrice,
           unitDisplay: 'ml',
-          displayQuantity: rimMinApplied ? 'Prezzo a corpo' : `~${effectiveMq}ml (stima)`,
+          displayQuantity: rimMinApplied ? 'Prezzo a corpo' : `~${unitValue}ml (stima)`,
           total: cost,
           isMinTotalApplied: rimMinApplied,
         });
@@ -1132,7 +1134,7 @@ function InstallationQuiz({ service }) {
                               </div>
                               <div className="flex-1 w-full">
                                 <span className="text-base font-bold text-slate-900 block leading-tight">Rim. Battiscopa esistente</span>
-                                <span className="text-sm text-slate-500 font-semibold block mt-1">€3,50 / ml</span>
+                                <span className="text-sm text-slate-500 font-semibold block mt-1">€3,50 / ml (min. €80)</span>
                                 <span className="text-xs text-slate-400 block leading-relaxed mt-2">Stacchiamo il vecchio zoccolino</span>
                               </div>
                             </button>
