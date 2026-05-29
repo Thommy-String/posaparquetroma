@@ -108,11 +108,11 @@ function Hero() {
                                 {/* Lista opzioni - Uniforme */}
                                 <div className="space-y-3">
                                     {[
-                                        { label: 'Posa SPC (vinilico a click)', price: '€17', oldPrice: '€25', sub: '/mq', badge: { text: 'Popolare', color: 'bg-green-100 text-green-600' } },
-                                        { label: 'Posa SPC a spina', price: '€25', sub: '/mq' },
-                                        { label: 'Posa laminato', price: '€17', oldPrice: '€20', sub: '/mq' },
-                                        { label: 'Posa parquet prefinito', price: '€25', sub: '/mq' , badge: { text: 'Il più amato', color: 'bg-yellow-100 text-yellow-700' }  },
-                                        { label: 'Posa prefinito a spina', price: '€30', sub: '/mq', badge: { text: 'TOP', color: 'bg-purple-100 text-purple-700' } },
+                                        { label: 'Posa SPC (vinilico a click)', price: '€20', sub: '/mq', badge: { text: 'Popolare', color: 'bg-green-100 text-green-600' } },
+                                        { label: 'Posa SPC a spina', price: '€27', sub: '/mq' },
+                                        { label: 'Posa laminato', price: '€20', sub: '/mq' },
+                                        { label: 'Posa parquet prefinito', price: '€27', sub: '/mq' , badge: { text: 'Il più amato', color: 'bg-yellow-100 text-yellow-700' }  },
+                                        { label: 'Posa prefinito a spina', price: '€32', sub: '/mq', badge: { text: 'TOP', color: 'bg-purple-100 text-purple-700' } },
                                         { label: 'Posa zoccolino', price: '€10', sub: '/ml' },
                                     ].map(({ label, price, oldPrice, sub, badge }) => (
                                         <div key={label} className="flex items-center justify-between gap-3 px-1 py-3 rounded-lg hover:bg-slate-50/50 transition-colors duration-200">

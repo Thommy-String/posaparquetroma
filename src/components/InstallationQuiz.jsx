@@ -8,7 +8,7 @@ import {
   Sparkles, Compass, GitBranch, Scissors, Hammer, Paintbrush, Scaling,
   Search, MessageCircle, Bookmark,
   Calculator, Settings2, Plus, Minus,
-  DoorOpen, Trash2, Check, Lock, Truck, Sofa, Package, Phone, Star
+  DoorOpen, Trash2, Check, Lock, Truck, Sofa, Package, Phone, Star, PackageCheck
 } from 'lucide-react';
 import rovereNaturale from '../assets/images/parquet/rovereNaturale.webp';
 import rovereSpina from '../assets/images/parquet/rovereNaturaleSpinaItaliana.webp';
@@ -36,20 +36,42 @@ const iconMap = {
   'scaling': (props) => <Scaling {...props} />,
 };
 
+// --- TARIFFA MINIMA PER SERVIZIO (mq minimi fatturati) ---
+const MIN_MQ = {
+  prefinito_dritto:    40,
+  prefinito_spina:     40,
+  prefinito_flottante: 40,
+  spc_dritto:          40,
+  spc_spina:           40,
+  laminato:            40,
+  battiscopa_low:      null,
+  battiscopa_high:     null,
+};
+
+// --- PREZZO MINIMO A CORPO PER SERVIZI IN ML (battiscopa) ---
+const MIN_TOTAL = {
+  battiscopa_low:  300,
+  battiscopa_high: 300,
+};
+
+// Minimo ml per rimozione battiscopa vecchio (sotto 49ml → prezzo a corpo)
+const RIM_BAT_MIN_ML = 49;
+
 // --- CONFIGURAZIONE PREZZI ---
 const POSA_PRICES = {
   base: {
-    prefinito_dritto: 25, prefinito_spina: 30, prefinito_flottante: 22, spc_dritto: 17, spc_spina: 25,
-    laminato: 17, battiscopa_low: 7, battiscopa_high: 9,
+    prefinito_dritto: 27, prefinito_spina: 32, prefinito_flottante: 22, spc_dritto: 20, spc_spina: 27,
+    laminato: 20, battiscopa_low: 10, battiscopa_high: 12,
   },
   variables: {
     primer_su_vecchio_mq: 5, rimozione_e_smaltimento_mq: 12,
-    spostamento_mobili_piccoli: 90, spostamento_mobili_grandi: 150,
+    spostamento_mobili_piccoli: 50, spostamento_mobili_grandi: 250,
     colla_al_mq: 7,
     rimozione_battiscopa_ml: 3.50,
     taglio_porte_cad: 60,
     taglio_porta_blindata_cad: 150,
-    smaltimento_rifiuti_forfait: 100,
+    smaltimento_rifiuti_forfait: 250,
+    facchinaggio_forfait: 200,
   }
 };
 
@@ -326,6 +348,7 @@ function InstallationQuiz({ service }) {
     taglio_porte: 0,
     taglio_porta_blindata: 0,
     smaltimento: 'no',
+    facchinaggio: 'no',
   });
 
   const adjustUnitValue = (amount) => {
@@ -408,7 +431,7 @@ function InstallationQuiz({ service }) {
 
   // --- MOTORE DI CALCOLO AGGIORNATO ---
   const estimate = useMemo(() => {
-    const { serviceType, subfloor, furniture, colla, add_battiscopa, rimozione_battiscopa, taglio_porte, taglio_porta_blindata, smaltimento } = answers;
+    const { serviceType, subfloor, furniture, colla, add_battiscopa, rimozione_battiscopa, taglio_porte, taglio_porta_blindata, smaltimento, facchinaggio } = answers;
 
     if (!serviceType) {
       return null;
@@ -418,44 +441,64 @@ function InstallationQuiz({ service }) {
     const serviceName = SERVICE_NAME_MAP[serviceType] || "Servizio";
 
     const baseUnitPrice = POSA_PRICES.base[serviceType] ?? 0;
-    let baseCost = baseUnitPrice * unitValue;
+
+    // --- TARIFFA MINIMA MQ: se i mq reali sono inferiori al minimo, si fattura il minimo ---
+    const minMq = MIN_MQ[serviceType] ?? null;
+    const isMinimumApplied = minMq !== null && unitValue < minMq;
+    const effectiveMq = isMinimumApplied ? minMq : unitValue;
+
+    // --- TARIFFA MINIMA A CORPO (battiscopa): se il totale è inferiore al minimo si applica il minimo ---
+    const minTotal = MIN_TOTAL[serviceType] ?? null;
+    const rawBaseCost = baseUnitPrice * effectiveMq;
+    const isMinTotalApplied = minTotal !== null && rawBaseCost < minTotal;
+    let baseCost = isMinTotalApplied ? minTotal : rawBaseCost;
+
     let variableItems = [];
     let total = baseCost;
     const baseItem = {
       label: serviceName,
-      quantity: unitValue,
+      quantity: effectiveMq,
       unitType: unitLabel,
       unitPrice: baseUnitPrice,
       unitDisplay: unitLabel,
-      displayQuantity: `~${unitValue}${unitLabel}`,
+      displayQuantity: isMinTotalApplied
+        ? `${unitValue}${unitLabel} (prezzo a corpo)`
+        : isMinimumApplied
+          ? `${minMq}${unitLabel} (minimo)`
+          : `~${unitValue}${unitLabel}`,
       total: baseCost,
+      isMinimumApplied,
+      isMinTotalApplied,
+      realMq: unitValue,
+      minMq,
+      minTotal,
     };
 
     if (showExtraQuestions) {
       if (subfloor === 'pavimento_esistente' && isPrefinito) {
         const unitPrice = POSA_PRICES.variables.primer_su_vecchio_mq;
-        const cost = unitPrice * unitValue;
+        const cost = unitPrice * effectiveMq;
         variableItems.push({
           label: 'Primer su pavimento esistente',
-          quantity: unitValue,
+          quantity: effectiveMq,
           unitType: 'mq',
           unitPrice,
           unitDisplay: 'mq',
-          displayQuantity: `~${unitValue}mq`,
+          displayQuantity: `~${effectiveMq}mq`,
           total: cost,
         });
         total += cost;
       }
       if (colla === 'si') {
         const unitPrice = POSA_PRICES.variables.colla_al_mq;
-        const cost = unitPrice * unitValue;
+        const cost = unitPrice * effectiveMq;
         variableItems.push({
           label: 'Fornitura colla',
-          quantity: unitValue,
+          quantity: effectiveMq,
           unitType: 'mq',
           unitPrice,
           unitDisplay: 'mq',
-          displayQuantity: `~${unitValue}mq`,
+          displayQuantity: `~${effectiveMq}mq`,
           total: cost,
         });
         total += cost;
@@ -464,16 +507,19 @@ function InstallationQuiz({ service }) {
 
     // --- NUOVO CALCOLO BATTISCOPA AGGIUNTIVO ---
     if (add_battiscopa === 'si' && !isBattiscopa) {
-        const unitPrice = 7; // Costo fisso €7 al ml
-        const cost = unitPrice * unitValue;
+        const unitPrice = POSA_PRICES.base.battiscopa_low;
+        const rawCost = unitPrice * effectiveMq;
+        const batMinTotal = MIN_TOTAL['battiscopa_low']; // €300
+        const cost = Math.max(rawCost, batMinTotal);
         variableItems.push({
           label: 'Posa Battiscopa',
-          quantity: unitValue,
+          quantity: effectiveMq,
           unitType: 'ml',
           unitPrice,
           unitDisplay: 'ml',
-          displayQuantity: `~${unitValue}ml (stima)`,
+          displayQuantity: 'Prezzo a corpo',
           total: cost,
+          isMinTotalApplied: true,
         });
         total += cost;
     }
@@ -481,15 +527,19 @@ function InstallationQuiz({ service }) {
     // --- RIMOZIONE BATTISCOPA VECCHIO ---
     if (rimozione_battiscopa === 'si' && !isBattiscopa) {
         const unitPrice = POSA_PRICES.variables.rimozione_battiscopa_ml;
-        const cost = unitPrice * unitValue;
+        const rimMinTotal = unitPrice * RIM_BAT_MIN_ML;
+        const rawCost = unitPrice * effectiveMq;
+        const rimMinApplied = effectiveMq < RIM_BAT_MIN_ML;
+        const cost = rimMinApplied ? rimMinTotal : rawCost;
         variableItems.push({
           label: 'Rimozione Battiscopa Vecchio',
-          quantity: unitValue,
+          quantity: effectiveMq,
           unitType: 'ml',
           unitPrice,
           unitDisplay: 'ml',
-          displayQuantity: `~${unitValue}ml (stima)`,
+          displayQuantity: rimMinApplied ? 'Prezzo a corpo' : `~${effectiveMq}ml (stima)`,
           total: cost,
+          isMinTotalApplied: rimMinApplied,
         });
         total += cost;
     }
@@ -541,6 +591,21 @@ function InstallationQuiz({ service }) {
         total += cost;
     }
 
+    // --- FACCHINAGGIO / RITIRO MATERIALE ---
+    if (facchinaggio === 'si' && !isBattiscopa) {
+        const cost = POSA_PRICES.variables.facchinaggio_forfait;
+        variableItems.push({
+          label: 'Servizio di Facchinaggio',
+          quantity: 1,
+          unitType: 'voce',
+          unitPrice: cost,
+          unitDisplay: 'voce',
+          displayQuantity: 'Forfait',
+          total: cost,
+        });
+        total += cost;
+    }
+
     if (furniture === 'piccoli' || furniture === 'grandi') {
       const unitPrice = furniture === 'piccoli'
         ? POSA_PRICES.variables.spostamento_mobili_piccoli
@@ -564,11 +629,15 @@ function InstallationQuiz({ service }) {
     const typeSteps = POSA_PROCESS_STEPS[typeStepsKey];
 
     return {
-      // --- MODIFICA 4: Label pulita ---
       baseItem,
       variableItems,
       total,
       typeSteps,
+      isMinimumApplied,
+      isMinTotalApplied,
+      minMq,
+      minTotal,
+      realMq: unitValue,
       timeEstimate: (() => {
         const productivity = SERVICE_PRODUCTIVITY[serviceType] || SERVICE_PRODUCTIVITY.default;
         let estimatedDays = (productivity.setupBuffer ?? 0) + (unitValue / (productivity.unitPerDay || 1));
@@ -596,6 +665,9 @@ function InstallationQuiz({ service }) {
         }
         if (smaltimento === 'si') {
              estimatedDays += 0.15;
+        }
+        if (facchinaggio === 'si') {
+             estimatedDays += 0.25;
         }
 
         const adjustedDays = Math.max(0, estimatedDays - 0.3);
@@ -858,6 +930,51 @@ function InstallationQuiz({ service }) {
                                 </span>
                                 <span className="text-xl font-bold text-slate-400">{unitLabel}</span>
                               </div>
+                              {/* Avviso tariffa minima live */}
+                              {(() => {
+                                const sType = answers.serviceType;
+                                const minQ = MIN_MQ[sType] ?? null;
+                                const minT = MIN_TOTAL[sType] ?? null;
+
+                                // Caso 1: minimo mq (pavimenti)
+                                if (!sType || minQ === null || unitValue >= minQ) {
+                                  // Caso 2: minimo a corpo (battiscopa)
+                                  if (minT !== null) {
+                                    const rawCost = (POSA_PRICES.base[sType] ?? 0) * unitValue;
+                                    if (rawCost >= minT) return null;
+                                    return (
+                                      <div className="mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                                        <div className="inline-flex items-start gap-2 px-3 py-2 bg-amber-50 border border-amber-300 rounded-xl shadow-sm max-w-[230px] text-left">
+                                          <span className="text-amber-500 text-base leading-none mt-0.5 flex-shrink-0">💡</span>
+                                          <div>
+                                            <p className="text-[11px] font-black text-amber-800 leading-tight">Prezzo a corpo</p>
+                                            <p className="text-[10px] text-amber-700 leading-snug mt-0.5">
+                                              Per questo intervento applichiamo un <strong>prezzo a corpo</strong> a partire da <strong>€{minT.toLocaleString('it-IT')}</strong>.
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  return null;
+                                }
+
+                                // Caso 1 attivo
+                                const minPrice = (POSA_PRICES.base[sType] ?? 0) * minQ;
+                                return (
+                                  <div className="mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <div className="inline-flex items-start gap-2 px-3 py-2 bg-amber-50 border border-amber-300 rounded-xl shadow-sm max-w-[230px] text-left">
+                                      <span className="text-amber-500 text-base leading-none mt-0.5 flex-shrink-0">💡</span>
+                                      <div>
+                                        <p className="text-[11px] font-black text-amber-800 leading-tight">Tariffa a corpo</p>
+                                        <p className="text-[10px] text-amber-700 leading-snug mt-0.5">
+                                          Per questo tipo di lavoro applichiamo un <strong>prezzo a corpo</strong> a partire da <strong>€{minPrice.toLocaleString('it-IT')}</strong>.
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })()}
                             </div>
 
                             {/* Bottone Più — neo-brutalist green shadow */}
@@ -961,7 +1078,7 @@ function InstallationQuiz({ service }) {
                               </div>
                               <div className="flex-1 w-full">
                                 <span className="text-base font-bold text-slate-900 block leading-tight">Spostamento Piccoli Mobili</span>
-                                <span className="text-sm text-slate-500 font-semibold block mt-1">€90 forfait</span>
+                                <span className="text-sm text-slate-500 font-semibold block mt-1">€50 forfait</span>
                                 <span className="text-xs text-slate-400 block leading-relaxed mt-2">Sedie, tavolini, oggetti leggeri</span>
                               </div>
                             </button>
@@ -988,7 +1105,7 @@ function InstallationQuiz({ service }) {
                               </div>
                               <div className="flex-1 w-full">
                                 <span className="text-base font-bold text-slate-900 block leading-tight">Spostamento Grandi Mobili</span>
-                                <span className="text-sm text-slate-500 font-semibold block mt-1">€150 forfait</span>
+                                <span className="text-sm text-slate-500 font-semibold block mt-1">€250 forfait</span>
                                 <span className="text-xs text-slate-400 block leading-relaxed mt-2">Armadi, divani, librerie pesanti</span>
                               </div>
                             </button>
@@ -1042,7 +1159,7 @@ function InstallationQuiz({ service }) {
                               </div>
                               <div className="flex-1 w-full">
                                 <span className="text-base font-bold text-slate-900 block leading-tight">Posa Nuovo Battiscopa</span>
-                                <span className="text-sm text-slate-500 font-semibold block mt-1">€7 / ml</span>
+                                <span className="text-sm text-slate-500 font-semibold block mt-1">€10 / ml</span>
                                 <span className="text-xs text-slate-400 block leading-relaxed mt-2">Taglio a 45°, incollaggio e sigillatura</span>
                               </div>
                             </button>
@@ -1141,8 +1258,35 @@ function InstallationQuiz({ service }) {
                               </div>
                               <div className="flex-1 w-full">
                                 <span className="text-base font-bold text-slate-900 block leading-tight">Smaltimento Rifiuti</span>
-                                <span className="text-sm text-slate-500 font-semibold block mt-1">€50-150 forfait</span>
+                                <span className="text-sm text-slate-500 font-semibold block mt-1">€250 forfait</span>
                                 <span className="text-xs text-slate-400 block leading-relaxed mt-2">Trasporto e smaltimento scarti di lavorazione. In alternativa puoi fare da solo.</span>
+                              </div>
+                            </button>
+
+                            {/* ── Facchinaggio / Ritiro Materiale (indigo) ── */}
+                            <button
+                              type="button"
+                              onClick={() => handleChange('facchinaggio', answers.facchinaggio === 'si' ? 'no' : 'si')}
+                              className={`group flex flex-col items-start gap-3 px-5 py-5 rounded-xl border-[2.5px] transition-all duration-200 text-left ${
+                                answers.facchinaggio === 'si'
+                                  ? 'border-indigo-500 bg-indigo-50 shadow-[3px_3px_0px_0px_rgba(99,102,241,0.6)]'
+                                  : 'border-slate-200 bg-white hover:border-indigo-300 hover:shadow-[2px_2px_0px_0px_rgba(99,102,241,0.2)]'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between w-full">
+                                <div className={`p-3 rounded-lg transition-colors ${answers.facchinaggio === 'si' ? 'bg-indigo-500 text-white' : 'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100'}`}>
+                                  <PackageCheck className="w-5 h-5" strokeWidth={2.5} />
+                                </div>
+                                {answers.facchinaggio === 'si' && (
+                                  <div className="bg-indigo-500 p-1 rounded-md">
+                                    <Check className="w-4 h-4 text-white" strokeWidth={3.5} />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1 w-full">
+                                <span className="text-base font-bold text-slate-900 block leading-tight">Servizio di Facchinaggio</span>
+                                <span className="text-sm text-slate-500 font-semibold block mt-1">€200 forfait</span>
+                                <span className="text-xs text-slate-400 block leading-relaxed mt-2">Ritiriamo il materiale dal negozio con il nostro furgone e scarichiamo nel punto più comodo della casa.</span>
                               </div>
                             </button>
 
@@ -1220,14 +1364,51 @@ function InstallationQuiz({ service }) {
                           <div className="w-5 h-5 flex items-center justify-center rounded-md bg-slate-300 text-white text-[10px] font-black">1</div>
                           <div>
                              <p className="font-bold text-slate-900 text-base leading-tight">{estimate.baseItem.label}</p>
-                             <span className="text-xs text-slate-400 font-mono font-medium">{estimate.baseItem.displayQuantity}</span>
+                             {!estimate.isMinTotalApplied && !estimate.isMinimumApplied && (
+                               <span className="text-xs text-slate-400 font-mono font-medium">{estimate.baseItem.displayQuantity}</span>
+                             )}
+                             {(estimate.isMinimumApplied || estimate.isMinTotalApplied) && (
+                               <span className="text-xs text-amber-600 font-bold">Prezzo a corpo</span>
+                             )}
                           </div>
                        </div>
                        <div className="text-right pl-4">
                          <p className="font-mono font-extrabold text-lg text-slate-900">{formatCurrency(estimate.baseItem.total)}</p>
-                         <span className="text-xs text-slate-400 font-medium">{formatCurrency(estimate.baseItem.unitPrice)}/{estimate.baseItem.unitDisplay}</span>
+                         {!estimate.isMinTotalApplied && !estimate.isMinimumApplied && (
+                           <span className="text-xs text-slate-400 font-medium">{formatCurrency(estimate.baseItem.unitPrice)}/{estimate.baseItem.unitDisplay}</span>
+                         )}
                        </div>
                     </div>
+
+                    {/* Banner tariffa minima mq nel risultato */}
+                    {estimate.isMinimumApplied && (
+                      <div className="mt-3 flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
+                        <div className="p-1.5 bg-amber-100 rounded-lg flex-shrink-0 mt-0.5">
+                          <span className="text-base leading-none">💡</span>
+                        </div>
+                        <div>
+                          <p className="text-[13px] font-black text-amber-900">Prezzo a corpo applicato</p>
+                          <p className="text-[12px] text-amber-700 leading-relaxed mt-0.5">
+                            Per superfici ridotte sotto i 40 mq, applichiamo un <strong>prezzo a corpo fisso</strong> anziché al metro quadrato. Questo perché i costi di attrezzatura, spostamento e preparazione rimangono gli stessi anche per superfici piccole. Vogliamo garantirti qualità e precisione e queste hanno sempre un costo minimo di progetto.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Banner prezzo minimo a corpo battiscopa */}
+                    {estimate.isMinTotalApplied && (
+                      <div className="mt-3 flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
+                        <div className="p-1.5 bg-amber-100 rounded-lg flex-shrink-0 mt-0.5">
+                          <span className="text-base leading-none">💡</span>
+                        </div>
+                        <div>
+                          <p className="text-[13px] font-black text-amber-900">Prezzo a corpo applicato</p>
+                          <p className="text-[12px] text-amber-700 leading-relaxed mt-0.5">
+                            Per questo intervento applichiamo un <strong>prezzo a corpo di €{estimate.minTotal?.toLocaleString('it-IT')}</strong>. La posa del battiscopa richiede sopralluogo, attrezzatura, tagli su misura e sigillatura: i costi fissi di trasferta e preparazione si applicano indipendentemente dalla lunghezza — il minimo garantisce un lavoro fatto come si deve.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Voci variabili */}
@@ -1236,14 +1417,14 @@ function InstallationQuiz({ service }) {
                       <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Servizi aggiuntivi</p>
                       <div className="space-y-2">
                         {estimate.variableItems.map((item, index) => {
-                          const unitRate = formatUnitRate(item.unitPrice, item.unitDisplay, item.unitType);
+                          const unitRate = item.isMinTotalApplied ? null : formatUnitRate(item.unitPrice, item.unitDisplay, item.unitType);
                           return (
                             <div key={`${item.label}-${index}`} className="flex items-center justify-between px-4 py-3 rounded-xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50/50 transition-all">
                                <div className="flex items-center gap-3">
                                   <div className="w-5 h-5 flex items-center justify-center rounded-md bg-slate-200 text-slate-500 text-[10px] font-black">{index + 2}</div>
                                   <div>
                                      <p className="font-semibold text-slate-800 text-base leading-tight">{item.label}</p>
-                                     <span className="text-xs text-slate-400 font-mono font-medium">{item.displayQuantity}</span>
+                                     <span className={`text-xs font-mono font-medium ${item.isMinTotalApplied ? 'text-amber-600 font-bold' : 'text-slate-400'}`}>{item.displayQuantity}</span>
                                   </div>
                                </div>
                                <div className="text-right pl-4">

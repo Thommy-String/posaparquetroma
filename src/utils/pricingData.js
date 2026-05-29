@@ -13,8 +13,8 @@ export const pricingData = [
   {
     id: 'prefinito',
     name: 'Posa Parquet Prefinito',
-    price: '€25', 
-    pricePerMq: 25, 
+    price: '€27', 
+    pricePerMq: 27, 
     unit: '/mq ',
     timeFactorPerMq: 0.03, 
     mediaType: 'video',
@@ -53,8 +53,8 @@ export const pricingData = [
   {
     id: 'spc',
     name: 'Posa SPC / Vinilico LVT',
-    price: '€17',
-    pricePerMq: 17,
+    price: '€20',
+    pricePerMq: 20,
     unit: '/mq',
     timeFactorPerMq: 0.025, 
     mediaType: 'video',
@@ -107,8 +107,8 @@ export const pricingData = [
   {
     id: 'laminato',
     name: 'Posa Laminato',
-    price: '€17',
-    pricePerMq: 17,
+    price: '€20',
+    pricePerMq: 20,
     unit: '/mq',
     timeFactorPerMq: 0.025, 
     mediaType: 'video',
@@ -187,8 +187,8 @@ export const pricingData = [
   {
     id: 'prefinito-spina',
     name: 'Posa Prefinito a Spina',
-    price: '€30',
-    pricePerMq: 30,
+    price: '€32',
+    pricePerMq: 32,
     unit: '/mq',
     timeFactorPerMq: 0.03,
     mediaType: 'video',
