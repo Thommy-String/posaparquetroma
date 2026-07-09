@@ -28,18 +28,19 @@ import spcSpinaPrima        from '../assets/images/primaDopoLavori/prima5.webp';
 import spcSpinaDopo         from '../assets/images/primaDopoLavori/dopo5.webp';
 import montaggioSPCRovere   from '../assets/images/primaDopoLavori/montaggioSPCRovere.webp';
 
-import beaDopo              from '../assets/images/primaDopoLavori/BeaDopo.webp';
-import beaPrima             from '../assets/images/primaDopoLavori/BeaPrima.webp';
-import barbaraDopo          from '../assets/images/primaDopoLavori/barbaraSPCbagno.webp';
-import barbaraPrima         from '../assets/images/primaDopoLavori/barbaraPrimaSPC.webp';
-import rescaldinaDopo       from '../assets/images/primaDopoLavori/rescaldinaDopo.webp';
-import rescaldinaPrima      from '../assets/images/primaDopoLavori/rescaldinaPrima.webp';
+import beaDopo              from '../assets/images/primaDopoLavori/BeaDopo-card-330.webp';
+import beaPrima             from '../assets/images/primaDopoLavori/BeaPrima-card-330.webp';
 import castiglioniDopo      from '../assets/images/primaDopoLavori/castiglioniDopo.webp';
 import castiglioniPrima     from '../assets/images/primaDopoLavori/castiglioniPrima.webp';
-import igorDopo             from '../assets/images/primaDopoLavori/igorDopo.webp';
-import igorPrima            from '../assets/images/primaDopoLavori/igorPrima.webp';
-import daniloDopo           from '../assets/images/primaDopoLavori/daniloDopo.webp';
-import daniloPrima          from '../assets/images/primaDopoLavori/daniloPrima.webp';
+import igorDopo             from '../assets/images/primaDopoLavori/igorDopo-card-330.webp';
+import igorPrima            from '../assets/images/primaDopoLavori/igorPrima-card-330.webp';
+import daniloDopo           from '../assets/images/primaDopoLavori/daniloDopo-card-330.webp';
+import daniloPrima          from '../assets/images/primaDopoLavori/daniloPrima-card-330.webp';
+
+const barbaraPrima = '/service-images/spc-hero-before-640.webp';
+const barbaraDopo = '/service-images/spc-hero-after-640.webp';
+const rescaldinaPrima = '/service-images/spc-rescaldina-prima-640.webp';
+const rescaldinaDopo = '/service-images/spc-rescaldina-dopo-640.webp';
 
 import laminatoGrigio       from '../assets/images/primaDopoLavori/laminatoGrigio.webp';
 import laminatoNoce         from '../assets/images/primaDopoLavori/laminatoNoce.webp';
@@ -64,7 +65,7 @@ export const works = [
     imageBefore: barbaraPrima,
     review: {
       text: "Abbiamo affidato ad Andrei i lavori per il bagno e siamo rimasti molto soddisfatti. È un professionista bravo, preciso e veloce. Ha svolto il lavoro in modo impeccabile, curando ogni dettaglio. Consigliatissimo!",
-      avatar: "https://lh3.googleusercontent.com/a-/ALV-UjVfhR4-IEinuhlzK4DlrTfnlPyEbewMhhfEZ6jFRsk8sgJQrXaV=s72-c-rp-mo-ba4-br100",
+      avatar: "https://lh3.googleusercontent.com/a-/ALV-UjVfhR4-IEinuhlzK4DlrTfnlPyEbewMhhfEZ6jFRsk8sgJQrXaV=s48-c-rp-mo-ba4-br100",
     },
   },
   {

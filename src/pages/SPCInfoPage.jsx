@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import {
   Check, X, ArrowRight, Phone, MessageCircle, Timer, Shield,
   Droplets, Volume2, Thermometer, Layers, Ruler, Home,
@@ -191,7 +191,7 @@ export default function SPCInfoPage() {
   const cleanPhone = PHONE_NUMBER.replace(/[^0-9]/g, '');
 
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>Pavimento SPC: Guida Completa 2025 | Costi, Posa e Vantaggi — Milano</title>
         <meta name="description" content="Tutto quello che devi sapere sul pavimento SPC: cos'è, quanto costa al mq in Lombardia, come si installa, vantaggi vs laminato e parquet. Guida aggiornata 2025." />
@@ -662,6 +662,6 @@ export default function SPCInfoPage() {
           </div>
         </div>
       </section>
-    </>
+    </HelmetProvider>
   );
 }

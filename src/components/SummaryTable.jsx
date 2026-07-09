@@ -77,9 +77,9 @@ function SummaryTable({ data, onRowClick }) {
                                 <div className="flex items-center gap-3">
                                     <div className="text-right flex flex-col items-end">
                                         <span className={`text-base font-bold leading-none ${isExtra ? 'text-gray-600' : 'text-blue-600'}`}>
-                                            {cleanPrice}<span className="text-sm font-normal text-gray-400">€</span>
+                                            {cleanPrice}<span className="text-sm font-normal text-gray-600">€</span>
                                         </span>
-                                        <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mt-0.5">
+                                        <span className="text-[10px] font-medium text-gray-600 uppercase tracking-wide mt-0.5">
                                             {unitLabel.length > 3 ? `a ${unitLabel}` : `al ${unitLabel}`}
                                         </span>
                                     </div>
@@ -99,7 +99,7 @@ function SummaryTable({ data, onRowClick }) {
                 </ul>
             </div>
 
-            <p className="text-center text-[10px] text-gray-400 mt-3 px-4">
+            <p className="text-center text-[10px] text-gray-600 mt-3 px-4">
                 * Clicca su una voce per i dettagli.
             </p>
         </div>

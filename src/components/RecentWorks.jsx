@@ -65,7 +65,7 @@ const MinimalCard = ({ work }) => {
             <div className="p-5 pb-4 flex flex-col gap-2 bg-white">
                 <div className="flex items-center gap-2 mb-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-black inline-block"></span>
-                    <span className="text-[9px] font-black uppercase tracking-[0.18em] text-black/40">Lavorazione</span>
+                    <span className="text-[9px] font-black uppercase tracking-[0.18em] text-black/70">Lavorazione</span>
                 </div>
                 <h3 className="text-base font-[900] text-black leading-tight uppercase tracking-tighter">{work.title}</h3>
                 <p className="text-sm text-gray-600 font-medium leading-snug">{work.description}</p>
@@ -75,7 +75,7 @@ const MinimalCard = ({ work }) => {
             <div className="mt-auto border-t-[3px] border-black bg-[#FFFDE7] p-5">
                 <div className="flex items-center gap-2 mb-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 inline-block"></span>
-                    <span className="text-[9px] font-black uppercase tracking-[0.18em] text-yellow-700/70">Recensione cliente</span>
+                    <span className="text-[9px] font-black uppercase tracking-[0.18em] text-yellow-900">Recensione cliente</span>
                 </div>
                 <p className="text-[13px] text-gray-800 font-medium italic leading-relaxed mb-4">
                     "{work.review.text}"
@@ -86,7 +86,7 @@ const MinimalCard = ({ work }) => {
                             <img src={work.review.avatar} alt="Client" loading="lazy" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[9px] font-black uppercase text-gray-400 leading-none mb-1">Verificata su</span>
+                            <span className="text-[9px] font-black uppercase text-gray-600 leading-none mb-1">Verificata su</span>
                             <div className="flex items-center gap-1">
                                 <svg className="w-3 h-3" viewBox="0 0 24 24">
                                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -104,7 +104,7 @@ const MinimalCard = ({ work }) => {
                                 <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-500" />
                             ))}
                         </div>
-                        <span className="text-[9px] font-bold text-gray-500 mt-0.5">5/5 stelle</span>
+                        <span className="text-[9px] font-bold text-gray-700 mt-0.5">5/5 stelle</span>
                     </div>
                 </div>
             </div>
@@ -169,7 +169,7 @@ function RecentWorks({ service, category, title, showFilter = false }) {
                             <span className="absolute inset-x-0 bottom-0 h-3 md:h-4 bg-[#FFF176] -z-0 -rotate-1 rounded-sm"></span>
                         </span>
                         {' '}PACCHI DI PARQUET{' '} <br />
-                        <span className="text-black/40 text-[0.6em] tracking-tight">QUALSIASI MARCHIO E FORMATO.</span>
+                        <span className="text-black/70 text-[0.6em] tracking-tight">QUALSIASI MARCHIO E FORMATO.</span>
                     </h2>
                 </div>
 
@@ -199,7 +199,7 @@ function RecentWorks({ service, category, title, showFilter = false }) {
 
                 {/* Micro Rassicurazione Finale */}
                 <div className="mt-12 text-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-black/60">
                         Prezzi reali per la posa in opera • aggiornato a {new Date().getFullYear()}
                     </p>
                 </div>

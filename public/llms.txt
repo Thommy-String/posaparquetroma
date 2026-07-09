@@ -1,0 +1,28 @@
+# PosaParquetMilano.it
+
+> Informazioni essenziali per LLM e crawler AI sul sito PosaParquetMilano.it, servizio specializzato in posa parquet, SPC, laminato, battiscopa e rivestimento scale a Milano e dintorni.
+
+## Uso consentito
+
+I contenuti pubblici del sito possono essere scansionati per indicizzazione, risposta a domande degli utenti e riepilogo informativo, rispettando `robots.txt` e attribuendo correttamente la fonte quando appropriato.
+
+## Pagine principali
+
+- [Homepage](https://www.posaparquetmilano.it/): panoramica dei servizi di posa parquet a Milano, prezzi indicativi e contatti.
+- [Posa parquet prefinito](https://www.posaparquetmilano.it/servizi/posa-parquet-prefinito-milano): servizio di posa parquet prefinito a Milano.
+- [Posa parquet prefinito flottante](https://www.posaparquetmilano.it/servizi/posa-parquet-prefinito-flottante-milano): posa flottante senza incollaggio.
+- [Posa parquet a spina](https://www.posaparquetmilano.it/servizi/posa-parquet-prefinito-spina-milano): posa parquet a spina italiana o ungherese.
+- [Posa pavimento SPC](https://www.posaparquetmilano.it/servizi/posa-pavimento-spc-milano): posa SPC a click su pavimenti esistenti.
+- [Posa pavimento laminato](https://www.posaparquetmilano.it/servizi/posa-pavimento-laminato-milano): posa laminato a Milano e dintorni.
+- [Posa battiscopa](https://www.posaparquetmilano.it/servizi/posa-battiscopa-milano): installazione zoccolini e battiscopa.
+- [Rivestimento scale](https://www.posaparquetmilano.it/servizi/rivestimento-scale-milano): rivestimento gradini e scale in legno.
+- [Landing posa parquet](https://www.posaparquetmilano.it/posaparquet): pagina dedicata alla posa parquet prefinito.
+
+## File di supporto
+
+- [Sitemap XML](https://www.posaparquetmilano.it/sitemap.xml)
+- [Robots.txt](https://www.posaparquetmilano.it/robots.txt)
+
+## Contatti
+
+Per richieste commerciali, preventivi o correzioni sui contenuti pubblicati, usare i contatti presenti nella homepage.

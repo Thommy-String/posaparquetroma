@@ -9,14 +9,11 @@
   <meta name="description"
     content="Servizio di posa di pavimento in legno a Milano, specializzati in posa parquet prefinito, SPC, LVT e laminato, rivestimento gradini e battiscopa. Richiedi un preventivo gratuito." />
 
-  <link rel="canonical" href="https://www.posaparquetmilano.it" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  
-  <!-- Preconnect a risorse esterne critiche -->
-  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
-  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+
+  <!-- LCP: rendi l'immagine hero immediatamente scopribile dal documento iniziale -->
+  <link rel="preload" as="image" href="/hero-lcp.webp" fetchpriority="high" />
   
   <base href="/" />
   <script type="application/ld+json">
@@ -25,79 +22,105 @@
         "@type": "Organization",
         "name": "Milano Posa Parquet - Prefinito - SPC - LVT - Laminato - Battiscopa",
         "url": "https://www.posaparquetmilano.it",
-        "logo": "https://www.posaparquetmilano.it/favicon.png"
+        "logo": "https://www.posaparquetmilano.it/favicon-32.png"
       }
     </script>
+  <script>
+  (function preloadRouteCriticalImages() {
+    var normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
+    var routePreloads = {
+      '/servizi/posa-pavimento-spc-milano': [
+        { href: '/service-images/spc-hero-before-640.webp', fetchPriority: 'high' },
+        { href: '/service-images/spc-hero-after-640.webp' }
+      ]
+    };
 
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17830431434"></script>
-<script>
+    var images = routePreloads[normalizedPath];
+    if (!images) return;
+
+    for (var i = 0; i < images.length; i += 1) {
+      var image = images[i];
+      var link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = image.href;
+      if (image.fetchPriority) {
+        link.setAttribute('fetchpriority', image.fetchPriority);
+      }
+      document.head.appendChild(link);
+    }
+  })();
+
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'AW-17830431434');
-</script>
+  // Carica gtag solo quando serve (consenso/idle), evitando costo su FCP/LCP.
+  window.__loadGtag = function __loadGtag() {
+    if (window.__gtagLoaded) return;
+    window.__gtagLoaded = true;
 
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-17830431434';
+    s.onload = function () {
+      gtag('js', new Date());
+      gtag('config', 'AW-17830431434');
+    };
+    document.head.appendChild(s);
+  }
 
-<!-- Event snippet for Contatto (1) conversion page
-In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
-<script>
-function gtag_report_conversion(url) {
-  var callback = function () {
-    if (typeof(url) != 'undefined') {
-      window.location = url;
-    }
-  };
-  gtag('event', 'conversion', {
+  // Event snippet per conversioni: API compatibile con il codice esistente.
+  function gtag_report_conversion(url) {
+    var callback = function () {
+      if (typeof(url) !== 'undefined') {
+        window.location = url;
+      }
+    };
+
+    window.__loadGtag();
+    gtag('event', 'conversion', {
       'send_to': 'AW-17830431434/VEeoCILfveAbEMqVm7ZC',
       'value': 1.0,
       'currency': 'EUR',
       'event_callback': callback
-  });
-  return false;
-}
-</script>
+    });
+    return false;
+  }
+
+  // Se l'utente ha gia accettato in passato, inizializza in idle.
+  if (document.cookie.indexOf('gdpr_consent=accepted') !== -1) {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(function () { window.__loadGtag(); }, { timeout: 2000 });
+    } else {
+      window.addEventListener('load', function () {
+        setTimeout(function () { window.__loadGtag(); }, 1200);
+      }, { once: true });
+    }
+  }
+  </script>
 
 
 
-<!-- Cookie banner CSS — caricato in modo non bloccante -->
-<link rel="stylesheet" href="/cookie-banner.css" media="print" onload="this.media='all'" />
-<noscript><link rel="stylesheet" href="/cookie-banner.css" /></noscript>
+<style>
+  #cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#fff;color:#000;padding:25px 40px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 -2px 20px rgba(0,0,0,.1);border-top:1px solid #e5e5e5;z-index:99999}
+  #cookie-banner.hidden{display:none!important}
+  #cookie-banner p{color:#333;font-size:.95rem;line-height:1.5;max-width:600px;margin:0}
+  #cookie-banner a{text-decoration:underline;color:inherit}
+  .cookie-buttons{display:flex;flex-direction:column;gap:8px;min-width:250px}
+  #cookie-banner button{background:#fff;color:#000;border:1px solid #ccc;padding:12px 24px;border-radius:8px;cursor:pointer;font-size:16px;font-weight:600;width:100%;transition:none;pointer-events:auto;position:relative;z-index:1;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+  #cookie-banner button:hover{background:#f5f5f5;border-color:#999}
+  @media (max-width:768px){#cookie-banner{flex-direction:column;padding:20px}.cookie-buttons{width:100%;margin-top:20px}}
+</style>
 </head>
 
 <body>
-  <div id="root">
-    <!-- Skeleton loader che simula la struttura reale della Hero -->
-    <div id="initial-loader" style="min-height:100vh;background:#fff;font-family:system-ui,-apple-system,sans-serif;overflow:hidden;">
-      <!-- Fake header bar -->
-      <div style="height:56px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;padding:0 16px;">
-        <div style="width:32px;height:32px;border-radius:8px;background:#f3f4f6;"></div>
-      </div>
-      <!-- Fake Hero content -->
-      <div style="max-width:1200px;margin:0 auto;padding:48px 24px;">
-        <!-- Fake badge -->
-        <div style="width:200px;height:24px;background:#f3f4f6;border-radius:12px;margin-bottom:24px;animation:pulse 1.5s ease-in-out infinite;"></div>
-        <!-- Fake title lines -->
-        <div style="width:80%;height:36px;background:#f3f4f6;border-radius:8px;margin-bottom:12px;animation:pulse 1.5s ease-in-out infinite;"></div>
-        <div style="width:60%;height:36px;background:#f3f4f6;border-radius:8px;margin-bottom:24px;animation:pulse 1.5s ease-in-out infinite;"></div>
-        <!-- Fake subtitle -->
-        <div style="width:90%;height:16px;background:#f9fafb;border-radius:4px;margin-bottom:8px;animation:pulse 1.5s ease-in-out infinite;"></div>
-        <div style="width:70%;height:16px;background:#f9fafb;border-radius:4px;margin-bottom:32px;animation:pulse 1.5s ease-in-out infinite;"></div>
-        <!-- Fake CTA buttons -->
-        <div style="display:flex;gap:12px;">
-          <div style="width:180px;height:48px;background:#1a1a1a;border-radius:12px;"></div>
-          <div style="width:160px;height:48px;background:#fff;border:2px solid #1a1a1a;border-radius:12px;"></div>
-        </div>
-      </div>
-      <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}</style>
-    </div>
-  </div>
+  <div id="root"></div>
   <!-- Cookie Banner: lo script PRIMA del banner definisce le funzioni globali -->
   <script>
-  function _cb_set(n,v){var d=new Date();d.setTime(d.getTime()+31536e6);document.cookie=n+'='+v+';expires='+d.toUTCString()+';path=/;SameSite=Lax';}
+  function _cb_emit(v){try{window.dispatchEvent(new CustomEvent('gdpr-consent-changed',{detail:{value:v}}));}catch(e){}}
+  function _cb_set(n,v){var d=new Date();d.setTime(d.getTime()+31536e6);document.cookie=n+'='+v+';expires='+d.toUTCString()+';path=/;SameSite=Lax';_cb_emit(v);}
   function _cb_hide(){var b=document.getElementById('cookie-banner');if(b)b.style.cssText='display:none!important';}
-  function _cb_accept(){_cb_hide();_cb_set('gdpr_consent','accepted');try{if(typeof initializeGtagWithConsent==='function')initializeGtagWithConsent();}catch(e){}}
+  function _cb_accept(){_cb_hide();_cb_set('gdpr_consent','accepted');try{if(typeof window.__loadGtag==='function')window.__loadGtag();}catch(e){}}
   function _cb_decline(){_cb_hide();_cb_set('gdpr_consent','declined');try{if(typeof gtag==='function')gtag('consent','update',{'analytics_storage':'denied','ad_storage':'denied'});}catch(e){}}
   // Se il cookie esiste già, nascondi subito (prima ancora che il CSS carichi)
   if(document.cookie.indexOf('gdpr_consent=')!==-1){document.write('<style>#cookie-banner{display:none!important}</style>');}

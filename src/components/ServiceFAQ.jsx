@@ -16,7 +16,7 @@ const FAQItem = ({ category, question, answer }) => {
         className="flex w-full items-center justify-between py-5 px-6 text-left outline-none"
       >
         <div className="flex flex-col pr-8">
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 mb-1">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/70 mb-1">
             {category}
           </span>
           <span className="text-[18px] md:text-[20px] font-black tracking-tight text-black uppercase leading-tight">

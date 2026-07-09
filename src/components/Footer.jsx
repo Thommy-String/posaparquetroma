@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { COMPANY_NAME, PHONE_NUMBER } from '../utils/constants';
 import { serviceNavLinks } from '../utils/serviceNavLinks';
-import logoImage from '../assets/logo/favicon.png';
+import logoImage from '../assets/logo/logo-96-white-bands.webp';
 
 const serviceLinks = serviceNavLinks
   .filter((s) => s.slug && s.navLabel)
@@ -24,12 +24,15 @@ function Footer() {
               <img
                 src={logoImage}
                 alt={COMPANY_NAME}
-                className="h-16 w-auto"
-                loading="lazy"
+                className="h-16 w-16 object-contain"
+                loading="eager"
+                decoding="async"
+                width="96"
+                height="96"
               />
             </div>
             <p className="text-sm text-gray-500">
-              Posatori specializzati in parquet prefinito, SPC, LVT, laminato e scale su misura.
+               specializzati in parquet prefinito, SPC, LVT, laminato e scale su misura.
             </p>
           </div>
 
@@ -59,7 +62,7 @@ function Footer() {
               Via Daturi 5 29121<br />
               Piacenza (PC)
             </p>
-            <p className="pt-1 text-xs uppercase tracking-[0.25em] text-gray-400">
+            <p className="pt-1 text-xs uppercase tracking-[0.25em] text-gray-600">
               P.IVA 01914870330
             </p>
           </div>
@@ -76,13 +79,13 @@ function Footer() {
             >
               {PHONE_NUMBER}
             </a>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-600">
               Disponibili 7/7 dalle 7:00 alle 20:00
             </p>
           </div>
         </div>
 
-        <div className="mt-10 border-t border-gray-200 pt-6 text-center text-xs text-gray-400 sm:flex sm:items-center sm:justify-between">
+        <div className="mt-10 border-t border-gray-200 pt-6 text-center text-xs text-gray-600 sm:flex sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {COMPANY_NAME}. Tutti i diritti riservati.
           </p>

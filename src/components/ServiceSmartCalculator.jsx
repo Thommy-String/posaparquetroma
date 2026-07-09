@@ -228,6 +228,7 @@ function ServiceScientificCalc({ serviceData }) {
                                 max={maxVal}
                                 step={step}
                                 value={quantity}
+                                aria-label={`Seleziona la quantita in ${unitLabel}`}
                                 onChange={(e) => setQuantity(Number(e.target.value))}
                                 className="absolute -top-1 inset-x-0 w-full h-6 opacity-0 cursor-pointer z-30" 
                             />

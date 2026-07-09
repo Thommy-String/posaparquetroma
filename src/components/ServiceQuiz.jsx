@@ -437,6 +437,7 @@ function ServiceQuiz({ service }) {
                   </div>
                   <input 
                     type="range" min={10} max={200} value={unitValue} 
+                    aria-label={`Seleziona la quantita in ${unitLabel}`}
                     onChange={(e) => setUnitValue(Number(e.target.value))} 
                     className="w-full h-3 bg-gray-100 rounded-full appearance-none cursor-pointer accent-blue-600 hover:accent-blue-500 transition-all" 
                   />

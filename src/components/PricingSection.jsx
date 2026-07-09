@@ -102,7 +102,7 @@ function PricingSection({ defaultCategory = 'all' }) {
           <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">
             Listino prezzi posa parquet 2026
           </h2>
-          <p className="text-gray-500">
+          <p className="text-gray-700">
             Scegli il tipo di pavimento per vedere i costi dettagliati e le lavorazioni extra.
           </p>
         </div>
@@ -120,7 +120,7 @@ function PricingSection({ defaultCategory = 'all' }) {
                     flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ease-out
                     ${isActive 
                       ? 'bg-white text-gray-900 shadow-md transform scale-[1.02]' 
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'}
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-white/50'}
                   `}
                 >
                   {cat.icon}
@@ -151,7 +151,7 @@ function PricingSection({ defaultCategory = 'all' }) {
           </div>
         ) : (
           <div className="text-center py-12">
-             <p className="text-gray-400 text-sm">
+             <p className="text-gray-600 text-sm">
                Clicca sulle voci sopra per vedere i dettagli di ogni servizio extra e accessorio.
              </p>
           </div>

@@ -24,19 +24,19 @@ function ServicePage() {
   // Usiamo i nomi corretti che abbiamo in servicesData.js
   const finalTitle = service.pageTitle || service.title || "Servizio Posa Parquet";
   const finalDescription = service.metaDescription || service.seoDescription || `Scopri il servizio di ${finalTitle} a Milano.`;
-  const currentUrl = window.location.href;
+  const canonicalUrl = `https://www.posaparquetmilano.it/servizi/${service.slug}`;
 
   return (
     <>
       <Helmet>
         <title>{`${finalTitle} | Milano Posa Parquet`}</title>
         <meta name="description" content={finalDescription} />
-        <link rel="canonical" href={currentUrl} />
+        <link rel="canonical" href={canonicalUrl} />
         
         {/* Open Graph */}
         <meta property="og:title" content={finalTitle} />
         <meta property="og:description" content={finalDescription} />
-        <meta property="og:url" content={currentUrl} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
       </Helmet>
 

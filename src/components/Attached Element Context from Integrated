@@ -1,0 +1,60 @@
+Attached Element Context from Integrated Browser
+
+Element: span
+
+URL: http://localhost:5173/
+
+HTML Path: div#root > div.flex.flex-col.min-h-screen.bg-gray-50 > main.flex-grow > section.relative.bg-white.overflow-hidden > div.container.bg-white.mx-auto.px-4.pb-6.pt-1.md:py-20.lg:py-24.relative.z-10 > div.grid.grid-cols-1.lg:grid-cols-2.gap-12.lg:gap-20.items-center > div.text-center.lg:text-left.flex.flex-col.items-center.lg:items-start > div.flex.flex-col.items-center.gap-2.mt-6.mb-6 > div.inline-flex.items-center.gap-2.5.px-2.5.py-2.bg-white.border.border-slate-200.rounded-2xl.shadow-[0_2px_10px_rgba(0,0,0,0.06)] > a.inline-flex.items-center.gap-1.5.text-[12px].font-semibold.text-slate-700.underline.decoration-slate-500.underline-offset-3.hover:text-emerald-700.hover:decoration-emerald-700.transition-colors > span
+
+Outer HTML:
+```html
+<span>Leggi le Recensioni Verificate</span>
+```
+
+Dimensions:
+- top: 104px
+- left: 247px
+- width: 173px
+- height: 18px
+
+CSS:
+```css
+*, ::after, ::before, ::backdrop, ::file-selector-button { box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid; }
+
+/* Inherited */
+a { color: inherit }
+.text-\[12px\] { font-size: 12px }
+.font-semibold { font-weight: var(--font-weight-semibold) }
+.text-slate-700 { color: var(--color-slate-700) }
+ { color: var(--color-emerald-700) }
+.text-center { text-align: center }
+html, :host { line-height: 1.5; tab-size: 4; font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"); font-feature-settings: var(--default-font-feature-settings, normal) }
+
+/* Resolved values */
+margin: 0px;
+padding: 0px;
+border: 0px solid oklch(0.508 0.118 165.612);
+box-sizing: border-box;
+color: oklch(0.508 0.118 165.612);
+cursor: pointer /*UA*/;
+display: block;
+font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+font-feature-settings: normal;
+font-size: 12px;
+font-weight: 600;
+height: 18px;
+line-height: 18px;
+tab-size: 4;
+text-align: center;
+width: 173.484px;
+
+/* CSS variables */
+--color-slate-700: oklch(37.2% 0.044 257.287);
+--color-emerald-700: oklch(50.8% 0.118 165.612);
+--default-font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+--font-weight-semibold: 600;
+```

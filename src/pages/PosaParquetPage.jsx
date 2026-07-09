@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import ServicePageLayout from '../components/ServicePageLayout';
 import { servicesData } from '../utils/servicesData';
 
@@ -22,7 +22,7 @@ function PosaParquetPage() {
   const canonicalUrl = 'https://www.posaparquetmilano.it/posaparquet';
 
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={metaDescription} />
@@ -36,7 +36,7 @@ function PosaParquetPage() {
       </Helmet>
 
       <ServicePageLayout service={service} />
-    </>
+    </HelmetProvider>
   );
 }
 

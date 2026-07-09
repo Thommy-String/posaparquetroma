@@ -34,6 +34,8 @@ import barbaraSPCbagno from '../assets/images/primaDopoLavori/barbaraSPCbagno.we
 
 // Avatar condiviso per tutte le recensioni hero
 const HERO_REVIEW_AVATAR = 'https://i.pinimg.com/736x/be/47/31/be47314b9091f59b453b0328fd9942a8.jpg';
+const SPC_HERO_BEFORE_IMAGE = '/service-images/spc-hero-before-640.webp';
+const SPC_HERO_AFTER_IMAGE = '/service-images/spc-hero-after-640.webp';
 
 // Mappa: pricingId → coppie di immagini prima/dopo per le 2 card comparison
 const COMPARISON_DATA = {
@@ -93,7 +95,7 @@ const COMPARISON_DATA = {
   ],
   'spc': [
     {
-      beforeImg: barbaraPrimaSPC, afterImg: barbaraSPCbagno, price: '€850', time: '2 Giorni', label: 'Bagno SPC Bergamo - Barbara',
+      beforeImg: SPC_HERO_BEFORE_IMAGE, afterImg: SPC_HERO_AFTER_IMAGE, price: '€850', time: '2 Giorni', label: 'Bagno SPC Bergamo - Barbara',
       review: {
         text: 'Abbiamo affidato ad Andrei i lavori per il bagno e siamo rimasti molto soddisfatti. È un professionista bravo, preciso e veloce. Ha svolto il lavoro in modo impeccabile, curando ogni dettaglio. Consigliatissimo!',
         author: 'Barbara D.',
@@ -224,6 +226,7 @@ const BeforeAfterSlider = ({ beforeImg, afterImg, pricingId, priceDisplay, servi
   const clipRef = useRef(null);
   const containerRef = useRef(null);
   const isDraggingRef = useRef(false);
+  const dragRectRef = useRef(null);
 
   // Funzione per applicare la posizione al DOM direttamente (zero re-render)
   const applyPosition = (percent) => {
@@ -267,8 +270,8 @@ const BeforeAfterSlider = ({ beforeImg, afterImg, pricingId, priceDisplay, servi
   }, []);
 
   const handleMove = (clientX) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
+    const rect = dragRectRef.current || containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
     const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
     const percent = (x / rect.width) * 100;
     applyPosition(percent);
@@ -286,6 +289,7 @@ const BeforeAfterSlider = ({ beforeImg, afterImg, pricingId, priceDisplay, servi
     };
     const onEnd = () => {
       isDraggingRef.current = false;
+      dragRectRef.current = null;
     };
 
     window.addEventListener('mousemove', onMouseMove);
@@ -307,10 +311,12 @@ const BeforeAfterSlider = ({ beforeImg, afterImg, pricingId, priceDisplay, servi
       ref={containerRef}
       onMouseDown={(e) => {
         isDraggingRef.current = true;
+        dragRectRef.current = containerRef.current?.getBoundingClientRect() || null;
         handleMove(e.clientX);
       }}
       onTouchStart={(e) => {
         isDraggingRef.current = true;
+        dragRectRef.current = containerRef.current?.getBoundingClientRect() || null;
         handleMove(e.touches[0].clientX);
       }}
     >
@@ -352,7 +358,7 @@ const BeforeAfterSlider = ({ beforeImg, afterImg, pricingId, priceDisplay, servi
       {/* BADGE PREZZO — Top Right */}
       {priceDisplay && (
         <div className="absolute top-4 right-4 z-30 bg-white border-2 border-black rounded-xl px-3 py-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-          <p className="text-[10px] font-black text-gray-500 uppercase tracking-wider mb-0.5 leading-none">Montaggio da</p>
+          <p className="text-[10px] font-black text-gray-700 uppercase tracking-wider mb-0.5 leading-none">Montaggio da</p>
           <p className="text-[18px] font-black text-black leading-none">{priceDisplay}</p>
         </div>
       )}
@@ -442,7 +448,7 @@ function ServiceHeroHome({ service }) {
                         <Star key={i} size={13} className="fill-[#fbbf24] text-[#fbbf24]" strokeWidth={0} />
                       ))}
                     </div>
-                    <span className="text-[12px] font-medium text-gray-400">punteggio 5/5</span>
+                    <span className="text-[12px] font-semibold text-gray-700">punteggio 5/5</span>
                   </div>
                   
                   <div className="text-center space-y-1">
@@ -502,6 +508,8 @@ function ServiceHeroHome({ service }) {
                           src={comp.beforeImg}
                           alt="Prima"
                           loading="eager"
+                          fetchPriority="high"
+                          decoding="async"
                           className="w-full h-full object-cover filter grayscale-[40%] brightness-90 contrast-110"
                         />
                         <div className="absolute bottom-3 left-3 text-[10px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded">PRIMA</div>
@@ -512,6 +520,8 @@ function ServiceHeroHome({ service }) {
                         <img
                           src={comp.afterImg}
                           alt="Dopo"
+                          loading="eager"
+                          decoding="async"
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute bottom-3 right-3 text-[10px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded">DOPO</div>
@@ -520,7 +530,7 @@ function ServiceHeroHome({ service }) {
                       {/* INFO BADGE — Top Right */}
                       {service.priceDisplay && (
                         <div className="absolute top-4 right-4 z-30 bg-white border-2 border-black rounded-xl px-3 py-2.5 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-                          <p className="text-[9px] font-black text-gray-500 uppercase tracking-wider mb-1 leading-none text-center">OFFERTA: Posa da</p>
+                          <p className="text-[9px] font-black text-gray-700 uppercase tracking-wider mb-1 leading-none text-center">OFFERTA: Posa da</p>
                           <div className="flex flex-col items-center gap-1">
                             {pricingId === 'spc' && (
                               <p className="text-[13px] font-black text-red-600 line-through leading-none">€25</p>

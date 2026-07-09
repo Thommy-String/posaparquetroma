@@ -1,5 +1,49 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
+
+function LazyVideo({ src, className }) {
+  const containerRef = useRef(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    if (shouldLoad) return;
+
+    const element = containerRef.current;
+    if (!element || !('IntersectionObserver' in window)) {
+      setShouldLoad(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '250px 0px' }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
+  return (
+    <div ref={containerRef} className={className}>
+      {shouldLoad && (
+        <video
+          src={src}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+          className="w-full h-full object-cover"
+        />
+      )}
+    </div>
+  );
+}
 
 // Funzione helper per le caratteristiche (gestisce stringhe tipo "Garanzia: 10 anni")
 const parseFeature = (feature) => {
@@ -53,14 +97,7 @@ export function PricingCard({ service, onShowProcessClick }) {
       {/* Media (Immagine o Video) */}
       <div className="h-56 overflow-hidden relative">
         {service.mediaType === 'video' ? (
-          <video 
-            src={service.mediaSrc} 
-            autoPlay 
-            muted 
-            loop 
-            playsInline 
-            className="w-full h-full object-cover" 
-          />
+          <LazyVideo src={service.mediaSrc} className="w-full h-full bg-gray-100" />
         ) : (
           <img 
             src={service.mediaSrc} 
@@ -78,12 +115,12 @@ export function PricingCard({ service, onShowProcessClick }) {
         {/* Intestazione Prezzo */}
         <div className="flex justify-between items-end mb-4 border-b border-gray-100 pb-4">
            <div>
-             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Prezzo di partenza</span>
+             <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide">Prezzo di partenza</span>
              <div className="flex items-baseline gap-1">
                <span className="text-2xl font-bold text-gray-900">{service.price || 'Su preventivo'}</span>
              </div>
              {service.pricePerMq && service.unit && (
-                <div className="text-xs text-gray-500 mt-0.5">
+                <div className="text-xs text-gray-700 mt-0.5">
                     {`€${service.pricePerMq} al ${service.unit.replace('/', '').trim()}`}
                 </div>
              )}
@@ -103,12 +140,12 @@ export function PricingCard({ service, onShowProcessClick }) {
           {featureData.length > 0 ? (
             featureData.slice(0, 3).map((f, i) => (
               <div key={i} className="flex justify-between text-sm">
-                <span className="text-gray-500">{f.label}</span>
+                <span className="text-gray-700">{f.label}</span>
                 <span className="font-medium text-gray-800">{f.value}</span>
               </div>
             ))
           ) : (
-            <p className="text-xs text-gray-400 italic">Dettagli tecnici disponibili su richiesta</p>
+            <p className="text-xs text-gray-600 italic">Dettagli tecnici disponibili su richiesta</p>
           )}
         </div>
 
@@ -128,6 +165,7 @@ export function PricingCard({ service, onShowProcessClick }) {
                 max={calculator?.max ?? 200} 
                 step={1} 
                 value={quantity} 
+                aria-label={`Seleziona la quantita per ${service?.title ?? service?.name ?? 'il servizio'}`}
                 onChange={(e) => setQuantity(Number(e.target.value))}
                 className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" 
               />
@@ -136,11 +174,11 @@ export function PricingCard({ service, onShowProcessClick }) {
            {/* Risultati Simulazione */}
            <div className="flex justify-between items-center mb-4">
               <div>
-                <p className="text-[10px] text-gray-400 uppercase font-bold">Stima Totale</p>
+                <p className="text-[10px] text-gray-600 uppercase font-bold">Stima Totale</p>
                 <p className="text-xl font-bold text-blue-600">{estimatedCost}</p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] text-gray-400 uppercase font-bold">Tempo Stimato</p>
+                <p className="text-[10px] text-gray-600 uppercase font-bold">Tempo Stimato</p>
                 <p className="text-lg font-bold text-gray-800">{estimatedTime}</p>
               </div>
            </div>

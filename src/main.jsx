@@ -6,7 +6,7 @@ import App from './App.jsx'
 import './index.css'
 
 import HomePage from './pages/HomePage.jsx'
-const ServicePage = lazy(() => import('./pages/servizi/[slug].jsx'))
+import ServicePage from './pages/servizi/[slug].jsx'
 const PosaParquetPage = lazy(() => import('./pages/PosaParquetPage.jsx'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage.jsx'))
 const TitleVariantsSPC = lazy(() => import('./pages/TitleVariantsSPC.jsx'))
@@ -30,28 +30,40 @@ const PageSkeleton = () => (
   </div>
 )
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    {/* 2. Avvolgi tutto dentro HelmetProvider */}
-    <HelmetProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Assicurati che in App.jsx ci sia un <Outlet /> */}
-          <Route path="/" element={<App />}>
-            <Route index element={<HomePage />} />
-            
-            {/* Questa è la rotta dinamica corretta */}
-            <Route path="servizi/:slug" element={<Suspense fallback={<PageSkeleton />}><ServicePage /></Suspense>} />
-            
-            {/* Landing page standalone per campagne Google Ads — posa parquet prefinito */}
-            <Route path="posaparquet" element={<Suspense fallback={<PageSkeleton />}><PosaParquetPage /></Suspense>} />
-            
-            <Route path="privacy-policy" element={<Suspense fallback={<PageSkeleton />}><PrivacyPolicyPage /></Suspense>} />
-            <Route path="title-variants-spc" element={<Suspense fallback={<PageSkeleton />}><TitleVariantsSPC /></Suspense>} />
-            <Route path="spcinfo" element={<Suspense fallback={<PageSkeleton />}><SPCInfoPage /></Suspense>} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </HelmetProvider>
-  </React.StrictMode>,
-)
+const waitForCriticalCss = () => {
+  const cssReady = typeof window !== 'undefined' && window.__appCssReady
+    ? window.__appCssReady
+    : Promise.resolve();
+
+  return Promise.race([
+    Promise.resolve(cssReady),
+    new Promise((resolve) => setTimeout(resolve, 2500)),
+  ]);
+};
+
+waitForCriticalCss().finally(() => {
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+      <HelmetProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Assicurati che in App.jsx ci sia un <Outlet /> */}
+            <Route path="/" element={<App />}>
+              <Route index element={<HomePage />} />
+              
+              {/* Questa è la rotta dinamica corretta */}
+              <Route path="servizi/:slug" element={<ServicePage />} />
+              
+              {/* Landing page standalone per campagne Google Ads — posa parquet prefinito */}
+              <Route path="posaparquet" element={<Suspense fallback={<PageSkeleton />}><PosaParquetPage /></Suspense>} />
+              
+              <Route path="privacy-policy" element={<Suspense fallback={<PageSkeleton />}><PrivacyPolicyPage /></Suspense>} />
+              <Route path="title-variants-spc" element={<Suspense fallback={<PageSkeleton />}><TitleVariantsSPC /></Suspense>} />
+              <Route path="spcinfo" element={<Suspense fallback={<PageSkeleton />}><SPCInfoPage /></Suspense>} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </HelmetProvider>
+    </React.StrictMode>,
+  )
+})

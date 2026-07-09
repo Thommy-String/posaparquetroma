@@ -805,10 +805,10 @@ function InstallationQuiz({ service }) {
             </>
           ) : (
             <>
-              <h2 className="text-3xl md:text-5xl font-[800] text-slate-900 tracking-tight leading-tight mb-4">
+              <h2 className="text-2xl md:text-5xl font-[800] text-slate-900 tracking-tight leading-tight mb-4">
                 Calcola il tuo <span className="bg-yellow-100 px-2 rounded-sm">preventivo</span> in 1 minuto
               </h2>
-              <p className="text-base md:text-lg text-slate-500 font-medium max-w-lg mx-auto">
+              <p className="text-sm md:text-md text-slate-500 font-medium max-w-lg mx-auto">
                 Seleziona il servizio, inserisci i metri e scopri subito il prezzo.
               </p>
             </>
@@ -915,6 +915,7 @@ function InstallationQuiz({ service }) {
                             {/* Bottone Meno — neo-brutalist */}
                             <button 
                               type="button"
+                              aria-label="Diminuisci i metri quadrati"
                               onMouseDown={() => startAdjustingUnit(-1)}
                               onMouseUp={stopAdjustingUnit}
                               onMouseLeave={stopAdjustingUnit}
@@ -982,6 +983,7 @@ function InstallationQuiz({ service }) {
                             {/* Bottone Più — neo-brutalist green shadow */}
                             <button 
                               type="button"
+                              aria-label="Aumenta i metri quadrati"
                               onMouseDown={() => startAdjustingUnit(1)}
                               onMouseUp={stopAdjustingUnit}
                               onMouseLeave={stopAdjustingUnit}
@@ -997,6 +999,7 @@ function InstallationQuiz({ service }) {
                           <div className="w-full max-w-sm px-4 opacity-60 hover:opacity-100 transition-opacity">
                             <input
                               type="range" min={5} max={250} step={1} value={unitValue} onChange={handleUnitChange}
+                              aria-label="Seleziona i metri quadrati"
                               className="range-quiz"
                               style={{
                                 background: `linear-gradient(to right, #0f172a ${((unitValue - 5) / (250 - 5)) * 100}%, #e2e8f0 ${((unitValue - 5) / (250 - 5)) * 100}%)`

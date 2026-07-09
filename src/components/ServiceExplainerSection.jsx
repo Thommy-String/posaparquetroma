@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Play, Calculator } from 'lucide-react';
 
 // --- Video paths (served from public/) ---
@@ -10,6 +10,50 @@ const posaPrefinitoSpinaVideo = '/videos/parquet/posaPrefinitoSpina.mp4';
 const posaBattiscopaVideo = '/videos/parquet/posaBattiscopa.mp4';
 
 import heroScale from '../assets/images/parquet/posaScala.webp';
+
+function LazyVideo({ src, className }) {
+  const containerRef = useRef(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    if (shouldLoad) return;
+
+    const element = containerRef.current;
+    if (!element || !('IntersectionObserver' in window)) {
+      setShouldLoad(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '250px 0px' }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
+  return (
+    <div ref={containerRef} className={className}>
+      {shouldLoad && (
+        <video
+          src={src}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+          className="w-full h-full object-cover"
+        />
+      )}
+    </div>
+  );
+}
 
 // --- Contenuto per ogni pricingId ---
 const EXPLAINER_DATA = {
@@ -290,14 +334,7 @@ export function ServiceExplainerSection({ service }) {
         {/* Video / Foto */}
         <div className="relative w-full rounded-2xl overflow-hidden border-[3px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-10 aspect-video bg-black">
           {data.media.type === 'video' ? (
-            <video
-              src={data.media.src}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-            />
+            <LazyVideo src={data.media.src} className="w-full h-full bg-black" />
           ) : (
             <img
               src={data.media.src}
