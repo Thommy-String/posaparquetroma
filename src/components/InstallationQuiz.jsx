@@ -869,7 +869,7 @@ function InstallationQuiz({ service }) {
                       {/* CATEGORIA 1: PARQUET LEGNO (PREFINITO) */}
                       <div className="mb-12">
                           <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6 text-center">Parquet in Legno (Prefinito)</p>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 max-w-[1200px] mx-auto">
                             <QuizOption label="Parquet prefinito" description="Posa Incollata" name="serviceType" value="prefinito_dritto" background={SERVICE_BACKGROUND_MAP.prefinito_dritto} price={POSA_PRICES.base.prefinito_dritto} selectedValue={answers.serviceType} onChange={handleChange} />
                             <QuizOption label="Prefinito Spina" description="Tutti i tipi di spina" name="serviceType" value="prefinito_spina" background={SERVICE_BACKGROUND_MAP.prefinito_spina} price={POSA_PRICES.base.prefinito_spina} selectedValue={answers.serviceType} onChange={handleChange} />
                             <QuizOption label="Prefinito Flottante" description="Senza Colla" name="serviceType" value="prefinito_flottante" background={SERVICE_BACKGROUND_MAP.prefinito_flottante} price={POSA_PRICES.base.prefinito_flottante} selectedValue={answers.serviceType} onChange={handleChange} />
@@ -1059,7 +1059,7 @@ function InstallationQuiz({ service }) {
                       {showBattiscopaOption && (
                         <div className="mt-10 pt-8 border-t-2 border-dashed border-slate-200">
                           <p className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-8 text-center">Servizi aggiuntivi (opzionali)</p>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-5 xl:gap-6">
 
                             {/* ── Piccoli Mobili (amber) ── */}
                             <button
