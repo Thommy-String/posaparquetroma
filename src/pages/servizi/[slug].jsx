@@ -23,13 +23,13 @@ function ServicePage() {
   // --- PREPARAZIONE DATI SEO ---
   // Usiamo i nomi corretti che abbiamo in servicesData.js
   const finalTitle = service.pageTitle || service.title || "Servizio Posa Parquet";
-  const finalDescription = service.metaDescription || service.seoDescription || `Scopri il servizio di ${finalTitle} a Milano.`;
-  const canonicalUrl = `https://www.posaparquetmilano.it/servizi/${service.slug}`;
+  const finalDescription = service.metaDescription || service.seoDescription || `Scopri il servizio di ${finalTitle} a roma.`;
+  const canonicalUrl = `https://www.posaparquetroma.it/servizi/${service.slug}`;
 
   return (
     <>
       <Helmet>
-        <title>{`${finalTitle} | Milano Posa Parquet`}</title>
+        <title>{`${finalTitle} | roma Posa Parquet`}</title>
         <meta name="description" content={finalDescription} />
         <link rel="canonical" href={canonicalUrl} />
         

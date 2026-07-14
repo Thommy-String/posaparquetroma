@@ -1522,7 +1522,7 @@ function InstallationQuiz({ service }) {
               {!isServicePage && (
                 <div className="mt-10 text-center">
                   <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
-                    Scelti da 347+ famiglie a Milano
+                    Scelti da 347+ famiglie a roma
                   </p>
                   <div className="max-w-xl mx-auto rounded-2xl overflow-hidden border border-slate-200 bg-gradient-to-br from-blue-50 to-white p-6">
                     <div className="flex items-center justify-center gap-3">

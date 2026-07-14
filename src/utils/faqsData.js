@@ -1,7 +1,7 @@
 // src/utils/faqsData.js
 
 export const faqsData = {
-    'posa-pavimento-spc-milano': [
+    'posa-pavimento-spc-roma': [
         {
             category: "PAGAMENTI 🤝🏻",
             question: "Devo versare un acconto prima di iniziare?",
@@ -68,7 +68,7 @@ export const faqsData = {
             answer: "Subito. Non essendoci colle che devono asciugare, il pavimento è pronto all'uso nell'istante in cui viene posato. Finita la stanza, puoi rimettere i mobili e viverci immediatamente."
         },
     ],
-    'posa-pavimento-laminato-milano': [
+    'posa-pavimento-laminato-roma': [
         {
             category: "PAGAMENTI 🤝🏻",
             question: "Devo versare un acconto prima di iniziare?",

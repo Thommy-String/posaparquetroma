@@ -59,11 +59,11 @@ function Footer() {
               Sede legale
             </p>
             <p>
-              Via Daturi 5 29121<br />
-              Piacenza (PC)
+              Via Jacopo Sansovino 2 00019<br />
+              Tivoli (RM)
             </p>
             <p className="pt-1 text-xs uppercase tracking-[0.25em] text-gray-600">
-              P.IVA 01914870330
+              C.F. DSCNSM87E22Z129B
             </p>
           </div>
 

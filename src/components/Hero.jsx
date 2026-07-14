@@ -1,4 +1,4 @@
-import HeroStats from './HeroStats';
+// import HeroStats from './HeroStats';
 
 const StarIcon = ({ className = '' }) => (
     <svg viewBox="0 0 24 24" width="12" height="12" className={className} aria-hidden="true">
@@ -43,13 +43,13 @@ function Hero() {
                                 </div>
 
                                 <a
-                                    href="https://www.google.com/maps/place/Milano+Posa+Parquet+-+Prefinito+-+SPC+-+LVT+-+Laminato+-+Battiscopa/@45.4627338,9.1777323,12z/data=!4m8!3m7!1s0xa2a634fdc139260b:0x65ffd94880ff1f1b!8m2!3d45.4627338!4d9.1777322!9m1!1b1!16s%2Fg%2F11mm8ht18k!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D"
+                                    href="https://www.google.com/maps/place/roma+Posa+Parquet+-+Prefinito+-+SPC+-+LVT+-+Laminato+-+Battiscopa/@45.4627338,9.1777323,12z/data=!4m8!3m7!1s0xa2a634fdc139260b:0x65ffd94880ff1f1b!8m2!3d45.4627338!4d9.1777322!9m1!1b1!16s%2Fg%2F11mm8ht18k!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center text-[12px] font-medium text-blue-700 underline decoration-slate-500 underline-offset-3 hover:text-emerald-700 hover:decoration-emerald-700 transition-colors"
                                     aria-label="Leggi le Recensioni dei Clienti"
                                 >
-                                    <span>Leggi tutte le Recensioni {'>'}</span>
+                                    <span>leggi le recensioni {'>'}</span>
                                 </a>
                             </div>
 
@@ -58,11 +58,11 @@ function Hero() {
 
                         {/* H1 - Titolo principale minimalista */}
                         <div className="text-center my-4">
-                            <h1 className="text-2xl md:text-3xl lg:text-4xl font-[800] leading-none tracking-[-0.06em] text-slate-900 whitespace-nowrap">
-                                Posa parquet a <span className="text-green-700">Milano</span> e dintorni
+                            <h1 className="text-3xl md:text-3xl lg:text-4xl font-[800] leading-none tracking-[-0.06em] text-slate-900 whitespace-nowrap">
+                                Servizio Posa Parquet a <span className="text-green-700">Roma</span>
                             </h1>
-                            <p className="mt-3 text-[15px] md:text-[17px] underline font-semibold leading-tight text-slate-700 ">
-Prima posiamo. Poi paghi. Non chiediamo acconti!                           </p>
+                            <p className="mt-3 text-[16px] md:text-[17px]  font-semibold leading-tight text-slate-700 max-w-120 ">
+                                Posiamo il tuo nuovo parquet in 1-2 giorni a prezzi fissi, senza acconti prima della posa. </p>
                         </div>
 
                         {/* --- IMMAGINE HERO CON BENEFITS SOPRA --- */}
@@ -87,7 +87,7 @@ Prima posiamo. Poi paghi. Non chiediamo acconti!                           </p>
                                 <div className="relative rounded-2xl overflow-hidden shadow-xl border border-gray-100 h-64">
                                     <img
                                         src="/hero-lcp.webp"
-                                        alt="Posa parquet Spina Italiana Milano"
+                                        alt="Posa parquet Spina Italiana roma"
                                         className="w-full h-full object-cover object-center"
                                         loading="eager"
                                         fetchPriority="high"
@@ -95,7 +95,6 @@ Prima posiamo. Poi paghi. Non chiediamo acconti!                           </p>
                                         width="768"
                                         height="512"
                                     />
-                                    <HeroStats />
                                 </div>
                             </div>
                         </div>

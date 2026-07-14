@@ -193,9 +193,9 @@ export default function SPCInfoPage() {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Pavimento SPC: Guida Completa 2025 | Costi, Posa e Vantaggi — Milano</title>
+        <title>Pavimento SPC: Guida Completa 2025 | Costi, Posa e Vantaggi — roma</title>
         <meta name="description" content="Tutto quello che devi sapere sul pavimento SPC: cos'è, quanto costa al mq in Lombardia, come si installa, vantaggi vs laminato e parquet. Guida aggiornata 2025." />
-        <link rel="canonical" href="https://www.posaparquetmilano.it/spcinfo" />
+        <link rel="canonical" href="https://www.posaparquetroma.it/spcinfo" />
       </Helmet>
 
       {/* ═══════════════════════════════════════

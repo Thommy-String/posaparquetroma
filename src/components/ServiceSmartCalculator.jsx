@@ -165,7 +165,7 @@ function ServiceScientificCalc({ serviceData }) {
                 <div className="px-5 py-2 bg-white border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                     <span className="text-[11px] font-black uppercase tracking-widest text-black">
-                         €{basePrice}/{unitLabel} <span className="text-black/40 mx-1">•</span> Milano & Hinterland
+                         €{basePrice}/{unitLabel} <span className="text-black/40 mx-1">•</span> roma & Hinterland
                     </span>
                 </div>
             </div>

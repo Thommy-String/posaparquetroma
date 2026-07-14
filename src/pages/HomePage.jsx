@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Hero from '../components/Hero';
+import Temparquettisti from '../components/Temparquettisti';
 import logoImage from '../assets/logo/logo-96.webp';
 import {
   COMPANY_NAME,
@@ -167,12 +168,12 @@ function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Servizio di posa di pavimento in legno a Milano | ProCasa Parquet</title>
+        <title>Servizio di posa di pavimento in legno a roma | ProCasa Parquet</title>
         <meta
           name="description"
-          content="Servizio di posa di pavimento in legno a Milano, specializzati in posa parquet prefinito, SPC, LVT e laminato, rivestimento gradini e battiscopa. Richiedi un preventivo gratuito."
+          content="Servizio di posa di pavimento in legno a roma, specializzati in posa parquet prefinito, SPC, LVT e laminato, rivestimento gradini e battiscopa. Richiedi un preventivo gratuito."
         />
-        <link rel="canonical" href="https://www.posaparquetmilano.it/" />
+        <link rel="canonical" href="https://www.posaparquetroma.it/" />
       </Helmet>
 
       <script type="application/ld+json">
@@ -180,6 +181,8 @@ function HomePage() {
       </script>
 
       <Hero />
+
+      <Temparquettisti />
 
       <div id="below-fold-sentinel" aria-hidden="true" className="h-px" />
 

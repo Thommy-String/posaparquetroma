@@ -41,7 +41,7 @@ function ServiceHero({ service }) {
                         {service.imageSrc ? (
                             <img
                                 src={service.imageSrc}
-                                alt={service.pageTitle || 'Servizio parquet Milano'}
+                                alt={service.pageTitle || 'Servizio parquet roma'}
                                 className="w-full h-[280px] md:h-[480px] object-cover"
                             />
                         ) : (
@@ -140,7 +140,7 @@ function ServiceHero({ service }) {
                             <div className="absolute inset-0 bg-white/40 blur-3xl scale-150 -z-10 rounded-full"></div>
 
                             <a
-                                href={`https://wa.me/${PHONE_NUMBER.replace(/[^0-9]/g, '')}?text=Ciao%20Posa%20Parquet%20Milano%2C%20sono%20interessato%20a%20una%20consulenza%20gratuita`}
+                                href={`https://wa.me/${PHONE_NUMBER.replace(/[^0-9]/g, '')}?text=Ciao%20Posa%20Parquet%20roma%2C%20sono%20interessato%20a%20una%20consulenza%20gratuita`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={() => {

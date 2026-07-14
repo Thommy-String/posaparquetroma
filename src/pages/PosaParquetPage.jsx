@@ -3,9 +3,9 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import ServicePageLayout from '../components/ServicePageLayout';
 import { servicesData } from '../utils/servicesData';
 
-// Questa landing page standalone usa i dati del servizio "posa-parquet-prefinito-milano"
+// Questa landing page standalone usa i dati del servizio "posa-parquet-prefinito-roma"
 // ma è servita al percorso /posaparquet per campagne Google Ads dedicate.
-const LANDING_SLUG = 'posa-parquet-prefinito-milano';
+const LANDING_SLUG = 'posa-parquet-prefinito-roma';
 
 function PosaParquetPage() {
   const service = servicesData[LANDING_SLUG];
@@ -16,10 +16,10 @@ function PosaParquetPage() {
 
   if (!service) return null;
 
-  const pageTitle = 'Posa Parquet Prefinito a Milano | Preventivo Gratuito';
+  const pageTitle = 'Posa Parquet Prefinito a roma | Preventivo Gratuito';
   const metaDescription =
-    'Posa parquet prefinito a Milano: incollaggio professionale, sopralluogo gratuito e prezzi trasparenti. Squadra specializzata di parquettisti a Milano e dintorni.';
-  const canonicalUrl = 'https://www.posaparquetmilano.it/posaparquet';
+    'Posa parquet prefinito a roma: incollaggio professionale, sopralluogo gratuito e prezzi trasparenti. Squadra specializzata di parquettisti a roma e dintorni.';
+  const canonicalUrl = 'https://www.posaparquetroma.it/posaparquet';
 
   return (
     <HelmetProvider>

@@ -5,13 +5,13 @@ OUTDIR="dist"
 SRC="$OUTDIR/index.html"
 
 ROUTES=(
-  "servizi/posa-parquet-prefinito-milano"
-  "servizi/posa-parquet-prefinito-flottante-milano"
-  "servizi/posa-parquet-prefinito-spina-milano"
-  "servizi/posa-pavimento-spc-milano"
-  "servizi/posa-pavimento-laminato-milano"
-  "servizi/posa-battiscopa-milano"
-  "servizi/rivestimento-scale-milano"
+  "servizi/posa-parquet-prefinito-roma"
+  "servizi/posa-parquet-prefinito-flottante-roma"
+  "servizi/posa-parquet-prefinito-spina-roma"
+  "servizi/posa-pavimento-spc-roma"
+  "servizi/posa-pavimento-laminato-roma"
+  "servizi/posa-battiscopa-roma"
+  "servizi/rivestimento-scale-roma"
 )
 
 for r in "${ROUTES[@]}"; do

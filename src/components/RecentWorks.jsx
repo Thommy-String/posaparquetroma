@@ -160,7 +160,7 @@ function RecentWorks({ service, category, title, showFilter = false }) {
                 {/* Sezione Intestazione */}
                 <div className="mb-10 text-center">
                     <div className="inline-block bg-black text-white px-4 py-1 uppercase font-black tracking-widest text-xs mb-6 transform -rotate-1 rounded-md">
-                        a milano e dintorni
+                        a roma e dintorni
                     </div>
                     <h2 className="text-[36px] md:text-[56px] font-black uppercase tracking-tighter leading-[1.0] max-w-3xl mx-auto text-black">
                         NEL 2025 ABBIAMO POSATO PIÙ DI{' '}

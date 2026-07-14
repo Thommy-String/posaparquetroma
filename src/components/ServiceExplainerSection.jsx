@@ -93,7 +93,7 @@ const EXPLAINER_DATA = {
     badge: 'Cos\'è il Laminato',
     headline: (
       <>
-        Resistente, caldo, economico.{' '}
+        Resistente, economico.{' '}
         <span className="bg-[#FFF176] px-1 border-b-[3px] border-black inline-block">Subito pronto.</span>
       </>
     ),

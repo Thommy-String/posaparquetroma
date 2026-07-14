@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.posaparquetmilano.it/sitemap.xml
+Sitemap: https://www.posaparquetroma.it/sitemap.xml

@@ -12,10 +12,12 @@ import ServiceExplainerSection from '../components/ServiceExplainerSection';
 import ServicePainPoints from './ServicePainPoints';
 import ServicePainVsSolution from './ServicePainVsSolution';
 import SPCProblemVsSolution from './SPCProblemVsSolution';
+import Temparquettisti from './Temparquettisti';
 
 const COMPONENT_MAP = {
   Hero: ServiceHero,
   HeroHome: ServiceHeroHome,
+  Temparquettisti: Temparquettisti,
   RecentWorks: RecentWorks,
   ServiceFAQ: ServiceFAQ,
   ServiceDescription: ServiceDescription,

@@ -3,7 +3,7 @@ import path from 'path';
 
 const distRoot = path.resolve('dist');
 const serviziRoot = path.join(distRoot, 'servizi');
-const canonicalHost = 'https://www.posaparquetmilano.it/';
+const canonicalHost = 'https://www.posaparquetroma.it/';
 
 async function exists(targetPath) {
   try {

@@ -40,7 +40,7 @@ function ExtraServiceModal({ service, onClose }) {
             <div className="max-w-3xl mb-12">
               <div className="flex items-center gap-2 text-blue-600 mb-4">
                  <ShieldCheck size={20} />
-                 <span className="text-xs font-black uppercase tracking-[0.2em]">Scheda Tecnica Milano</span>
+                 <span className="text-xs font-black uppercase tracking-[0.2em]">Scheda Tecnica roma</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-black leading-tight">
                 {service.name || service.title}<br/>

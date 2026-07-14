@@ -1,6 +1,6 @@
 import heroPrefinito from '../assets/images/parquet/rovereNaturale.webp';
 import heroPrefinitoFlottante from '../assets/images/parquet/rovereMielato.webp';
-import heroPrefinitoSpina from '../assets/images/parquet/rovereSpina90.webp';
+import heroPrefinitoSpina from '../assets/images/parquet/spinaFraRovereNaturale.webp';
 import heroLaminato from '../assets/images/parquet/parquetLaminato.webp';
 import heroBattiscopa from '../assets/images/parquet/battiscopa10cm.webp';
 import heroScale from '../assets/images/parquet/posaScala.webp';
@@ -9,6 +9,7 @@ import tracciaturaLaserParquet from '../assets/images/parquet/tracciaturaLaserPa
 import posaParquetIncollato from '../assets/images/parquet/posaParquetIncollato.webp';
 import posaParquetFlottante from '../assets/images/parquet/posaParquetFlottante.webp';
 import fotoRivestimentoGradini from "../assets/images/parquet/rivestimentoScaleRovere.webp"
+import povSpinaIta from '../assets/images/primaDopoLavori/povSpinaIta.webp';
 
 //video — served from public/ to avoid bundling into JS
 const videoPosaPrefinitoIncollato = '/videos/parquet/posaPrefinitoIncollato.mp4';
@@ -21,14 +22,14 @@ import laminatoImage from '../assets/images/parquet/montaggioLaminato.webp';
 
 
 export const servicesData = {
-  'posa-parquet-prefinito-milano': {
+  'posa-parquet-prefinito-roma': {
     order: 1,
     navLabel: 'Posa parquet prefinito',
-    slug: 'posa-parquet-prefinito-milano',
+    slug: 'posa-parquet-prefinito-roma',
     pricingId: 'prefinito',
-    pageTitle: 'Posa Parquet Prefinito a Milano',
+    pageTitle: 'Posa Parquet Prefinito a roma',
     metaDescription:
-      'Posa parquet prefinito a Milano: analisi del massetto, incollaggio professionale e finiture certificate. Squadra specializzata si parquettisti',
+      'Posa parquet prefinito a roma: analisi del massetto, incollaggio professionale e finiture certificate. Squadra specializzata si parquettisti',
     hero: {
       h1: (
         <>
@@ -41,7 +42,7 @@ export const servicesData = {
       image: heroPrefinito,
     },
     overview:
-      'Il parquet prefinito nasce per chi desidera il calore del legno con tempi di cantiere rapidi. Con Milano Posa Parquet ottieni un sopralluogo tecnico, se necessario la preparazione del sottofondo e la posa professionale con collanti certificati EC1.',
+      'Il parquet prefinito nasce per chi desidera il calore del legno con tempi di cantiere rapidi. Con roma Posa Parquet ottieni un sopralluogo tecnico, se necessario la preparazione del sottofondo e la posa professionale con collanti certificati EC1.',
     sections: [
       {
         id: '01',
@@ -71,7 +72,7 @@ export const servicesData = {
         image: heroPrefinito
       }
     ],
-    priceDisplay: "€25 / mq",
+    priceDisplay: "€27 / mq",
     videoSrc: videoPosaPrefinitoIncollato,
     stats: {
       projects: "180+",
@@ -80,6 +81,7 @@ export const servicesData = {
     },
     layout: [
       { type: 'HeroHome' },
+      { type: 'Temparquettisti' },
       { type: 'RecentWorks', props: { category: 'prefinito', title: 'I nostri ultimi lavori' } },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
@@ -110,14 +112,14 @@ export const servicesData = {
       },
     ]
   },
-  'posa-parquet-prefinito-flottante-milano': {
+  'posa-parquet-prefinito-flottante-roma': {
     order: 2,
     navLabel: 'Prefinito flottante',
-    slug: 'posa-parquet-prefinito-flottante-milano',
+    slug: 'posa-parquet-prefinito-flottante-roma',
     pricingId: 'prefinito-flottante',
-    pageTitle: 'Posa Parquet Prefinito Flottante a Milano',
+    pageTitle: 'Posa Parquet Prefinito Flottante a roma',
     metaDescription:
-      'Posa parquet prefinito flottante a Milano: materassino certificato, posa a click e battiscopa coordinati. Squadra Milano Posa Parquet.',
+      'Posa parquet prefinito flottante a roma: materassino certificato, posa a click e battiscopa coordinati. Squadra roma Posa Parquet.',
     hero: {
       h1: (
         <>
@@ -187,6 +189,7 @@ export const servicesData = {
     },
     layout: [
       { type: 'HeroHome' },
+      { type: 'Temparquettisti' },
       { type: 'RecentWorks', props: { category: 'prefinito-flottante', title: 'I nostri ultimi lavori' } },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
@@ -218,14 +221,14 @@ export const servicesData = {
       
     ]
   },
-  'posa-parquet-prefinito-spina-milano': {
+  'posa-parquet-prefinito-spina-roma': {
     order: 3,
     navLabel: 'Prefinito a spina',
-    slug: 'posa-parquet-prefinito-spina-milano',
+    slug: 'posa-parquet-prefinito-spina-roma',
     pricingId: 'prefinito-spina',
-    pageTitle: 'Posa Parquet Prefinito a Spina a Milano | Spina italiana, spina francese, spina ungherese',
+    pageTitle: 'Posa Parquet Prefinito a Spina a Roma | Spina italiana, spina francese, spina ungherese',
     metaDescription:
-      'Posa parquet prefinito a spina a Milano: tracciatura laser, incollaggio professionale e finiture sartoriali. Prenota un sopralluogo con noi di Milano Posa Parquet.',
+      'Posa parquet prefinito a spina a roma: tracciatura laser, incollaggio professionale e finiture sartoriali. Prenota un sopralluogo con noi di roma Posa Parquet.',
     hero: {
       h1: (
         <>
@@ -237,6 +240,8 @@ export const servicesData = {
       subtitle: 'Spina italiana, francese o ungherese: precisione millimetrica e incollaggio che dura.',
       image: heroPrefinitoSpina,
     },
+    heroBeforeImage: heroPrefinitoSpina,
+    heroAfterImage: povSpinaIta,
     overview:
       'Studiamo geometrie e simmetrie, tagliamo ogni doga a misura e incolliamo con collanti elastici certificati per uno schema a spina stabile e scenografico.',
    sections: [
@@ -277,7 +282,7 @@ export const servicesData = {
         image: heroPrefinito
       }
     ],
-     priceDisplay: "€30 / mq",
+     priceDisplay: "€32 / mq",
     videoSrc: videoPosaPrefinitoSpina,
     stats: {
       projects: "180+",
@@ -286,6 +291,7 @@ export const servicesData = {
     },
     layout: [
       { type: 'HeroHome' },
+      { type: 'Temparquettisti' },
       { type: 'RecentWorks', props: { category: 'prefinito-spina', title: 'I nostri ultimi lavori' } },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
@@ -316,14 +322,14 @@ export const servicesData = {
       },
     ]
   },
-  'posa-pavimento-spc-milano': {
+  'posa-pavimento-spc-roma': {
     order: 4,
     navLabel: 'Posa SPC a click',
-    slug: 'posa-pavimento-spc-milano',
+    slug: 'posa-pavimento-spc-roma',
     pricingId: 'spc',
-    pageTitle: 'Parquettisti per posa SPC a Milano',
+    pageTitle: 'Posa SPC a Roma',
     metaDescription:
-      "Posa parquet SPC a click a Milano senza colla. Pavimento vinilico 100% impermeabile, stabile e silenzioso anche su piastrelle esistenti. Sopralluogo e preventivo gratuiti.",
+      "Posa parquet SPC a click a roma senza colla. Pavimento vinilico 100% impermeabile, stabile e silenzioso anche su piastrelle esistenti. Sopralluogo e preventivo gratuiti.",
     hero: {
       h1: (
         <>
@@ -371,7 +377,7 @@ export const servicesData = {
     size: 'big'
   }
 ],
-    priceDisplay: "€17 / mq",
+    priceDisplay: "€20 / mq",
     videoSrc: spcAnimation,
     stats: {
       projects: "180+",
@@ -380,6 +386,7 @@ export const servicesData = {
     },
     layout: [
       { type: 'HeroHome' },
+      { type: 'Temparquettisti' },
       { type: 'RecentWorks', props: { category: 'spc', title: 'Nel 2025 Abbiamo posato più di 2595 pacchi di SPC. Qualsiasi marchio e formato.' } },
       { type: 'ServiceExplainerSection' },
       { type: 'SPCProblemVsSolution' },
@@ -411,14 +418,14 @@ export const servicesData = {
 
     ]
   },
-  'posa-pavimento-laminato-milano': {
+  'posa-pavimento-laminato-roma': {
     order: 5,
     navLabel: 'Posa laminato',
-    slug: 'posa-pavimento-laminato-milano',
+    slug: 'posa-pavimento-laminato-roma',
     pricingId: 'laminato',
-    pageTitle: 'Posa Pavimento Laminato a Milano | Installazione rapida e pulita',
+    pageTitle: 'Posa Pavimento Laminato a roma | Installazione rapida e pulita',
     metaDescription:
-      'Posa parquet laminato a Milano su materassino, tagli a misura e rifiniture sartoriali. Preventivo rapido online.',
+      'Posa parquet laminato a roma su materassino, tagli a misura e rifiniture sartoriali. Preventivo rapido online.',
     hero: {
       h1: (
         <>
@@ -466,7 +473,7 @@ export const servicesData = {
     size: 'big'
   }
 ],
-     priceDisplay: "€17 / mq",
+     priceDisplay: "20 / mq",
     imageSrc: laminatoImage,
     stats: {
       projects: "180+",
@@ -475,6 +482,7 @@ export const servicesData = {
     },
     layout: [
       { type: 'HeroHome' },
+      { type: 'Temparquettisti' },
       { type: 'RecentWorks', props: { category: 'laminato', title: 'I nostri ultimi lavori' } },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
@@ -505,14 +513,14 @@ export const servicesData = {
       },
     ]
   },
-  'posa-battiscopa-milano': {
+  'posa-battiscopa-roma': {
     order: 6,
     navLabel: 'Posa battiscopa',
-    slug: 'posa-battiscopa-milano',
+    slug: 'posa-battiscopa-roma',
     pricingId: 'battiscopa',
-    pageTitle: 'Posa Battiscopa a Milano | Tagli e finiture pulite',
+    pageTitle: 'Posa Battiscopa a roma | Tagli e finiture pulite',
     metaDescription:
-      'Posa professionale battiscopa a Milano: rilievo, taglio a 45°, incollaggio e sigillatura. Sopralluogo e preventivo gratuiti online',
+      'Posa professionale battiscopa a roma: rilievo, taglio a 45°, incollaggio e sigillatura. Sopralluogo e preventivo gratuiti online',
     hero: {
       h1: (
         <>
@@ -573,6 +581,7 @@ export const servicesData = {
     },
     layout: [
       { type: 'HeroHome' },
+      { type: 'Temparquettisti' },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
       { type: 'ServiceFAQ' },
@@ -595,14 +604,14 @@ export const servicesData = {
       },
     ]
   },
-  'rivestimento-scale-milano': {
+  'rivestimento-scale-roma': {
     order: 7,
     navLabel: 'Rivestimento scale',
-    slug: 'rivestimento-scale-milano',
+    slug: 'rivestimento-scale-roma',
     pricingId: 'scala-parquet',
-    pageTitle: 'Rivestimento Scale in Parquet a Milano | Progettazione su misura',
+    pageTitle: 'Rivestimento Scale in Parquet a roma | Progettazione su misura',
     metaDescription:
-      'Rivestiamo scale a Milano con legno prefinito, pedate antiscivolo e finiture coordinate. Sopralluogo e preventivo gratuiti.',
+      'Rivestiamo scale a roma con legno prefinito, pedate antiscivolo e finiture coordinate. Sopralluogo e preventivo gratuiti.',
     hero: {
       h1: (
         <>
@@ -645,7 +654,7 @@ export const servicesData = {
         image: fotoRivestimentoGradini
       }
     ],
-      priceDisplay: "€70 / gradino",
+      priceDisplay: "€90 / gradino",
     videoSrc: fotoRivestimentoGradini,
     stats: {
       projects: "180+",
@@ -654,6 +663,7 @@ export const servicesData = {
     },
     layout: [
       { type: 'HeroHome' },
+      { type: 'Temparquettisti' },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
       { type: 'ServiceFAQ' },

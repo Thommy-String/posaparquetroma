@@ -2,8 +2,8 @@
   RewriteEngine On
 
   RewriteCond %{HTTPS} !=on [OR]
-  RewriteCond %{HTTP_HOST} ^posaparquetmilano\.it$ [NC]
-  RewriteRule ^(.*)$ https://www.posaparquetmilano.it/$1 [R=301,L]
+  RewriteCond %{HTTP_HOST} ^posaparquetroma\.it$ [NC]
+  RewriteRule ^(.*)$ https://www.posaparquetroma.it/$1 [R=301,L]
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Star, MoveHorizontal } from 'lucide-react';
-import HeroStats from './HeroStats';
 import InstallationQuiz from './InstallationQuiz';
 import { pricingData } from '../utils/pricingData';
 import { COMPANY_NAME } from '../utils/constants';
@@ -27,17 +26,13 @@ import battiscopa10cm from '../assets/images/parquet/battiscopa10cm.webp';
 import battiscopa5cm from '../assets/images/parquet/battiscopa5cm.webp';
 import posaScala from '../assets/images/parquet/posaScala.webp';
 import rivestimentoScaleRovere from '../assets/images/parquet/rivestimentoScaleRovere.webp';
-import igorPrima from '../assets/images/primaDopoLavori/igorPrima.webp';
-import igorDopo from '../assets/images/primaDopoLavori/igorDopo.webp';
-import barbaraPrimaSPC from '../assets/images/primaDopoLavori/barbaraPrimaSPC.webp';
-import barbaraSPCbagno from '../assets/images/primaDopoLavori/barbaraSPCbagno.webp';
 
 // Avatar condiviso per tutte le recensioni hero
 const HERO_REVIEW_AVATAR = 'https://i.pinimg.com/736x/be/47/31/be47314b9091f59b453b0328fd9942a8.jpg';
 const SPC_HERO_BEFORE_IMAGE = '/service-images/spc-hero-before-640.webp';
 const SPC_HERO_AFTER_IMAGE = '/service-images/spc-hero-after-640.webp';
 
-// Mappa: pricingId → coppie di immagini prima/dopo per le 2 card comparison
+// Mappa: pricingId -> coppie di immagini prima/dopo per le 2 card comparison
 const COMPARISON_DATA = {
   'prefinito': [
     {
@@ -85,7 +80,7 @@ const COMPARISON_DATA = {
       },
     },
     {
-      beforeImg: rovereSpinaItaMobili, afterImg: posaSpinaUngherese, price: '€2.405', time: '2 Giorni', label: 'Spina Italiana',
+      beforeImg: nelyDopo, afterImg: posaSpinaUngherese, price: '€2.405', time: '2 Giorni', label: 'Spina Italiana',
       review: {
         text: 'Mi ritengo soddisfatto ad aver affidato a loro l\'installazione del mio parquet a spina. Ottimo lavoro.',
         author: 'Giovanni V.',
@@ -97,7 +92,7 @@ const COMPARISON_DATA = {
     {
       beforeImg: SPC_HERO_BEFORE_IMAGE, afterImg: SPC_HERO_AFTER_IMAGE, price: '€850', time: '2 Giorni', label: 'Bagno SPC Bergamo - Barbara',
       review: {
-        text: 'Abbiamo affidato ad Andrei i lavori per il bagno e siamo rimasti molto soddisfatti. È un professionista bravo, preciso e veloce. Ha svolto il lavoro in modo impeccabile, curando ogni dettaglio. Consigliatissimo!',
+        text: 'Abbiamo affidato ad Andrei i lavori per il bagno e siamo rimasti molto soddisfatti. E un professionista bravo, preciso e veloce. Ha svolto il lavoro in modo impeccabile, curando ogni dettaglio. Consigliatissimo!',
         author: 'Barbara D.',
         avatar: HERO_REVIEW_AVATAR,
       },
@@ -139,13 +134,13 @@ const COMPARISON_DATA = {
   ],
 };
 
-// Titoli dinamici per l'H1 — Stile Stencil Urban Pastel
+// Titoli dinamici per l'H1 - Stile Stencil Urban Pastel
 const SERVICE_TITLES = {
   'prefinito': (
     <>
-      Il vero <span className="bg-orange-50 text-orange-900 px-2 py-0.5 transform -rotate-1 inline-block border border-orange-100 rounded-sm">Parquet</span>
-      <br /><span className="text-orange-600">Pronto all&apos;Uso</span> in tempi record.
-      <br /><span className="text-slate-400 text-[0.5em] align-middle ml-2 decoration-slice decoration-orange-200 underline font-black">Nobiltà del legno, posa rapida.</span>
+      <span className="bg-orange-50 text-orange-900 px-2 py-0.5 transform -rotate-1 inline-block border border-orange-100 rounded-sm">Posa parquet prefinito</span> a roma.
+      <br /><span className="text-green-400">zero acconti. Paghi dopo la posa.</span>
+      <br /><span className="text-slate-400 text-[0.5em] align-middle ml-2 decoration-slice decoration-orange-200 underline font-black">Squadre pronte subito.</span>
     </>
   ),
   'prefinito-flottante': (
@@ -157,23 +152,23 @@ const SERVICE_TITLES = {
   ),
   'prefinito-spina': (
     <>
-      Parquet <span className="bg-pink-50 text-pink-900 px-2 py-0.5 transform -rotate-1 inline-block border border-pink-100 rounded-sm">a Spina</span>
-      <br /><span className="text-pink-600">Precisione Laser</span> e incollaggio certificato.
-      <br /><span className="text-slate-400 text-[0.5em] align-middle ml-2 decoration-slice decoration-pink-200 underline font-black">Geometrie perfette, casa trasformata.</span>
+      Posa Parquet <span className="bg-green-50 text-green-900 px-2 py-0.5 transform -rotate-1 inline-block border border-pink-100 rounded-sm">a Spina</span> a roma.
+      <br /><span className="text-emerald-600">Massima eleganza</span>.
+      <br /><span className="text-slate-400 text-[0.5em] align-middle ml-2 decoration-slice decoration-pink-200 underline font-black">Posato a regola d'arte da chi lo fa tutti i giorni</span>
     </>
   ),
   'spc': (
     <>
-       Servizio posa SPC <span className="text-yellow-500">a Milano</span>
-      <br />pronto in soli <span className="text-green-600">1–2 giorni</span> <span className="text-red-600">senza demolire il pavimento</span>
+      Posa SPC <span className="text-yellow-500">a roma</span>
+      <br />in <span className="text-green-600">1-2 giorni</span> <span className="text-red-600">senza demolire il pavimento</span> 
       <br /><span className="text-slate-400 text-[0.7em] align-middle ml-2 decoration-slice decoration-yellow-200 underline font-bold">sopra il vecchio, anche in case con mobili.</span>
     </>
   ),
   'laminato': (
     <>
-      Posa <span className="bg-emerald-50 text-emerald-900 px-2 py-0.5 transform rotate-1 inline-block border border-emerald-100 rounded-sm">Laminato</span>
-      <br /><span className="text-emerald-600">Massima Resistenza</span> per tutta la casa.
-      <br /><span className="text-slate-400 text-[0.5em] align-middle ml-2 decoration-slice decoration-emerald-200 underline font-black">Estetica legno, durezza estrema.</span>
+      Servizio Posa <span className="bg-emerald-50 text-emerald-900 px-2 py-0.5 transform rotate-1 inline-block border border-emerald-100 rounded-sm">Laminato</span> a roma.
+      <br /><span className="text-emerald-600">Pronto in 1-2 giorni.</span>       <br /><span className="text-green-400">zero acconti. Paghi dopo la posa.</span>
+      <br /><span className="text-slate-400 text-[0.5em] align-middle ml-2 decoration-slice decoration-emerald-200 underline font-black">Prezzi chiari e fissi. Squadre pronte.</span>
     </>
   ),
   'battiscopa': (
@@ -217,197 +212,6 @@ const ComparisonCard = ({ beforeImg, afterImg, price, timeDisplay, label, classN
   </div>
 );
 
-// --- COMPONENTE SLIDER PRIMA/DOPO ---
-const BeforeAfterSlider = ({ beforeImg, afterImg, pricingId, priceDisplay, servicePricingId }) => {
-  // ...existing code...
-  // Solo l'animazione iniziale usa setState per il primo render.
-  const positionRef = useRef(50);
-  const sliderLineRef = useRef(null);
-  const clipRef = useRef(null);
-  const containerRef = useRef(null);
-  const isDraggingRef = useRef(false);
-  const dragRectRef = useRef(null);
-
-  // Funzione per applicare la posizione al DOM direttamente (zero re-render)
-  const applyPosition = (percent) => {
-    positionRef.current = percent;
-    if (clipRef.current) {
-      clipRef.current.style.clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
-    }
-    if (sliderLineRef.current) {
-      sliderLineRef.current.style.left = `${percent}%`;
-    }
-  };
-
-  // Animazione iniziale per far capire all'utente che può muovere lo slider
-  useEffect(() => {
-    let animationFrame;
-    let startTime;
-    const duration = 1500;
-
-    const animate = (time) => {
-      if (!startTime) startTime = time;
-      const elapsed = time - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
-      if (progress < 1) {
-        const offset = Math.sin(progress * Math.PI * 2) * 15;
-        applyPosition(50 + offset);
-        animationFrame = requestAnimationFrame(animate);
-      } else {
-        applyPosition(50);
-      }
-    };
-
-    const timer = setTimeout(() => {
-      animationFrame = requestAnimationFrame(animate);
-    }, 800);
-
-    return () => {
-      clearTimeout(timer);
-      if (animationFrame) cancelAnimationFrame(animationFrame);
-    };
-  }, []);
-
-  const handleMove = (clientX) => {
-    const rect = dragRectRef.current || containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-    const percent = (x / rect.width) * 100;
-    applyPosition(percent);
-  };
-
-  // Listener globali con riferimenti stabili (useEffect una sola volta)
-  useEffect(() => {
-    const onMouseMove = (e) => {
-      if (!isDraggingRef.current) return;
-      handleMove(e.clientX);
-    };
-    const onTouchMove = (e) => {
-      if (!isDraggingRef.current) return;
-      handleMove(e.touches[0].clientX);
-    };
-    const onEnd = () => {
-      isDraggingRef.current = false;
-      dragRectRef.current = null;
-    };
-
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onEnd);
-    window.addEventListener('touchmove', onTouchMove, { passive: true });
-    window.addEventListener('touchend', onEnd);
-
-    return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onEnd);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onEnd);
-    };
-  }, []); // ← Montato una sola volta, nessuna funzione anonima duplicata
-
-  return (
-    <div
-      className="group relative w-full h-[280px] md:h-[360px] overflow-hidden bg-slate-50 select-none cursor-ew-resize"
-      ref={containerRef}
-      onMouseDown={(e) => {
-        isDraggingRef.current = true;
-        dragRectRef.current = containerRef.current?.getBoundingClientRect() || null;
-        handleMove(e.clientX);
-      }}
-      onTouchStart={(e) => {
-        isDraggingRef.current = true;
-        dragRectRef.current = containerRef.current?.getBoundingClientRect() || null;
-        handleMove(e.touches[0].clientX);
-      }}
-    >
-      {/* IMMAGINE DOPO (Sfondo - sempre intera) */}
-      <img
-        src={afterImg}
-        alt="Risultato Finale"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-      />
-
-      {/* IMMAGINE PRIMA (Sopra - clippata dinamicamente) */}
-      <div
-        ref={clipRef}
-        className="absolute inset-0 w-full h-full"
-        style={{ clipPath: `polygon(0 0, 50% 0, 50% 100%, 0 100%)` }}
-      >
-        <img
-          src={beforeImg}
-          alt="Situazione Iniziale"
-          className="absolute inset-0 w-full h-full object-cover filter grayscale-[40%] brightness-90 contrast-110 pointer-events-none"
-        />
-      </div>
-
-      {/* SLIDER HANDLE LINE & BUTTON */}
-      <div
-        ref={sliderLineRef}
-        className="absolute top-0 bottom-0 z-20"
-        style={{ left: '50%' }}
-      >
-        {/* Linea verticale bianca */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.5)] cursor-ew-resize"></div>
-
-        {/* Cerchietto con frecce al centro */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-[0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-ew-resize text-slate-800 transition-transform active:scale-95 group-hover:scale-105">
-          <MoveHorizontal size={20} strokeWidth={2.5} />
-        </div>
-      </div>
-
-      {/* BADGE PREZZO — Top Right */}
-      {priceDisplay && (
-        <div className="absolute top-4 right-4 z-30 bg-white border-2 border-black rounded-xl px-3 py-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-          <p className="text-[10px] font-black text-gray-700 uppercase tracking-wider mb-0.5 leading-none">Montaggio da</p>
-          <p className="text-[18px] font-black text-black leading-none">{priceDisplay}</p>
-        </div>
-      )}
-
-      {/* LABEL PRIMA - DOPO — Bottom */}
-      <div className="absolute bottom-3 left-0 right-0 z-20 flex justify-between px-4 pointer-events-none">
-        <span className="text-[11px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded">PRIMA</span>
-        <span className="text-[11px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded">DOPO</span>
-      </div>
-
-      {/* CHECKLIST CARD — Bottom Left (Solo per SPC) */}
-      {servicePricingId === 'spc' && (
-        <div className="absolute bottom-4 left-4 z-30 bg-white border-2 border-black rounded-lg px-3.5 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)]">
-          <div className="space-y-2">
-            {/* Check 1 */}
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-md flex items-center justify-center shrink-0">
-                <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <span className="text-[11px] font-bold text-slate-900 leading-tight">Sul pavimento esistente</span>
-            </div>
-            {/* Check 2 */}
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-md flex items-center justify-center shrink-0">
-                <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <span className="text-[11px] font-bold text-slate-900 leading-tight">Anche in case con mobili</span>
-            </div>
-            {/* Check 3 */}
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-md flex items-center justify-center shrink-0">
-                <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <span className="text-[11px] font-bold text-slate-900 leading-tight">Posa rapida: 1-2 giorni</span>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-
 function ServiceHeroHome({ service }) {
   if (!service) return null;
 
@@ -418,6 +222,7 @@ function ServiceHeroHome({ service }) {
 
   return (
     <section className="relative bg-white overflow-hidden">
+      
       {/* Background sfumato */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
         <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-50/60 blur-3xl"></div>
@@ -452,7 +257,7 @@ function ServiceHeroHome({ service }) {
                   </div>
                   
                   <div className="text-center space-y-1">
-                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide block">Posiamo a Milano e Dintorni</span>
+                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide block">Posiamo a roma e Dintorni</span>
                   </div>
                 </div>
               ) : (
@@ -475,7 +280,7 @@ function ServiceHeroHome({ service }) {
                     <div className="h-3 w-px bg-gray-200"></div>
                     <div className="flex items-center gap-1.5 opacity-80">
                       <span className="text-[11px] bg-gray-50 text-gray-600 px-2 py-0.5 rounded border border-gray-100 font-bold uppercase tracking-[-0.08em]">
-                        milano e dintorni
+                        roma e dintorni
                       </span>
                     </div>
                   </div>
@@ -496,8 +301,8 @@ function ServiceHeroHome({ service }) {
 
             {/* --- IMMAGINE PRIMA/DOPO STATICHE + RECENSIONE --- */}
             <div className="w-full px-2 py-2 md:py-3 mb-0">
-              {comparisons && comparisons.length > 0 && (() => {
-                const comp = comparisons[0];
+              {((comparisons && comparisons.length > 0) || service.heroBeforeImage) && (() => {
+                const comp = service.heroBeforeImage ? { beforeImg: service.heroBeforeImage, afterImg: service.heroAfterImage } : comparisons[0];
                 return (
                   <div className="w-full border-[3px] border-black rounded-[24px] overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
                     {/* FOTO STATICHE PRIMA/DOPO SIDE-BY-SIDE */}
@@ -512,7 +317,7 @@ function ServiceHeroHome({ service }) {
                           decoding="async"
                           className="w-full h-full object-cover filter grayscale-[40%] brightness-90 contrast-110"
                         />
-                        <div className="absolute bottom-3 left-3 text-[10px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded">PRIMA</div>
+                        <div className="absolute bottom-3 left-3 text-[10px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded"></div>
                       </div>
 
                       {/* DOPO (Destra) */}
@@ -524,10 +329,10 @@ function ServiceHeroHome({ service }) {
                           decoding="async"
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute bottom-3 right-3 text-[10px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded">DOPO</div>
+                        <div className="absolute bottom-3 right-3 text-[10px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded"></div>
                       </div>
 
-                      {/* INFO BADGE — Top Right */}
+                      {/* INFO BADGE - Top Right */}
                       {service.priceDisplay && (
                         <div className="absolute top-4 right-4 z-30 bg-white border-2 border-black rounded-xl px-3 py-2.5 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
                           <p className="text-[9px] font-black text-gray-700 uppercase tracking-wider mb-1 leading-none text-center">OFFERTA: Posa da</p>
@@ -539,7 +344,7 @@ function ServiceHeroHome({ service }) {
                           </div>
                           {pricingId === 'spc' && (
                             <div className="space-y-1.5 mt-2 pt-2 border-t border-gray-200">
-                              {['Zero acconti prima', 'Paghi a fine giornata', 'Prezzi onesti'].map((text, i) => (
+                              {['Zero acconti', 'Pronto in 1-2 giorni'].map((text, i) => (
                                 <div key={i} className="flex items-center gap-1.5">
                                   <svg className="w-3 h-3 text-green-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                                     <polyline points="20 6 9 17 4 12"></polyline>
@@ -553,12 +358,12 @@ function ServiceHeroHome({ service }) {
                       )}
                     </div>
 
-                    {/* CHECKLIST VANTAGGI — sotto l'immagine */}
+                    {/* CHECKLIST VANTAGGI - sotto l'immagine */}
                     <div className="bg-white border-t-[3px] border-black px-5 py-4 flex justify-center">
                       <div className="inline-flex flex-col items-start gap-2.5">
                         {[
-                          'Pronto in 1–2 giorni',
-                          'Sul pavimento esistente',
+                          'Pronto in 1-2 giorni',
+                          'Non paghi nulla prima della posa',
                           'Anche in case con mobili',
                         ].map((text, i) => (
                           <div key={i} className="flex items-center gap-2">
@@ -577,92 +382,7 @@ function ServiceHeroHome({ service }) {
               })()}
             </div>
 
-            {/* CTA BUTTONS — 2 pulsanti */}
-            <div className="flex flex-col md:flex-row gap-6 justify-center items-center w-full mt-2 mb-3">
-
-              {/* CHIAMA ORA */}
-              <div className="flex flex-col items-center max-w-xs">
-                <div className="w-full relative">
-                  <div className="absolute inset-0 bg-white/40 blur-3xl scale-150 -z-10 rounded-full"></div>
-                  <a
-                    href="tel:+393342221212"
-                    onClick={(e) => {
-                      if (typeof window.gtag !== 'undefined') {
-                        window.gtag('event', 'conversion', { 'send_to': 'AW-XXXXXXXXX/YYYYYYYYYYYY' });
-                      }
-                    }}
-                    className="group relative flex items-center gap-4 w-full bg-blue-50 border-[2.5px] border-blue-900 px-8 py-4 rounded-xl text-blue-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(30,58,138,1)] hover:shadow-[2px_2px_0px_0px_rgba(30,58,138,1)] hover:translate-x-1 hover:translate-y-1 active:bg-blue-100 justify-center"
-                  >
-                    <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                      </svg>
-                    </div>
-                    <div className="flex flex-col items-start leading-none">
-                      <span className="text-[10px] text-blue-600 font-bold mb-1 tracking-widest uppercase">+39 334 222 1212</span>
-                      <span className="text-xl md:text-2xl italic">Chiama ora</span>
-                    </div>
-                  </a>
-                </div>
-                <div className="w-full mt-3 flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="#A5D6A7" strokeWidth="0"/></svg>
-                    <span className="text-[11px] md:text-[12px] text-slate-600 font-semibold">Nessun obbligo</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="#A5D6A7" strokeWidth="0"/></svg>
-                    <span className="text-[11px] md:text-[12px] text-slate-600 font-semibold">Preventivo gratuito</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* SCRIVICI ORA (WhatsApp) */}
-              <div className="flex flex-col items-center max-w-xs">
-                <div className="w-full relative">
-                  <div className="absolute inset-0 bg-white/40 blur-3xl scale-150 -z-10 rounded-full"></div>
-                  <a
-                    href="https://wa.me/393342221212?text=Ciao%20Posa%20Parquet%20Milano%2C%20sono%20interessato%20a%20una%20consulenza%20gratuita"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      if (typeof window.gtag !== 'undefined') {
-                        window.gtag('event', 'conversion', { 'send_to': 'AW-XXXXXXXXX/YYYYYYYYYYYY' });
-                      }
-                    }}
-                    className="group relative flex items-center gap-4 w-full bg-emerald-50 border-[2.5px] border-emerald-900 px-8 py-4 rounded-xl text-emerald-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(5,83,34,1)] hover:shadow-[2px_2px_0px_0px_rgba(5,83,34,1)] hover:translate-x-1 hover:translate-y-1 active:bg-emerald-100 justify-center"
-                  >
-                    <div className="p-2 bg-emerald-100 rounded-lg group-hover:bg-emerald-200 transition-colors">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor" className="text-emerald-600"/>
-                        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.257-.154-2.874.854.854-2.874-.154-.257A8 8 0 1112 20z" fill="currentColor" className="text-emerald-600"/>
-                      </svg>
-                    </div>
-                    <div className="flex flex-col items-start leading-none">
-                      <span className="text-[10px] text-emerald-600 font-bold mb-1 tracking-widest uppercase">online 24/7</span>
-                      <span className="text-xl md:text-2xl italic">Scrivici ora</span>
-                    </div>
-                  </a>
-                </div>
-                <div className="w-full mt-3 flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="#A5D6A7" strokeWidth="0"/></svg>
-                    <span className="text-[11px] md:text-[12px] text-slate-600 font-semibold">Risposta immediata</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="#A5D6A7" strokeWidth="0"/></svg>
-                    <span className="text-[11px] md:text-[12px] text-slate-600 font-semibold">Senza impegno</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* HERO STATS */}
-            <div className="w-full my-4 lg:mb-10 flex justify-center">
-              <HeroStats />
-            </div>
-
-            {/* PREVENTIVATORE ONLINE — InstallationQuiz integrato nella hero */}
+            {/* PREVENTIVATORE ONLINE - InstallationQuiz integrato nella hero */}
             <InstallationQuiz service={service} />
 
           </div>

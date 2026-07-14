@@ -268,7 +268,7 @@ export const pricingData = [
   {
     id: 'scala-parquet',
     name: 'Rivestimento Scala con Parquet',
-    price: '€70',
+    price: '€90',
     pricePerMq: 70,
     unit: '/gradino',
     timeFactorPerMq: 0.08,

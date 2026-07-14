@@ -18,13 +18,13 @@ const PhoneIcon = ({ className = '' }) => (
 
 // --- COLORI PER OGNI SERVIZIO ---
 const SERVICE_COLORS = {
-  'posa-parquet-prefinito-milano': { text: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' },
-  'posa-parquet-prefinito-flottante-milano': { text: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' },
-  'posa-parquet-prefinito-spina-milano': { text: 'text-pink-600', bg: 'bg-pink-50', border: 'border-pink-200' },
-  'posa-pavimento-spc-milano': { text: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-200' },
-  'posa-pavimento-laminato-milano': { text: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
-  'posa-battiscopa-milano': { text: 'text-slate-600', bg: 'bg-slate-50', border: 'border-slate-200' },
-  'rivestimento-scale-milano': { text: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-200' },
+  'posa-parquet-prefinito-roma': { text: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' },
+  'posa-parquet-prefinito-flottante-roma': { text: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' },
+  'posa-parquet-prefinito-spina-roma': { text: 'text-pink-600', bg: 'bg-pink-50', border: 'border-pink-200' },
+  'posa-pavimento-spc-roma': { text: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-200' },
+  'posa-pavimento-laminato-roma': { text: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+  'posa-battiscopa-roma': { text: 'text-slate-600', bg: 'bg-slate-50', border: 'border-slate-200' },
+  'rivestimento-scale-roma': { text: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-200' },
 };
 
 function Header() {
@@ -157,10 +157,10 @@ function Header() {
               <img src={logoImage} alt={COMPANY_NAME} className="h-9 md:h-11 w-auto" width="96" height="96" />
               <div className="flex flex-col">
                 <span className="text-base md:text-lg font-bold tracking-tight leading-none text-gray-900">
-                  PosaParquetMilano.it 
+                  PosaParquetRoma.it 
                 </span>
                   <span className="text-[10px] font-medium uppercase tracking-tighter text-gray-700 leading-tight">
-                  n.1 a Milano e dintorni
+                  n.1 a roma e dintorni
                 </span>
               </div>
             </div>
@@ -169,10 +169,10 @@ function Header() {
               <img src={logoImage} alt={COMPANY_NAME} className="h-9 md:h-11 w-auto" width="96" height="96" />
               <div className="flex flex-col">
                 <span className="text-base md:text-lg font-bold tracking-tight leading-none text-gray-900">
-                  PosaParquetMilano.it 
+                  PosaParquetroma.it 
                 </span>
                   <span className="text-[10px] font-medium tracking-tighter text-gray-700 leading-tight">
-                  Posatori esperti su Milano e dintorni
+                  Posatori esperti su roma e dintorni
                 </span>
               </div>
             </Link>
