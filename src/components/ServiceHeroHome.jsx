@@ -212,7 +212,7 @@ const ComparisonCard = ({ beforeImg, afterImg, price, timeDisplay, label, classN
   </div>
 );
 
-function ServiceHeroHome({ service }) {
+function ServiceHeroHome({ service, conversionId }) {
   if (!service) return null;
 
   const pricingId = service.pricingId || '';
@@ -383,7 +383,7 @@ function ServiceHeroHome({ service }) {
             </div>
 
             {/* PREVENTIVATORE ONLINE - InstallationQuiz integrato nella hero */}
-            <InstallationQuiz service={service} />
+            <InstallationQuiz service={service} conversionId={conversionId} />
 
           </div>
         </div>

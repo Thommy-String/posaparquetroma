@@ -1,13 +1,22 @@
 import { Outlet, useLocation } from 'react-router-dom'
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import { servicesData } from './utils/servicesData'
 
 const StickyGlassFooter = lazy(() => import('./components/StickyGlassFooter'))
 
 function App() {
   const location = useLocation();
   const [showDeferredChrome, setShowDeferredChrome] = useState(false);
+
+  const conversionId = useMemo(() => {
+    const match = location.pathname.match(/^\/servizi\/([^/]+)/);
+    if (!match) return null;
+
+    const slug = decodeURIComponent(match[1]);
+    return servicesData[slug]?.conversionId ?? null;
+  }, [location.pathname]);
 
   useEffect(() => {
     if (location.hash) {
@@ -57,17 +66,17 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       
-      <Header conversionId={null}></Header>
+      <Header conversionId={conversionId}></Header>
       
       <main className="flex-grow">
         <Outlet />
       </main>
 
-      <Footer />
+      <Footer conversionId={conversionId} />
      
       {showDeferredChrome && (
         <Suspense fallback={null}>
-          <StickyGlassFooter conversionId={null} />
+          <StickyGlassFooter conversionId={conversionId} />
         </Suspense>
       )}
       
