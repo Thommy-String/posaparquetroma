@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { pricingData } from '../utils/pricingData'; 
-import { PHONE_NUMBER } from '../utils/constants';
 import ProcessModal from './ProcessModal';
 import PricingCard from './PricingCard';
 import SummaryTable from './SummaryTable';
@@ -69,7 +68,7 @@ const getCategory = (service) => {
   return 'prefinito'; // default
 };
 
-function PricingSection({ defaultCategory = 'all', conversionId }) {
+function PricingSection({ defaultCategory = 'all' }) {
   const [selectedService, setSelectedService] = useState(null); // Per i servizi standard (Calcolatore)
   const [selectedExtra, setSelectedExtra] = useState(null);     // Per gli extra (Popup info)
   const [activeCategory, setActiveCategory] = useState(defaultCategory);
@@ -145,7 +144,6 @@ function PricingSection({ defaultCategory = 'all', conversionId }) {
                   <PricingCard 
                     service={service} 
                     onShowProcessClick={setSelectedService} 
-                    conversionId={conversionId}
                   />
                </div>
             ))}

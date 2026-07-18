@@ -54,7 +54,7 @@ const parseFeature = (feature) => {
   return { label: parts[0].trim(), value: parts.slice(1).join(':').trim() };
 };
 
-export function PricingCard({ service, onShowProcessClick, conversionId }) {
+export function PricingCard({ service, onShowProcessClick }) {
   // 1. Protezione iniziale: se non arrivano dati, non renderizzare nulla
   if (!service) return null;
 
@@ -188,7 +188,6 @@ export function PricingCard({ service, onShowProcessClick, conversionId }) {
             <button 
              onClick={() => {
                 gtagReportConversion({
-                  sendTo: conversionId,
                   redirectUrl: `tel:${PHONE_NUMBER}`,
                 });
              }}

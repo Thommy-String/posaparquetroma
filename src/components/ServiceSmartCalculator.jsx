@@ -54,7 +54,7 @@ const GLOBAL_EXTRAS = [
     },
 ];
 
-function ServiceScientificCalc({ serviceData, conversionId }) {
+function ServiceScientificCalc({ serviceData }) {
     if (!serviceData) return null;
 
     // 1. Configurazioni
@@ -150,7 +150,6 @@ function ServiceScientificCalc({ serviceData, conversionId }) {
                      `⏱ Tempo previsto: ~${estimatedDays} gg lavorativi`;
         
         gtagReportConversion({
-          sendTo: conversionId,
           redirectUrl: `https://wa.me/393342221212?text=${encodeURIComponent(text)}`,
         });
     };

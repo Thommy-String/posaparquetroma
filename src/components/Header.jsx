@@ -28,7 +28,7 @@ const SERVICE_COLORS = {
   'rivestimento-scale-roma': { text: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-200' },
 };
 
-function Header({ conversionId }) {
+function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Modifica: Header sempre visibile al caricamento (sia mobile che desktop).
   // Lo scroll handler lo nasconderà quando l'utente scrolla giù.
@@ -186,7 +186,6 @@ function Header({ conversionId }) {
             <button 
               onClick={() => {
                 gtagReportConversion({
-                  sendTo: conversionId,
                   redirectUrl: `tel:${PHONE_NUMBER}`,
                 });
               }}
@@ -256,7 +255,6 @@ function Header({ conversionId }) {
             <div className="mt-8 pt-6 border-t border-gray-200">
                 <button onClick={() => {
                     gtagReportConversion({
-                      sendTo: conversionId,
                       redirectUrl: `tel:${PHONE_NUMBER}`,
                     });
                   }} className="flex justify-center items-center gap-3 w-full py-4 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-colors text-base">

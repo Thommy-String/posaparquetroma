@@ -12,7 +12,7 @@ const serviceLinks = serviceNavLinks
     label: s.navLabel,
   }));
 
-function Footer({ conversionId }) {
+function Footer() {
   return (
     <footer
       id="contatti"
@@ -72,7 +72,6 @@ function Footer({ conversionId }) {
             <button
               onClick={() => {
                 gtagReportConversion({
-                  sendTo: conversionId,
                   redirectUrl: `tel:${PHONE_NUMBER}`,
                 });
               }}

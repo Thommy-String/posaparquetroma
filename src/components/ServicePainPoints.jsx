@@ -71,7 +71,7 @@ const ACCENT_MAP = {
   emerald: { gradient: 'from-emerald-400 to-emerald-500', border: 'border-emerald-400/40', borderSolid: 'border-emerald-400/70', iconBg: 'bg-emerald-400/10', iconText: 'text-emerald-400', tagBg: 'bg-emerald-400/10', tagText: 'text-emerald-300', statBg: 'bg-emerald-400/10', statText: 'text-emerald-300', numText: 'text-emerald-400/20', glowBg: 'bg-emerald-400/5' },
 };
 
-const ServicePainPoints = ({ service, conversionId }) => {
+const ServicePainPoints = ({ service }) => {
   if (!service || !service.pricingId) return null;
 
   // Get the pain points for this service's pricingId
@@ -163,7 +163,6 @@ const ServicePainPoints = ({ service, conversionId }) => {
           <button
             onClick={() => {
               gtagReportConversion({
-                sendTo: conversionId,
                 redirectUrl: `https://wa.me/393342221212`,
               });
             }}

@@ -1,13 +1,10 @@
-export const gtagReportConversion = ({ sendTo, value = 1.0, currency = 'EUR', redirectUrl }) => {
+const GLOBAL_CONVERSION_ID = 'AW-18310459317/JQxpCKv_y9IcELXfjZtE';
+
+export const gtagReportConversion = ({ value = 1.0, currency = 'EUR', redirectUrl }) => {
   const navigate = () => {
     if (!redirectUrl) return;
     window.location.href = redirectUrl;
   };
-
-  if (!sendTo) {
-    navigate();
-    return;
-  }
 
   let hasNavigated = false;
   const navigateOnce = () => {
@@ -22,7 +19,7 @@ export const gtagReportConversion = ({ sendTo, value = 1.0, currency = 'EUR', re
 
   if (typeof window.gtag === 'function') {
     window.gtag('event', 'conversion', {
-      send_to: sendTo,
+      send_to: GLOBAL_CONVERSION_ID,
       value,
       currency,
       event_callback: () => {

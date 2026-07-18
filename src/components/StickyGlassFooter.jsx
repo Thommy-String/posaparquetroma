@@ -6,7 +6,6 @@ const hasCookieConsentChoice = () => document.cookie.indexOf('gdpr_consent=') !=
 
 const StickyGlassFooter = ({ 
     subtitle = "Nessun obbligo di acquisto.",
-    conversionId,
 }) => {
     
     // Nascondi il footer finché il cookie banner è visibile
@@ -30,14 +29,12 @@ const StickyGlassFooter = ({
         const message = "Ciao, vorrei un preventivo per posa parquet...";
         const encodedMessage = encodeURIComponent(message);
         gtagReportConversion({
-            sendTo: conversionId,
             redirectUrl: `https://wa.me/${cleanPhone}?text=${encodedMessage}`,
         });
     };
 
     const handleCall = () => {
         gtagReportConversion({
-            sendTo: conversionId,
             redirectUrl: `tel:${cleanPhone}`,
         });
     };

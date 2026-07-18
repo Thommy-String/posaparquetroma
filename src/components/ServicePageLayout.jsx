@@ -47,7 +47,7 @@ function ServicePageLayout({ service }) {
           return null;
         }
 
-        let componentProps = { service, conversionId: service.conversionId, ...block.props };
+        let componentProps = { service, ...block.props };
 
         return (
           <section key={`${block.type}-${index}`} className="block-section">

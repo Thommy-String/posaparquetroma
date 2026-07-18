@@ -359,7 +359,7 @@ function QuizOption({ label, description, name, value, selectedValue, onChange, 
 }
 
 // Il componente principale del Quiz
-function InstallationQuiz({ service, conversionId }) {
+function InstallationQuiz({ service }) {
   // Configurazione per pagina di servizio (se presente)
   const pricingId = service?.pricingId;
   const pageConfig = pricingId ? SERVICE_PAGE_CONFIG[pricingId] : null;
@@ -876,7 +876,6 @@ function InstallationQuiz({ service, conversionId }) {
     const encodedMessage = encodeURIComponent(message);
 
     gtagReportConversion({
-      sendTo: conversionId,
       redirectUrl: `https://wa.me/${cleanPhone}?text=${encodedMessage}`,
     });
   };
@@ -1584,7 +1583,6 @@ function InstallationQuiz({ service, conversionId }) {
                     <button
                       onClick={() => {
                         gtagReportConversion({
-                          sendTo: conversionId,
                           redirectUrl: `tel:${PHONE_NUMBER}`,
                         });
                       }}
