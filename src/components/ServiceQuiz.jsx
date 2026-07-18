@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
 import { quizDatabase } from '../utils/quizData';
+import { gtagReportConversion } from '../utils/analytics';
 
 // --- IMPORT ICONE ---
 import {
@@ -162,7 +163,7 @@ function SimpleQuizOption({ label, name, value, selectedValue, onChange }) {
   );
 }
 
-function ServiceQuiz({ service }) {
+function ServiceQuiz({ service, conversionId }) {
   const pricingId = service?.pricingId;
   const config = quizDatabase[pricingId] || quizDatabase['prefinito'];
 
@@ -323,14 +324,6 @@ function ServiceQuiz({ service }) {
   const handleWhatsAppClick = () => {
     if (!estimate) return;
 
-     // 1. Traccia la conversione (senza URL per evitare conflitti di redirect)
-    if (typeof window.gtag_report_conversion === 'function') {
-      window.gtag_report_conversion();
-    }
-
-    if (!estimate) return;
-
-
     const itemsList = estimate.items
       .map(item => `- ${item.label}: ~${item.qty} ${item.unit}`)
       .join('\n');
@@ -356,17 +349,15 @@ function ServiceQuiz({ service }) {
 
     const message = lines.join("\n");
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/?text=${encodedMessage}`, '_self');
+    gtagReportConversion({
+      sendTo: conversionId,
+      redirectUrl: `https://wa.me/?text=${encodedMessage}`,
+    });
   };
 
   // Invia la stima all'azienda
   const handleSendToCompany = () => {
     if (!estimate) return;
-
-    // 1. Traccia la conversione (senza URL per evitare conflitti di redirect)
-    if (typeof window.gtag_report_conversion === 'function') {
-      window.gtag_report_conversion();
-    }
 
     const itemsList = estimate.items
         .map(item => `- ${item.label}: ~${item.qty} ${item.unit}`)
@@ -387,7 +378,10 @@ function ServiceQuiz({ service }) {
 
     const message = lines.join("\n");
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${cleanPhone}?text=${encodedMessage}`, '_self');
+    gtagReportConversion({
+      sendTo: conversionId,
+      redirectUrl: `https://wa.me/${cleanPhone}?text=${encodedMessage}`,
+    });
   };
 
   return (
@@ -689,9 +683,9 @@ function ServiceQuiz({ service }) {
                         <button onClick={handleSendToCompany} type="button" className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-green-200 transition hover:bg-green-600">
                             WhatsApp <MessageCircle className="w-4 h-4" />
                         </button>
-                        <a href={`tel:${PHONE_NUMBER}`} onClick={() => typeof window.gtag_report_conversion === 'function' && window.gtag_report_conversion()} className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border-2 border-slate-700 bg-transparent px-6 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-100">
+                        <button onClick={() => gtagReportConversion({ sendTo: conversionId, redirectUrl: `tel:${PHONE_NUMBER}` })} className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border-2 border-slate-700 bg-transparent px-6 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-100">
                           Chiamaci
-                        </a>
+                        </button>
                       </div>
                     </div>
                 </div>

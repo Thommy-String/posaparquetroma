@@ -27,6 +27,7 @@ export const servicesData = {
     navLabel: 'Posa parquet prefinito',
     slug: 'posa-parquet-prefinito-roma',
     pricingId: 'prefinito',
+    conversionId: 'AW-18310459317/3cP7CPear9IcELXfjZtE',
     pageTitle: 'Posa Parquet Prefinito a roma',
     metaDescription:
       'Posa parquet prefinito a roma: analisi del massetto, incollaggio professionale e finiture certificate. Squadra specializzata si parquettisti',
@@ -117,6 +118,7 @@ export const servicesData = {
     navLabel: 'Prefinito flottante',
     slug: 'posa-parquet-prefinito-flottante-roma',
     pricingId: 'prefinito-flottante',
+    conversionId: null,
     pageTitle: 'Posa Parquet Prefinito Flottante a roma',
     metaDescription:
       'Posa parquet prefinito flottante a roma: materassino certificato, posa a click e battiscopa coordinati. Squadra roma Posa Parquet.',
@@ -226,6 +228,7 @@ export const servicesData = {
     navLabel: 'Prefinito a spina',
     slug: 'posa-parquet-prefinito-spina-roma',
     pricingId: 'prefinito-spina',
+    conversionId: null,
     pageTitle: 'Posa Parquet Prefinito a Spina a Roma | Spina italiana, spina francese, spina ungherese',
     metaDescription:
       'Posa parquet prefinito a spina a roma: tracciatura laser, incollaggio professionale e finiture sartoriali. Prenota un sopralluogo con noi di roma Posa Parquet.',
@@ -327,6 +330,7 @@ export const servicesData = {
     navLabel: 'Posa SPC a click',
     slug: 'posa-pavimento-spc-roma',
     pricingId: 'spc',
+    conversionId: 'AW-18310459317/Lw7BCPPer9IcELXfjZtE',
     pageTitle: 'Posa SPC a Roma',
     metaDescription:
       "Posa parquet SPC a click a roma senza colla. Pavimento vinilico 100% impermeabile, stabile e silenzioso anche su piastrelle esistenti. Sopralluogo e preventivo gratuiti.",
@@ -423,6 +427,7 @@ export const servicesData = {
     navLabel: 'Posa laminato',
     slug: 'posa-pavimento-laminato-roma',
     pricingId: 'laminato',
+    conversionId: 'AW-18310459317/jiTKCL7ExdIcELXfjZtE',
     pageTitle: 'Posa Pavimento Laminato a roma | Installazione rapida e pulita',
     metaDescription:
       'Posa parquet laminato a roma su materassino, tagli a misura e rifiniture sartoriali. Preventivo rapido online.',
@@ -518,6 +523,7 @@ export const servicesData = {
     navLabel: 'Posa battiscopa',
     slug: 'posa-battiscopa-roma',
     pricingId: 'battiscopa',
+    conversionId: null,
     pageTitle: 'Posa Battiscopa a roma | Tagli e finiture pulite',
     metaDescription:
       'Posa professionale battiscopa a roma: rilievo, taglio a 45°, incollaggio e sigillatura. Sopralluogo e preventivo gratuiti online',

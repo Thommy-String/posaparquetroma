@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
+import { gtagReportConversion } from '../utils/analytics';
 
 function LazyVideo({ src, className }) {
   const containerRef = useRef(null);
@@ -53,7 +54,7 @@ const parseFeature = (feature) => {
   return { label: parts[0].trim(), value: parts.slice(1).join(':').trim() };
 };
 
-export function PricingCard({ service, onShowProcessClick }) {
+export function PricingCard({ service, onShowProcessClick, conversionId }) {
   // 1. Protezione iniziale: se non arrivano dati, non renderizzare nulla
   if (!service) return null;
 
@@ -184,12 +185,12 @@ export function PricingCard({ service, onShowProcessClick }) {
            </div>
 
            {/* Bottone CTA */}
-           <a 
-             href={`tel:${PHONE_NUMBER}`} 
+            <button 
              onClick={() => {
-                if (typeof window.gtag_report_conversion === 'function') {
-                   window.gtag_report_conversion();
-                }
+                gtagReportConversion({
+                  sendTo: conversionId,
+                  redirectUrl: `tel:${PHONE_NUMBER}`,
+                });
              }}
              className="group relative flex items-center justify-center w-full bg-white border-[2.5px] border-slate-900 px-4 py-3.5 rounded-xl text-slate-900 font-bold uppercase tracking-tighter transition-all duration-200 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:bg-gray-50 text-sm"
            >
@@ -201,7 +202,7 @@ export function PricingCard({ service, onShowProcessClick }) {
                 </div>
                 <span>Chiama per un preventivo</span>
              </div>
-           </a>
+            </button>
         </div>
       </div>
     </div>

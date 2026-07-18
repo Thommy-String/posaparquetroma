@@ -57,7 +57,7 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       
-      <Header></Header>
+      <Header conversionId={null}></Header>
       
       <main className="flex-grow">
         <Outlet />
@@ -67,7 +67,7 @@ function App() {
      
       {showDeferredChrome && (
         <Suspense fallback={null}>
-          <StickyGlassFooter />
+          <StickyGlassFooter conversionId={null} />
         </Suspense>
       )}
       

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { COMPANY_NAME, PHONE_NUMBER } from '../utils/constants';
+import { gtagReportConversion } from '../utils/analytics';
 import { serviceNavLinks } from '../utils/serviceNavLinks';
 import logoImage from '../assets/logo/logo-96-white-bands.webp';
 
@@ -11,7 +12,7 @@ const serviceLinks = serviceNavLinks
     label: s.navLabel,
   }));
 
-function Footer() {
+function Footer({ conversionId }) {
   return (
     <footer
       id="contatti"
@@ -68,17 +69,17 @@ function Footer() {
           </div>
 
           <div className="flex flex-col items-center gap-3 sm:items-end">
-            <a
-              href={`tel:${PHONE_NUMBER}`}
+            <button
               onClick={() => {
-                if (typeof window.gtag_report_conversion === 'function') {
-                  window.gtag_report_conversion();
-                }
+                gtagReportConversion({
+                  sendTo: conversionId,
+                  redirectUrl: `tel:${PHONE_NUMBER}`,
+                });
               }}
               className="rounded-full border border-blue-100 bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-500/20 transition hover:bg-blue-700"
             >
               {PHONE_NUMBER}
-            </a>
+            </button>
             <p className="text-xs text-gray-600">
               Disponibili 7/7 dalle 7:00 alle 20:00
             </p>

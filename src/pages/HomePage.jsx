@@ -202,7 +202,7 @@ function HomePage() {
           <ServiceFAQ service={{ slug: 'home-general' }} />
 
           {/* Below-fold sections */}
-          <PricingSection />
+          <PricingSection conversionId={null} />
 
           <ValuePropsSection />
 

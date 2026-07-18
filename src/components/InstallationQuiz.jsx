@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
 import { quizDatabase } from '../utils/quizData';
+import { gtagReportConversion } from '../utils/analytics';
 
 // --- IMPORTA TUTTE LE ICONE NECESSARIE ---
 import {
@@ -65,7 +66,7 @@ const POSA_PRICES = {
     laminato: 20, battiscopa_low: 10, battiscopa_high: 12,
   },
   variables: {
-    primer_su_vecchio_mq: 5, rimozione_e_smaltimento_mq: 12,
+    primer_su_vecchio_mq: 6, rimozione_e_smaltimento_mq: 12,
     spostamento_mobili_piccoli: 50, spostamento_mobili_grandi: 250,
     colla_al_mq: 7,
     rimozione_battiscopa_ml: 3.50,
@@ -165,12 +166,12 @@ const SERVICE_PAGE_CONFIG = {
     categories: null, // Mostra come griglia singola
   },
   'prefinito-flottante': {
-    step1Title: 'Posa flottante selezionata',
+    step1Title: 'Clicca per iniziare',
     allowedTypes: ['prefinito_flottante'],
     categories: null,
   },
   'prefinito-spina': {
-    step1Title: 'Posa a spina selezionata',
+    step1Title: 'Clicca per iniziare',
     allowedTypes: ['prefinito_spina'],
     categories: null,
   },
@@ -180,7 +181,7 @@ const SERVICE_PAGE_CONFIG = {
     categories: null,
   },
   'laminato': {
-    step1Title: 'Posa laminato selezionata',
+    step1Title: 'Clicca per iniziare',
     allowedTypes: ['laminato'],
     categories: null,
   },
@@ -222,6 +223,39 @@ const callButton = {
   border: "border-slate-900",
   textColor: "text-slate-900",
   shadow: "shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
+};
+
+const CALCULATION_STEPS = [
+  { title: 'Analisi dati', icon: Search },
+  { title: 'Calcolo costi', icon: Calculator },
+  { title: 'Riepilogo finale', icon: Check },
+];
+
+const hexToRgb = (hex) => {
+  const sanitized = hex.replace('#', '');
+  const bigint = parseInt(sanitized, 16);
+  return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+};
+
+const rgbToHex = (r, g, b) =>
+  `#${[r, g, b]
+    .map((v) => v.toString(16).padStart(2, '0'))
+    .join('')}`;
+
+const mixColor = (from, to, t) => {
+  const [r1, g1, b1] = hexToRgb(from);
+  const [r2, g2, b2] = hexToRgb(to);
+  const r = Math.round(r1 + (r2 - r1) * t);
+  const g = Math.round(g1 + (g2 - g1) * t);
+  const b = Math.round(b1 + (b2 - b1) * t);
+  return rgbToHex(r, g, b);
+};
+
+const getProgressColor = (progress) => {
+  if (progress < 40) {
+    return mixColor('#facc15', '#10b981', progress / 40);
+  }
+  return mixColor('#10b981', '#047857', (progress - 40) / 60);
 };
 
 // Componente helper per le card-bottone in stile neo-brutalist
@@ -325,7 +359,7 @@ function QuizOption({ label, description, name, value, selectedValue, onChange, 
 }
 
 // Il componente principale del Quiz
-function InstallationQuiz({ service }) {
+function InstallationQuiz({ service, conversionId }) {
   // Configurazione per pagina di servizio (se presente)
   const pricingId = service?.pricingId;
   const pageConfig = pricingId ? SERVICE_PAGE_CONFIG[pricingId] : null;
@@ -336,9 +370,14 @@ function InstallationQuiz({ service }) {
   const [unitValue, setUnitValue] = useState(50);
   const unitTimerRef = useRef(null);
   const [showResult, setShowResult] = useState(false);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [calcProgress, setCalcProgress] = useState(0);
+  const [calcStepIndex, setCalcStepIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const formTopRef = useRef(null);
   const estimateRef = useRef(null);
+  const calcIntervalRef = useRef(null);
+  const calcTimeoutRef = useRef(null);
   const [answers, setAnswers] = useState({
     serviceType: '',
     subfloor: 'pavimento_esistente',
@@ -352,13 +391,28 @@ function InstallationQuiz({ service }) {
     facchinaggio: 'no',
   });
 
+  const stopCalculationAnimation = () => {
+    if (calcIntervalRef.current) {
+      clearInterval(calcIntervalRef.current);
+      calcIntervalRef.current = null;
+    }
+    if (calcTimeoutRef.current) {
+      clearTimeout(calcTimeoutRef.current);
+      calcTimeoutRef.current = null;
+    }
+  };
+
   const adjustUnitValue = (amount) => {
+    stopCalculationAnimation();
     setUnitValue(prev => {
       const next = prev + amount;
       if (next < 10) return 10;
       if (next > 1000) return 1000;
       return next;
     });
+    setIsCalculating(false);
+    setCalcProgress(0);
+    setCalcStepIndex(0);
     setShowResult(false);
   };
 
@@ -380,7 +434,10 @@ function InstallationQuiz({ service }) {
   };
 
   useEffect(() => {
-    return () => stopAdjustingUnit();
+    return () => {
+      stopAdjustingUnit();
+      stopCalculationAnimation();
+    };
   }, []);
 
   const handleChange = (nameOrEvent, directValue) => {
@@ -397,22 +454,86 @@ function InstallationQuiz({ service }) {
     if (name === 'serviceType' && value) {
       setIsExpanded(true);
     }
+    stopCalculationAnimation();
+    setIsCalculating(false);
+    setCalcProgress(0);
+    setCalcStepIndex(0);
     setShowResult(false);
   };
 
   const handleUnitChange = (e) => {
+    stopCalculationAnimation();
     setUnitValue(Number(e.target.value));
+    setIsCalculating(false);
+    setCalcProgress(0);
+    setCalcStepIndex(0);
     setShowResult(false);
   };
 
   const handleCalculate = () => {
-    setShowResult(true);
-    // Piccolo delay per permettere il render/animazione prima dello scroll
-    setTimeout(() => {
-        if(estimateRef.current) {
-            estimateRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!canShowDetails) return;
+
+    stopCalculationAnimation();
+    setShowResult(false);
+    setIsCalculating(true);
+    setCalcProgress(0);
+    setCalcStepIndex(0);
+
+    const totalDurationMs = 4000;
+    const tickMs = 50;
+    const stepsCount = CALCULATION_STEPS.length;
+    const startTime = Date.now();
+    const stagedProgress = [
+      { at: 0, value: 2, step: 0 },
+      { at: 480, value: 16, step: 0 },
+      { at: 980, value: 18, step: 0 },
+      { at: 1480, value: 42, step: 1 },
+      { at: 2120, value: 45, step: 1 },
+      { at: 2760, value: 74, step: 2 },
+      { at: 3340, value: 78, step: 2 },
+      { at: 3760, value: 92, step: 2 },
+      { at: 4000, value: 100, step: 2 },
+    ];
+
+    const completeCalculation = () => {
+      stopCalculationAnimation();
+      setCalcProgress(100);
+      setCalcStepIndex(stepsCount - 1);
+      setIsCalculating(false);
+      setShowResult(true);
+    };
+
+    calcIntervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+
+      if (elapsed >= totalDurationMs) {
+        completeCalculation();
+        return;
+      }
+
+      let currentStage = stagedProgress[0];
+      let nextStage = stagedProgress[stagedProgress.length - 1];
+
+      for (let i = 0; i < stagedProgress.length - 1; i++) {
+        if (elapsed >= stagedProgress[i].at && elapsed < stagedProgress[i + 1].at) {
+          currentStage = stagedProgress[i];
+          nextStage = stagedProgress[i + 1];
+          break;
         }
-    }, 100);
+      }
+
+      const span = Math.max(1, nextStage.at - currentStage.at);
+      const t = (elapsed - currentStage.at) / span;
+      const easedT = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      const progress = Math.round(currentStage.value + (nextStage.value - currentStage.value) * easedT);
+
+      setCalcProgress(progress);
+      setCalcStepIndex(Math.min(stepsCount - 1, currentStage.step));
+    }, tickMs);
+
+    calcTimeoutRef.current = setTimeout(() => {
+      completeCalculation();
+    }, totalDurationMs + 120);
   };
 
   // --- LOGICA DINAMICA (Invariata) ---
@@ -729,11 +850,6 @@ function InstallationQuiz({ service }) {
 
   // Funzione per SALVARE il preventivo (lo invia a sé stessi o apre WA)
   const handleWhatsAppClick = () => {
-    // 1. Traccia l'intenzione (opzionale)
-    if (typeof window.gtag_report_conversion === 'function') {
-      window.gtag_report_conversion();
-    }
-
     if (!estimate) return;
 
     // 1. Prepara la lista
@@ -759,8 +875,10 @@ function InstallationQuiz({ service }) {
     const message = lines.join("\n");
     const encodedMessage = encodeURIComponent(message);
 
-    // Apre direttamente la chat con l'azienda
-    window.location.href = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
+    gtagReportConversion({
+      sendTo: conversionId,
+      redirectUrl: `https://wa.me/${cleanPhone}?text=${encodedMessage}`,
+    });
   };
 
   // Funzione per INVIARE il preventivo ALL'AZIENDA (Alias di handleWhatsAppClick per compatibilità o logica futura)
@@ -1304,25 +1422,60 @@ function InstallationQuiz({ service }) {
                   {/* BOTTONE CALCOLA */}
                   {!showResult && (
                     <div className="pt-8 mt-6 border-t-2 border-slate-100 flex flex-col items-center animate-in fade-in slide-in-from-bottom-4">
-                      
-                      <button
-                        type="button"
-                        onClick={handleCalculate}
-                        disabled={!canShowDetails}
-                        className={`group relative flex items-center justify-center gap-3 bg-white border-[2.5px] border-slate-900 px-10 py-4 rounded-xl text-slate-900 font-black uppercase tracking-tighter transition-all duration-200 ${canShowDetails
-                          ? 'shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:translate-x-1 hover:translate-y-1 active:bg-slate-50'
-                          : 'opacity-40 cursor-not-allowed border-slate-300 text-slate-400 shadow-none'
-                          }`}
-                      >
-                         <div className={`p-1.5 rounded-lg transition-colors ${canShowDetails ? 'bg-slate-100 group-hover:bg-slate-200' : 'bg-slate-100'}`}>
-                            <Calculator className="w-5 h-5 text-slate-900" strokeWidth={2.5} />
-                         </div>
-                        <span className="text-lg">Mostra la Stima</span>
-                      </button>
-                      
-                       <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-3">
-                         Risultato immediato — Senza impegno
-                       </p>
+                      {!isCalculating ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={handleCalculate}
+                            disabled={!canShowDetails}
+                            className={`group relative flex items-center justify-center gap-3 bg-white border-[2.5px] border-slate-900 px-10 py-4 rounded-xl text-slate-900 font-black uppercase tracking-tighter transition-all duration-200 ${canShowDetails
+                              ? 'shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:translate-x-1 hover:translate-y-1 active:bg-slate-50'
+                              : 'opacity-40 cursor-not-allowed border-slate-300 text-slate-400 shadow-none'
+                              }`}
+                          >
+                             <div className={`p-1.5 rounded-lg transition-colors ${canShowDetails ? 'bg-slate-100 group-hover:bg-slate-200' : 'bg-slate-100'}`}>
+                                <Calculator className="w-5 h-5 text-slate-900" strokeWidth={2.5} />
+                             </div>
+                            <span className="text-lg">Mostra la Stima</span>
+                          </button>
+
+                           <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-3">
+                             Risultato immediato — Senza impegno
+                           </p>
+                        </>
+                      ) : (
+                        <div className="w-full max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-500">
+                          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                            <div className="p-5 md:p-6">
+                              {(() => {
+                                const activeStep = CALCULATION_STEPS[Math.min(calcStepIndex, CALCULATION_STEPS.length - 1)];
+                                const ActiveIcon = activeStep.icon;
+
+                                return (
+                                  <>
+                                    <div className="mb-3 flex items-center justify-between">
+                                      <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">
+                                        <ActiveIcon className="w-3.5 h-3.5 text-slate-600" strokeWidth={2.5} />
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 text-center">
+                                          {activeStep.title}
+                                        </p>
+                                      </div>
+                                      <span className="text-sm md:text-base font-black text-slate-900 tabular-nums">{calcProgress}%</span>
+                                    </div>
+
+                                    <div className="w-full h-2 rounded-full bg-slate-100 border border-slate-200 overflow-hidden">
+                                      <div
+                                        className="h-full rounded-full transition-[width,background-color] duration-300 ease-out"
+                                        style={{ width: `${calcProgress}%`, backgroundColor: getProgressColor(calcProgress) }}
+                                      />
+                                    </div>
+                                  </>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1337,186 +1490,143 @@ function InstallationQuiz({ service }) {
               className="mt-14 animate-in fade-in slide-in-from-bottom-8 duration-700"
             >
               {/* ═══ TITOLO SEZIONE RISULTATO ═══ */}
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full mb-4">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="text-xs font-bold text-green-700 uppercase tracking-widest">Stima calcolata</span>
-                </div>
-                <h3 className="text-2xl md:text-4xl font-[800] text-slate-900 tracking-tight">
-                  Ecco il tuo <span className="bg-yellow-100 px-1.5 rounded-sm">preventivo</span>
+              <div className="text-center mb-10">
+                <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                  Il tuo preventivo personalizzato
                 </h3>
-                <div className="flex items-center justify-center gap-3 mt-3">
-                  <span className="text-xs text-slate-400 font-medium">{new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                  <span className="text-slate-200">•</span>
-                  <button
-                    onClick={handleEdit}
-                    className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors"
-                  >
-                    <Settings2 size={12} /> Modifica dati
-                  </button>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <span className="text-xs text-slate-400 font-bold uppercase tracking-widest">Generato il {new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                 </div>
               </div>
 
               {/* ═══ CORPO PREVENTIVO ═══ */}
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
-                <div className="p-6 md:p-10">
-                    
-                  {/* Voce base */}
-                  <div className="mb-5">
-                    <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Servizio principale</p>
-                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
-                       <div className="flex items-center gap-3">
-                          <div className="w-5 h-5 flex items-center justify-center rounded-md bg-slate-300 text-white text-[10px] font-black">1</div>
-                          <div>
-                             <p className="font-bold text-slate-900 text-base leading-tight">{estimate.baseItem.label}</p>
-                             {!estimate.isMinTotalApplied && !estimate.isMinimumApplied && (
-                               <span className="text-xs text-slate-400 font-mono font-medium">{estimate.baseItem.displayQuantity}</span>
-                             )}
-                             {(estimate.isMinimumApplied || estimate.isMinTotalApplied) && (
-                               <span className="text-xs text-amber-600 font-bold">Prezzo a corpo</span>
-                             )}
-                          </div>
-                       </div>
-                       <div className="text-right pl-4">
-                         <p className="font-mono font-extrabold text-lg text-slate-900">{formatCurrency(estimate.baseItem.total)}</p>
-                         {!estimate.isMinTotalApplied && !estimate.isMinimumApplied && (
-                           <span className="text-xs text-slate-400 font-medium">{formatCurrency(estimate.baseItem.unitPrice)}/{estimate.baseItem.unitDisplay}</span>
-                         )}
-                       </div>
-                    </div>
-
-                    {/* Banner tariffa minima mq nel risultato */}
-                    {estimate.isMinimumApplied && (
-                      <div className="mt-3 flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
-                        <div className="p-1.5 bg-amber-100 rounded-lg flex-shrink-0 mt-0.5">
-                          <span className="text-base leading-none">💡</span>
-                        </div>
-                        <div>
-                          <p className="text-[13px] font-black text-amber-900">Prezzo a corpo applicato</p>
-                          <p className="text-[12px] text-amber-700 leading-relaxed mt-0.5">
-                            Per superfici ridotte sotto i 40 mq, applichiamo un <strong>prezzo a corpo fisso</strong> anziché al metro quadrato. Questo perché i costi di attrezzatura, spostamento e preparazione rimangono gli stessi anche per superfici piccole. Vogliamo garantirti qualità e precisione e queste hanno sempre un costo minimo di progetto.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Banner prezzo minimo a corpo battiscopa */}
-                    {estimate.isMinTotalApplied && (
-                      <div className="mt-3 flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
-                        <div className="p-1.5 bg-amber-100 rounded-lg flex-shrink-0 mt-0.5">
-                          <span className="text-base leading-none">💡</span>
-                        </div>
-                        <div>
-                          <p className="text-[13px] font-black text-amber-900">Prezzo a corpo applicato</p>
-                          <p className="text-[12px] text-amber-700 leading-relaxed mt-0.5">
-                            Per questo intervento applichiamo un <strong>prezzo a corpo di €{estimate.minTotal?.toLocaleString('it-IT')}</strong>. La posa del battiscopa richiede sopralluogo, attrezzatura, tagli su misura e sigillatura: i costi fissi di trasferta e preparazione si applicano indipendentemente dalla lunghezza — il minimo garantisce un lavoro fatto come si deve.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Voci variabili */}
-                  {estimate.variableItems.length > 0 && (
-                    <div className="mb-5">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Servizi aggiuntivi</p>
-                      <div className="space-y-2">
-                        {estimate.variableItems.map((item, index) => {
-                          const unitRate = item.isMinTotalApplied ? null : formatUnitRate(item.unitPrice, item.unitDisplay, item.unitType);
-                          return (
-                            <div key={`${item.label}-${index}`} className="flex items-center justify-between px-4 py-3 rounded-xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50/50 transition-all">
-                               <div className="flex items-center gap-3">
-                                  <div className="w-5 h-5 flex items-center justify-center rounded-md bg-slate-200 text-slate-500 text-[10px] font-black">{index + 2}</div>
-                                  <div>
-                                     <p className="font-semibold text-slate-800 text-base leading-tight">{item.label}</p>
-                                     <span className={`text-xs font-mono font-medium ${item.isMinTotalApplied ? 'text-amber-600 font-bold' : 'text-slate-400'}`}>{item.displayQuantity}</span>
-                                  </div>
-                               </div>
-                               <div className="text-right pl-4">
-                                 <p className="font-mono font-bold text-base text-slate-900">{formatCurrency(item.total)}</p>
-                                 {unitRate && <span className="text-xs text-slate-400 font-medium">{unitRate}</span>}
-                               </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── Totale + Tempi ── */}
-                  <div className="mt-8 pt-6 border-t-2 border-dashed border-slate-200">
-                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        
-                        {/* Tempo stimato */}
-                        <div className="flex items-center gap-3 bg-slate-50 px-5 py-4 rounded-xl border border-slate-200">
-                           <div className="p-2.5 bg-white rounded-lg border border-slate-200">
-                              <Timer className="w-5 h-5 text-slate-500" />
-                           </div>
-                           <div>
-                              <p className="text-xs uppercase font-black text-slate-400 tracking-wider">Tempi stimati</p>
-                              <p className="font-extrabold text-xl text-slate-900 leading-none mt-0.5">{estimate.timeEstimate?.label}</p>
-                           </div>
-                        </div>
-
-                        {/* Totale */}
-                        <div className="flex items-center gap-3 bg-slate-900 px-5 py-4 rounded-xl">
-                           <div className="flex-1">
-                              <p className="text-xs uppercase font-black text-slate-400 tracking-wider">Totale stimato</p>
-                              <p className="text-2xl md:text-3xl font-black text-white tracking-tighter leading-none mt-0.5">{formatCurrency(estimate.total)}</p>
-                              <p className="text-xs text-slate-500 font-medium mt-1">IVA esclusa • Solo manodopera</p>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ═══ CTA SECTION ═══ */}
-              <div className="mt-8 flex flex-col items-center">
-                
-                <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-2xl">
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
                   
-                  {/* CTA Salva Preventivo su WhatsApp — Hero-style neo-brutalist */}
-                  <button
-                    onClick={handleWhatsAppClick}
-                    className="group relative inline-flex items-center justify-center gap-4 bg-white border-[2.5px] border-slate-900 px-8 py-4 rounded-xl text-slate-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:translate-x-1 hover:translate-y-1 active:bg-gray-50 w-full sm:flex-1"
-                  >
-                    <div className="p-2 bg-green-50 rounded-lg group-hover:bg-green-100 transition-colors">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="#25D366"/>
-                        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.257-.154-2.874.854.854-2.874-.154-.257A8 8 0 1112 20z" fill="#25D366"/>
-                      </svg>
-                    </div>
-                    <div className="flex flex-col items-start leading-none">
-                      <span className="text-xs text-green-600 font-bold mb-1 tracking-widest uppercase">Salva il preventivo</span>
-                      <span className="text-lg md:text-xl italic">Vai su WhatsApp</span>
-                    </div>
-                  </button>
+                  {/* Riepilogo Voci */}
+                  <div className="p-6 md:p-8 space-y-6">
+                    <div>
+                      <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Voci di capitolato</h4>
+                      
+                      {/* Voce Principale */}
+                      <div className="flex items-center justify-between py-4 border-b border-slate-100">
+                        <div className="flex flex-col">
+                          <span className="text-slate-900 font-bold text-lg leading-tight">{estimate.baseItem.label}</span>
+                          <span className="text-slate-500 text-left text-sm mt-1">{estimate.baseItem.displayQuantity}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-slate-900 font-black text-xl">{formatCurrency(estimate.baseItem.total)}</span>
+                        </div>
+                      </div>
 
-                  {/* CTA Chiama — Hero-style neo-brutalist */}
-                  <a
-                    href={`tel:${PHONE_NUMBER}`}
-                    onClick={() => {
-                      if (typeof window.gtag_report_conversion === 'function') {
-                        window.gtag_report_conversion();
-                      }
-                    }}
-                    className="group relative inline-flex items-center justify-center gap-4 bg-white border-[2.5px] border-slate-900 px-8 py-4 rounded-xl text-slate-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:translate-x-1 hover:translate-y-1 active:bg-gray-50 w-full sm:flex-1"
-                  >
-                    <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
-                      <Phone className="w-5 h-5 text-blue-600" strokeWidth={2.5} />
+                      {/* Voci Extra */}
+                      {estimate.variableItems.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between py-4 border-b border-slate-100 last:border-0">
+                          <div className="flex flex-col">
+                            <span className="text-slate-700 font-semibold text-base leading-tight">{item.label}</span>
+                            <span className="text-slate-400 text-left text-xs mt-0.5">{item.displayQuantity}</span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-slate-900 font-bold text-lg">{formatCurrency(item.total)}</span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex flex-col items-start leading-none">
-                      <span className="text-xs text-blue-600 font-bold mb-1 tracking-widest uppercase">+39 334 222 1212</span>
-                      <span className="text-lg md:text-xl italic">Chiamaci</span>
+
+                    {/* Nota Tecnica Minimi (solo se applicati) */}
+                    {(estimate.isMinimumApplied || estimate.isMinTotalApplied) && (
+                      <div className="p-4 bg-slate-50 rounded-2xl">
+                        <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                          Nota: Per piccoli interventi sotto i minimi d'opera (40mq o piccoli ml di battiscopa), viene applicata una tariffa a corpo per coprire i costi fissi di logistica e preparazione cantiere.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer con Totale e Tempi e CTA Integrate - Look Professionale */}
+                  <div className="bg-slate-50 p-6 md:p-8 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex flex-col items-center md:items-start">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Durata stimata lavori</span>
+                      <div className="flex items-center gap-2 text-slate-900">
+                        <Timer size={14} />
+                        <span className="font-extrabold text-lg">{estimate.timeEstimate?.label}</span>
+                      </div>
                     </div>
-                  </a>
+
+                    <div className="flex flex-col items-center md:items-end">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Totale Stimato</span>
+                      <div className="flex flex-col items-center md:items-end">
+                        <span className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">
+                          {formatCurrency(estimate.total)}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase mt-1">Servizio di posa, IVA esclusa</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pulsanti Azione Integrati - Stile Neo-Brutalist Coordinato */}
+                  <div className="bg-white p-6 md:p-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    {/* CTA WhatsApp */}
+                    <button
+                      onClick={handleWhatsAppClick}
+                      className="group relative inline-flex items-center justify-center gap-4 bg-white border-[2.5px] border-slate-900 px-8 py-4 rounded-xl text-slate-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(37,211,102,1)] hover:shadow-[2px_2px_0px_0px_rgba(37,211,102,1)] hover:translate-x-1 hover:translate-y-1 active:bg-gray-50 w-full sm:flex-1"
+                    >
+                      <div className="p-2 bg-green-50 rounded-lg group-hover:bg-green-100 transition-colors">
+                        <MessageCircle className="w-5 h-5 text-[#25D366]" strokeWidth={2.5} />
+                      </div>
+                      <div className="flex flex-col items-start leading-none">
+                        <span className="text-[10px] text-green-600 font-bold mb-1 tracking-widest uppercase text-left">Salva l'offerta</span>
+                        <span className="text-lg md:text-xl italic">Vai su WhatsApp</span>
+                      </div>
+                    </button>
+
+                    {/* CTA Chiama */}
+                    <button
+                      onClick={() => {
+                        gtagReportConversion({
+                          sendTo: conversionId,
+                          redirectUrl: `tel:${PHONE_NUMBER}`,
+                        });
+                      }}
+                      className="group relative inline-flex items-center justify-center gap-4 bg-white border-[2.5px] border-slate-900 px-8 py-4 rounded-xl text-slate-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(59,130,246,1)] hover:shadow-[2px_2px_0px_0px_rgba(59,130,246,1)] hover:translate-x-1 hover:translate-y-1 active:bg-gray-50 w-full sm:flex-1"
+                    >
+                      <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
+                        <Phone className="w-5 h-5 text-blue-600" strokeWidth={2.5} />
+                      </div>
+                      <div className="flex flex-col items-start leading-none">
+                        <span className="text-[10px] text-blue-600 font-bold mb-1 tracking-widest uppercase text-left">Domande?</span>
+                        <span className="text-lg md:text-xl italic">Chiamaci</span>
+                      </div>
+                    </button>
+                  </div>
                 </div>
 
-                <p className="text-xs text-slate-500 font-medium text-center mt-4 leading-relaxed max-w-md">
-                  Salva il preventivo su WhatsApp per non perderlo.<br/>Nessun obbligo d'acquisto — preventivo gratuito.
-                </p>
+                {/* Link Modifica Dati più discreto */}
+                <div className="mt-6 flex justify-center">
+                  <button
+                    onClick={handleEdit}
+                    className="inline-flex items-center gap-1.5 text-xs font-black text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest"
+                  >
+                    <Settings2 size={12} strokeWidth={2.5} />
+                    Modifica i dati inseriti
+                  </button>
+                </div>
               </div>
+
+                {/* Note finali */}
+                <div className="mt-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="text-xs text-slate-400 font-medium text-center md:text-left leading-relaxed">
+                      * Il preventivo è una stima basata sui dati inseriti. La conferma avverrà dopo il sopralluogo tecnico gratuito a Roma.
+                    </div>
+                    <div className="flex items-center justify-center md:justify-end gap-1.5 opacity-50">
+                      <Lock size={12} className="text-slate-400" />
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Protocollo Prezzi 2026</span>
+                    </div>
+                  </div>
+                </div>
+
+              
 
               {/* ═══ SOCIAL PROOF MINI ═══ */}
               {!isServicePage && (

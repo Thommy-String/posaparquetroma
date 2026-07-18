@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShieldOff, Sofa, BadgeEuro } from 'lucide-react';
+import { gtagReportConversion } from '../utils/analytics';
 
 // Sezione Pain → Dream per SPC e Laminato — Copy Premium/Autorevole
 const PAIN_POINTS = {
@@ -70,7 +71,7 @@ const ACCENT_MAP = {
   emerald: { gradient: 'from-emerald-400 to-emerald-500', border: 'border-emerald-400/40', borderSolid: 'border-emerald-400/70', iconBg: 'bg-emerald-400/10', iconText: 'text-emerald-400', tagBg: 'bg-emerald-400/10', tagText: 'text-emerald-300', statBg: 'bg-emerald-400/10', statText: 'text-emerald-300', numText: 'text-emerald-400/20', glowBg: 'bg-emerald-400/5' },
 };
 
-const ServicePainPoints = ({ service }) => {
+const ServicePainPoints = ({ service, conversionId }) => {
   if (!service || !service.pricingId) return null;
 
   // Get the pain points for this service's pricingId
@@ -159,14 +160,12 @@ const ServicePainPoints = ({ service }) => {
 
         {/* CTA — bottone bianco su dark */}
         <div className="flex justify-center mb-3 relative">
-          <a
-            href="https://wa.me/393342221212"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
             onClick={() => {
-              if (typeof window.gtag_report_conversion === 'function') {
-                window.gtag_report_conversion();
-              }
+              gtagReportConversion({
+                sendTo: conversionId,
+                redirectUrl: `https://wa.me/393342221212`,
+              });
             }}
             className="
               group relative inline-flex items-center gap-4
@@ -190,7 +189,7 @@ const ServicePainPoints = ({ service }) => {
               <span className="text-[10px] text-green-600 font-bold mb-1 tracking-widest uppercase">Rispondiamo in 4 min</span>
               <span className="text-xl md:text-2xl italic">Scrivici su WhatsApp</span>
             </div>
-          </a>
+          </button>
         </div>
         {/* Micro rassicurazione */}
         <div className="flex items-center justify-center gap-3 mt-2">

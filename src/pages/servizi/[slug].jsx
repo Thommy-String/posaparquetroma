@@ -39,7 +39,6 @@ function ServicePage() {
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
       </Helmet>
-
       <ServicePageLayout service={service} />
     </>
   );

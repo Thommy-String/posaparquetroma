@@ -303,7 +303,7 @@ export default function Temparquettisti() {
                 cost: '✨',
                 damage: '175',
                 description:
-                  'Allinea le tavole con precisione ipnotica. Effetto: quando entri, dici solo “wow”.',
+                  'Allinea le tavole con precisione ipnotica. Effetto: Il risultato è troppo bello, i vicini muoiono di invidia.',
               }}
               moveTheme="bg-violet-100/70 border-violet-300"
               backAccent="bg-[linear-gradient(160deg,_#f5f3ff_0%,_#e9d5ff_40%,_#f9a8d4_100%)]"

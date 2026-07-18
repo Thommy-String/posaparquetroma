@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
+import { gtagReportConversion } from '../utils/analytics';
 
 const hasCookieConsentChoice = () => document.cookie.indexOf('gdpr_consent=') !== -1;
 
 const StickyGlassFooter = ({ 
     subtitle = "Nessun obbligo di acquisto.",
+    conversionId,
 }) => {
     
     // Nascondi il footer finché il cookie banner è visibile
@@ -25,33 +27,19 @@ const StickyGlassFooter = ({
     const cleanPhone = PHONE_NUMBER ? PHONE_NUMBER.replace(/\s+/g, '') : "393342221212";
 
     const handleWhatsApp = () => {
-        // Traccia la conversione
-        if (typeof window.gtag_report_conversion === 'function') {
-            window.gtag_report_conversion();
-        }
-        if (typeof window.gtag !== 'undefined') {
-            window.gtag('event', 'conversion', {
-                'send_to': 'AW-XXXXXXXXX/YYYYYYYYYYYY',
-            });
-        }
-
         const message = "Ciao, vorrei un preventivo per posa parquet...";
         const encodedMessage = encodeURIComponent(message);
-        window.location.href = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
+        gtagReportConversion({
+            sendTo: conversionId,
+            redirectUrl: `https://wa.me/${cleanPhone}?text=${encodedMessage}`,
+        });
     };
 
     const handleCall = () => {
-        // Traccia la conversione
-        if (typeof window.gtag_report_conversion === 'function') {
-            window.gtag_report_conversion();
-        }
-        if (typeof window.gtag !== 'undefined') {
-            window.gtag('event', 'conversion', {
-                'send_to': 'AW-XXXXXXXXX/YYYYYYYYYYYY',
-            });
-        }
-
-        window.location.href = `tel:${cleanPhone}`;
+        gtagReportConversion({
+            sendTo: conversionId,
+            redirectUrl: `tel:${cleanPhone}`,
+        });
     };
 
     return (

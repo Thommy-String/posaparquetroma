@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Package, Layers, MessageCircle, Minus, Plus, Check, Trash2, Sofa, Lamp, DoorOpenIcon, DoorClosed, Send, SaveAllIcon, SaveIcon, LucideSave } from 'lucide-react';
+import { gtagReportConversion } from '../utils/analytics';
 
 // Definiamo gli Extra disponibili globalmente
 const GLOBAL_EXTRAS = [
@@ -53,7 +54,7 @@ const GLOBAL_EXTRAS = [
     },
 ];
 
-function ServiceScientificCalc({ serviceData }) {
+function ServiceScientificCalc({ serviceData, conversionId }) {
     if (!serviceData) return null;
 
     // 1. Configurazioni
@@ -148,13 +149,10 @@ function ServiceScientificCalc({ serviceData }) {
                      `💰 *TOTALE STIMATO: €${totalCost}*\n` +
                      `⏱ Tempo previsto: ~${estimatedDays} gg lavorativi`;
         
-        // 1. TRACKING GOOGLE ADS (Per entrambi i pulsanti)
-        if (typeof window.gtag_report_conversion === 'function') {
-            window.gtag_report_conversion();
-        }
-        
-        // 2. APERTURA WHATSAPP
-        window.open(`https://wa.me/393342221212?text=${encodeURIComponent(text)}`, '_self');
+        gtagReportConversion({
+          sendTo: conversionId,
+          redirectUrl: `https://wa.me/393342221212?text=${encodeURIComponent(text)}`,
+        });
     };
 
     return (
