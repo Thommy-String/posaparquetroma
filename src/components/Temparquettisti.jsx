@@ -98,7 +98,7 @@ const GameCard = ({
     <div className={`absolute -inset-1.5 md:-inset-2.5 rounded-[16px] md:rounded-[28px] blur-md -z-10 ${auraAnimationClass}`}></div>
 
     <div
-      className={`relative h-full min-h-[620px] md:min-h-[700px] w-full transition-transform duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
+      className={`relative h-full min-h-[760px] md:min-h-[860px] w-full transition-transform duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
     >
       <div className={`group absolute inset-0 rounded-[12px] md:rounded-[24px] border-[3px] md:border-[5px] border-[#27272a] ${cardBg} overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.01] cursor-pointer h-full shadow-[0_14px_32px_rgba(15,23,42,0.18)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]`}>
         {/* Effetto Shine Olografico (visibile al passaggio del mouse/touch) */}
@@ -120,7 +120,7 @@ const GameCard = ({
         </div>
 
         {/* Frame Immagine */}
-        <div className="relative h-[170px] md:h-[300px] bg-slate-800 border-[2px] md:border-[4px] border-slate-300 rounded-[4px] md:rounded-[8px] overflow-hidden shadow-[0_10px_24px_rgba(15,23,42,0.18)] mb-2 md:mb-3 flex-shrink-0">
+        <div className="relative h-[320px] md:h-[480px] bg-slate-800 border-[2px] md:border-[4px] border-slate-300 rounded-[4px] md:rounded-[8px] overflow-hidden shadow-[0_10px_24px_rgba(15,23,42,0.18)] mb-2 md:mb-3 flex-shrink-0">
           <img 
             src={imgSrc} 
             alt={name} 
