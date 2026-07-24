@@ -315,7 +315,7 @@ function ServiceHeroHome({ service }) {
                           loading="eager"
                           fetchPriority="high"
                           decoding="async"
-                          className="w-full h-full object-cover filter grayscale-[40%] brightness-90 contrast-110"
+                          className="w-full h-full object-cover"
                         />
                         <div className="absolute bottom-3 left-3 text-[10px] font-black text-white uppercase tracking-wider drop-shadow-md bg-black/40 px-2.5 py-1 rounded"></div>
                       </div>
@@ -361,11 +361,11 @@ function ServiceHeroHome({ service }) {
                     {/* CHECKLIST VANTAGGI - sotto l'immagine */}
                     <div className="bg-white border-t-[3px] border-black px-5 py-4 flex justify-center">
                       <div className="inline-flex flex-col items-start gap-2.5">
-                        {[
+                        {(service.heroChecklist || [
                           'Pronto in 1-2 giorni',
                           'Non paghi nulla prima della posa',
                           'Anche in case con mobili',
-                        ].map((text, i) => (
+                        ]).map((text, i) => (
                           <div key={i} className="flex items-center gap-2">
                             <div className="w-5 h-5 bg-green-500 rounded-md flex items-center justify-center shrink-0">
                               <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">

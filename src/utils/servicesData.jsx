@@ -10,6 +10,8 @@ import posaParquetIncollato from '../assets/images/parquet/posaParquetIncollato.
 import posaParquetFlottante from '../assets/images/parquet/posaParquetFlottante.webp';
 import fotoRivestimentoGradini from "../assets/images/parquet/rivestimentoScaleRovere.webp"
 import povSpinaIta from '../assets/images/primaDopoLavori/povSpinaIta.webp';
+import oniParquettista from '../assets/images/Oni/onisim parquettista eseperto.webp';
+import posaPrefinitoOni from '../assets/images/parquet/posa prefinito oni.webp';
 
 //video — served from public/ to avoid bundling into JS
 const videoPosaPrefinitoIncollato = '/videos/parquet/posaPrefinitoIncollato.mp4';
@@ -35,13 +37,20 @@ export const servicesData = {
       h1: (
         <>
           Il vero <span className="bg-orange-50 text-orange-900 px-2 py-0.5 transform -rotate-1 inline-block rounded-sm">Parquet</span>
-          <br /><span className="text-orange-600">Pronto all&apos;Uso</span> in tempi record.
+          <br /><span className="text-orange-600">Pronto all'Uso</span> in tempi record.
           <br /><span className="text-slate-400 text-[0.4em] md:text-[0.6em] align-middle ml-2 decoration-slice decoration-orange-200 underline font-black">Nobiltà del legno, posa rapida.</span>
         </>
       ),
       subtitle: 'Tutto il calore del vero legno massello, già protetto e rifinito in fabbrica per una posa pulita e un calpestio immediato dopo poche ore.',
       image: heroPrefinito,
     },
+    heroBeforeImage: oniParquettista,
+    heroAfterImage: posaPrefinitoOni,
+    heroChecklist: [
+      'Squadre pronte Subito',
+      'NON PAGHI NULLA PRIMA DELLA POSA',
+      'Garanzia 100% soddisfatti'
+    ],
     overview:
       'Il parquet prefinito nasce per chi desidera il calore del legno con tempi di cantiere rapidi. Con roma Posa Parquet ottieni un sopralluogo tecnico, se necessario la preparazione del sottofondo e la posa professionale con collanti certificati EC1.',
     sections: [
