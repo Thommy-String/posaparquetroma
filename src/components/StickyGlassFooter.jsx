@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
 import { gtagReportConversion } from '../utils/analytics';
+
+const HIDDEN_PATHS = ['/spc-fornitura-posa'];
 
 const hasCookieConsentChoice = () => document.cookie.indexOf('gdpr_consent=') !== -1;
 
 const StickyGlassFooter = ({ 
     subtitle = "Nessun obbligo di acquisto.",
 }) => {
+    const isHiddenPath = useMemo(() => {
+      if (typeof window === 'undefined') return false;
+      return HIDDEN_PATHS.some(p => window.location.pathname.startsWith(p));
+    }, []);
+
+    if (isHiddenPath) return null;
     
     // Nascondi il footer finché il cookie banner è visibile
     const [cookieDismissed, setCookieDismissed] = useState(() => {

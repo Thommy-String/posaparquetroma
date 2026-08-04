@@ -38,7 +38,7 @@ function buildUrl(relativePath) {
 }
 
 // Landing page standalone (fuori da /servizi/) da includere nella sitemap
-const EXTRA_LANDING_DIRS = ['posaparquet'];
+const EXTRA_LANDING_DIRS = ['posaparquet', 'spc-fornitura-posa'];
 
 async function generateSitemap() {
   const urls = [canonicalHost];

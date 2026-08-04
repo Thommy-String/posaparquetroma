@@ -11,6 +11,7 @@ const PosaParquetPage = lazy(() => import('./pages/PosaParquetPage.jsx'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage.jsx'))
 const TitleVariantsSPC = lazy(() => import('./pages/TitleVariantsSPC.jsx'))
 const SPCInfoPage = lazy(() => import('./pages/SPCInfoPage.jsx'))
+const SPCFornituraPosaPage = lazy(() => import('./pages/SPCFornituraPosaPage.jsx'))
 
 // Skeleton di caricamento per le pagine lazy — evita il flash bianco
 const PageSkeleton = () => (
@@ -60,6 +61,7 @@ waitForCriticalCss().finally(() => {
               <Route path="privacy-policy" element={<Suspense fallback={<PageSkeleton />}><PrivacyPolicyPage /></Suspense>} />
               <Route path="title-variants-spc" element={<Suspense fallback={<PageSkeleton />}><TitleVariantsSPC /></Suspense>} />
               <Route path="spcinfo" element={<Suspense fallback={<PageSkeleton />}><SPCInfoPage /></Suspense>} />
+              <Route path="spc-fornitura-posa" element={<Suspense fallback={<PageSkeleton />}><SPCFornituraPosaPage /></Suspense>} />
             </Route>
           </Routes>
         </BrowserRouter>
