@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { Check, Phone, MessageCircle, Star, Droplets, Shield, Layers, Volume2, Thermometer, Tag, Hammer, Maximize2, X, Timer, ArrowRight, Truck } from 'lucide-react';
+import { Check, Phone, MessageCircle, Star, Droplets, Shield, Layers, Volume2, Thermometer, Tag, Hammer, Maximize2, X, Timer, ArrowRight, Truck, Play } from 'lucide-react';
 import { PHONE_NUMBER } from '../utils/constants';
+import { gtagReportConversion } from '../utils/analytics';
 import Temparquettisti from '../components/Temparquettisti';
 import RecentWorks from '../components/RecentWorks';
 import ServiceFAQ from '../components/ServiceFAQ';
@@ -11,6 +12,7 @@ import { works } from '../utils/worksData';
 
 // ─── FOTO TEAM ───
 import teamPhoto from '../assets/images/andrea-oni-parquettisti.webp';
+import spcPosaVideo from '../assets/videos/spcPosaRoma-2.webm';
 
 // ─── IMMAGINI PRODOTTI ───
 import admira5 from '../assets/images/italwood/spcitalwood/5mm/admirinda-1403-2.webp';
@@ -301,7 +303,7 @@ const PlankScale = ({ products, selected }) => {
 // ═══════════════════════════════════
 // ═══ FLOATING PRICE CARD (Apple-style) ═══
 // ═══════════════════════════════════
-const PriceCard = ({ totale, conPosa, sqm, displaySqm, selectedProduct, selectedColor, visible, prezzoPieno, prezzoSconto, prezzoPosa, risparmio, giorni, mqMode, collapsed, battiscopaTipo, prezzoBattiscopaFornitura, prezzoBattiscopaPosa, costoTrasporto, conMaterassino, prezzoMaterassino, prezzoSmaltimento, showFullBreakdown, onToggleBreakdown }) => {
+const PriceCard = ({ totale, conPosa, sqm, displaySqm, selectedProduct, selectedColor, visible, prezzoPieno, prezzoSconto, prezzoPosa, risparmio, giorni, collapsed, battiscopaTipo, prezzoBattiscopaFornitura, prezzoBattiscopaPosa, costoTrasporto, conMaterassino, prezzoMaterassino, prezzoSmaltimento, showFullBreakdown, onToggleBreakdown }) => {
   if (!visible) return null;
 
   const matUnit = conPosa ? prezzoSconto : prezzoPieno;
@@ -315,6 +317,7 @@ const PriceCard = ({ totale, conPosa, sqm, displaySqm, selectedProduct, selected
     const msg = encodeURIComponent(
       `Preventivo ${today}\n\nProdotto: ${selectedProduct.name} (${selectedColor.code})\nSuperficie: ${sqm} mq\nFormato: ${selectedProduct.format}\n\nDettaglio:\n${conPosa ? `- Pavimento: ${formatEuro(matUnit)}/mq (scontato 40% da ${formatEuro(prezzoPieno)}/mq)\n- Posa: ${formatEuro(prezzoPosa)}/mq\n- Risparmio: ${formatEuro(risparmio)}` : `- Pavimento: ${formatEuro(matUnit)}/mq`}\n\nTotale: ${formatEuro(totale)}\n\nSito: posaparquetroma.it/spc-fornitura-posa`
     );
+    gtagReportConversion({ value: totale, currency: 'EUR' });
     window.open(`https://wa.me/39${PHONE_NUMBER.replace(/[^0-9]/g, '')}?text=${msg}`, '_blank');
   };
 
@@ -325,35 +328,7 @@ const PriceCard = ({ totale, conPosa, sqm, displaySqm, selectedProduct, selected
         <div className="fixed inset-0 z-30 bg-black/20" onClick={() => onToggleBreakdown(false)} />
       )}
       <div className="fixed bottom-0 left-0 right-0 z-40 pointer-events-none px-4 pb-4 animate-[fadeUp_0.35s_ease-out]">
-        <div className="max-w-lg mx-auto w-full bg-white/95 backdrop-blur-xl rounded-2xl border border-gray-200/80 shadow-[0_8px_32px_rgba(0,0,0,0.12)] pointer-events-auto overflow-hidden">
-        {mqMode ? (
-          /* MQ MODE: price per mq, compact */
-          <div className="px-5 py-4">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] text-gray-400 font-medium truncate">{selectedProduct.name} · {selectedColor.code}</p>
-                <div className="flex items-baseline gap-2 mt-0.5">
-                  <AnimatedPrice value={matUnit} className="text-2xl font-bold text-gray-900" />
-                  <span className="text-sm font-medium text-gray-400">/mq</span>
-                  {conPosa && <span className="text-[9px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full border border-green-200">-40%</span>}
-                </div>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <AnimatedPrice value={totale} className="text-lg font-bold text-gray-900" />
-                  <span className="text-[10px] text-gray-400">totale</span>
-                </div>
-              </div>
-              <div className="shrink-0">
-                <button onClick={handleWhatsApp}
-                  className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-green-600 border border-green-200 px-4 py-2 rounded-xl font-semibold text-xs shadow-sm hover:shadow-md transition-all duration-200 group">
-                  <MessageCircle className="w-3.5 h-3.5 text-green-500 group-hover:text-green-600" />
-                  Salva preventivo
-                </button>
-                <p className="text-[9px] text-gray-400 text-center mt-0.5">su WhatsApp, nessuno spam</p>
-              </div>
-            </div>
-          </div>
-        ) : (
-          /* FULL MODE (with smooth collapse via max-height) */
+        <div className={`max-w-lg mx-auto w-full bg-white/95 backdrop-blur-xl rounded-2xl border border-gray-200/80 shadow-[0_8px_32px_rgba(0,0,0,0.12)] pointer-events-auto ${showFullBreakdown ? '' : 'overflow-hidden'}`}>
           <div className="px-4 py-3.5">
             {/* Close button — absolute top-right */}
             {showFullBreakdown && (
@@ -367,17 +342,16 @@ const PriceCard = ({ totale, conPosa, sqm, displaySqm, selectedProduct, selected
                 <img src={selectedColor.img} alt={selectedColor.code} className="w-full h-full object-cover" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-800 truncate">{selectedProduct.name} · {selectedColor.code}</p>
-                <p className="text-[11px] text-gray-400 truncate">{selectedProduct.format} · {sqm} mq</p>
+                <p className="text-sm font-semibold text-gray-800 whitespace-nowrap">{selectedProduct.name} · {selectedColor.code}</p>
+                <p className="text-[11px] text-gray-400 truncate">Superficie: {sqm} mq</p>
               </div>
-              {/* Compact total + CTA for collapsed state */}
-              <div className={`flex items-center gap-2 shrink-0 transition-all duration-500 ease-in-out ${collapsed ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                <div className="text-right">
-                  <AnimatedPrice value={totale} className="text-base font-bold text-gray-900" />
-                </div>
+              {/* Compact total + CTA — only when collapsed and breakdown is NOT open */}
+              <div className={`flex items-center gap-2 shrink-0 transition-all duration-500 ease-in-out ${collapsed && !showFullBreakdown ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
                 <button onClick={handleWhatsApp}
                   className="shrink-0 inline-flex items-center gap-1 bg-white hover:bg-gray-50 text-green-600 border border-green-200 px-3 py-2 rounded-lg font-semibold text-xs shadow-sm hover:shadow-md transition-all duration-200">
-                  <MessageCircle className="w-3.5 h-3.5 text-green-500" />
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true" className="text-green-500 shrink-0">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="currentColor"/>
+                  </svg>
                   Salva
                 </button>
               </div>
@@ -392,13 +366,17 @@ const PriceCard = ({ totale, conPosa, sqm, displaySqm, selectedProduct, selected
                     <AnimatedPrice value={totale} className="text-lg font-bold text-gray-900" />
                   </div>
                 </div>
-                <button onClick={() => onToggleBreakdown(true)} className="w-full py-2 text-center text-sm font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-xl transition-colors">
-                  Apri i dettagli
+                <button onClick={() => onToggleBreakdown(true)} className="w-full py-3 text-center text-sm font-bold text-white bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  Apri dettagli preventivo
                 </button>
               </div>
             )}
             {/* Price grid: collapses with max-height transition */}
-            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${(!showFullBreakdown || collapsed) ? 'max-h-0 opacity-0' : 'max-h-[600px] opacity-100'}`}>
+            <div className={`overflow-y-auto overflow-x-hidden transition-all duration-500 ease-in-out ${showFullBreakdown ? 'max-h-[70vh] opacity-100' : 'max-h-0 opacity-0'}`}>
               <div className="space-y-2 mb-3">
                 {/* ── FORNITURA ── */}
                 <div className="flex items-center justify-between text-sm">
@@ -416,7 +394,7 @@ const PriceCard = ({ totale, conPosa, sqm, displaySqm, selectedProduct, selected
                 {battiscopaTipo && (
                   <>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">Battiscopa {battiscopaTipo === 'tinta' ? 'tinta SPC' : 'bianco'}</span>
+                      <span className="text-gray-500">Battiscopa</span>
                       <span className="font-semibold text-gray-800 whitespace-nowrap"><AnimatedPrice value={prezzoBattiscopaFornitura * displaySqm} className="text-sm" /></span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-400 pl-2">
@@ -522,18 +500,8 @@ const PriceCard = ({ totale, conPosa, sqm, displaySqm, selectedProduct, selected
                   </div>
                 )}
               </div>
-              {/* CTA — visible only when expanded */}
-              <div className={`flex flex-col items-center gap-0.5 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                <button onClick={handleWhatsApp}
-                  className="w-full inline-flex items-center justify-center gap-1.5 bg-white hover:bg-gray-50 text-green-600 border border-green-200 px-3 py-2.5 rounded-lg font-semibold text-sm shadow-sm hover:shadow-md transition-all duration-300">
-                  <MessageCircle className="w-4 h-4 text-green-500" />
-                  Salva preventivo su Whatsapp
-                </button>
-                <p className="text-[9px] text-gray-400">Non condividiamo il tuo numero con nessuno</p>
-              </div>
             </div>
           </div>
-        )}
         <style>{`@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }`}</style>
         </div>
       </div>
@@ -648,12 +616,11 @@ const Calculator = () => {
   const [displaySqm, setDisplaySqm] = useState(40);
   const [conPosa, setConPosa] = useState(true);
   const battiscopaTipo = 'bianco'; // sempre incluso, bianco di default
-  const [conMaterassino, setConMaterassino] = useState(false);
+  const [conMaterassino, setConMaterassino] = useState(selectedProduct.id === 'spina');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [showPrice, setShowPrice] = useState(false);
-  const [showMqMode, setShowMqMode] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
-  const [showFullBreakdown, setShowFullBreakdown] = useState(true);
+  const [showFullBreakdown, setShowFullBreakdown] = useState(false);
   const debounceTimer = useRef(null);
   const toggleRef = useRef(null);
   const calculatorRef = useRef(null);
@@ -715,28 +682,29 @@ const Calculator = () => {
   // Show price/mq after color selection
   const handleColorSelect = (c) => {
     setSelectedColor(c);
+    activatePrice();
   };
 
-  // After slider move, update sqm value and hide price card while dragging
+  // Show price card on first interaction
+  const activatePrice = () => {
+    if (!showPrice) setShowPrice(true);
+  };
+
+  // After slider move, update sqm value — price card stays visible and updates in real-time
   const handleSqmChange = (val) => {
     setSqm(val);
-    setShowPrice(false);
-  };
-
-  // Show price card and full breakdown when slider is released
-  const handleSqmRelease = () => {
-    setShowPrice(true);
-    setShowMqMode(false);
+    activatePrice();
   };
 
   const handleTogglePosa = () => {
     setConPosa(!conPosa);
-    if (showPrice) setShowMqMode(false);
   };
 
   const handleProductChange = (p) => {
     setSelectedProduct(p);
     setSelectedColor(p.colors[0]);
+    setConMaterassino(p.id === 'spina');
+    activatePrice();
   };
 
   const handleWhatsApp = () => {
@@ -762,6 +730,7 @@ const Calculator = () => {
     const msg = encodeURIComponent(
       `Preventivo ${today}\n\nProdotto: ${selectedProduct.name} (${selectedColor.code})\nSuperficie: ${sqm} mq\nFormato: ${selectedProduct.format}\n\nDettaglio:\n${dettaglio}\n\nTotale: ${formatEuro(totale)}\n\nSito: posaparquetroma.it/spc-fornitura-posa`
     );
+    gtagReportConversion({ value: totale, currency: 'EUR' });
     window.open(`https://wa.me/39${PHONE_NUMBER.replace(/[^0-9]/g, '')}?text=${msg}`, '_blank');
   };
 
@@ -776,7 +745,7 @@ const Calculator = () => {
         visible={showPrice}
         prezzoPieno={prezzoPieno} prezzoSconto={prezzoSconto}
         prezzoPosa={prezzoPosa} risparmio={risparmio} giorni={giorni}
-        mqMode={showMqMode} collapsed={collapsed}
+        collapsed={collapsed}
         battiscopaTipo={battiscopaTipo} prezzoBattiscopaFornitura={prezzoBattiscopaFornitura} prezzoBattiscopaPosa={prezzoBattiscopaPosa} costoTrasporto={costoTrasporto} conMaterassino={conMaterassino} prezzoMaterassino={prezzoMaterassino} prezzoSmaltimento={prezzoSmaltimento} showFullBreakdown={showFullBreakdown} onToggleBreakdown={setShowFullBreakdown}
       />
 
@@ -793,12 +762,12 @@ const Calculator = () => {
                 <span className="text-base font-black text-green-400 shrink-0">€{conPosa ? prezzoSconto : prezzoPieno}<span className="text-[11px] font-semibold text-green-300/80">/mq</span></span>
                 {conPosa && <span className="text-sm text-red-400 line-through font-medium shrink-0">€{prezzoPieno}/mq</span>}
               </div>
-              <p className="text-sm text-gray-200 mt-0.5">{selectedProduct.name} · {selectedProduct.desc}</p>
+              <p className="text-xs text-gray-200 mt-0.5">{selectedProduct.name} · {selectedProduct.desc}</p>
             </div>
           </div>
           <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-sm flex items-center gap-2">
-            <Maximize2 className="w-4 h-4 text-gray-500" strokeWidth={2} />
-            <span className="text-xs font-medium text-gray-600">Ingrandisci</span>
+            <Maximize2 className="w-3 h-3 text-gray-500" strokeWidth={2} />
+            <span className="text-[10px] font-medium text-gray-600">Ingrandisci</span>
           </div>
         </div>
       </div>
@@ -828,7 +797,7 @@ const Calculator = () => {
       {/* FORMATO — 2x2 grid cards with horizontal scale preview */}
       <div className="mb-8">
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Formato</p>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-3">
           {PRODUCTS.map((p) => {
             const isSelected = selectedProduct.id === p.id;
             const MAX_MM = 1524;
@@ -839,45 +808,49 @@ const Calculator = () => {
 
             return (
               <button key={p.id} onClick={() => handleProductChange(p)}
-                className={`relative rounded-xl p-3.5 pr-12 text-left transition-all duration-200 border-2 ${
+                className={`relative rounded-2xl p-4 text-left transition-all duration-200 border-2 ${
                   isSelected
-                    ? 'border-green-500 bg-green-50 shadow-md'
-                    : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                    ? 'border-green-500 bg-green-50 shadow-md shadow-green-200/50'
+                    : 'border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm'
                 }`}>
-                {/* Plank drawing — top section */}
-                <div className="relative mb-4 flex items-start justify-start">
-                  {/* The plank + length label below it */}
+                {/* Nome formato + descrizione in alto */}
+                <div className="mb-3">
+                  <p className={`text-base font-bold leading-tight ${isSelected ? 'text-green-700' : 'text-gray-900'}`}>{p.name}</p>
+                  <p className={`text-[11px] font-medium mt-0.5 ${isSelected ? 'text-green-600/70' : 'text-gray-400'}`}>{p.desc}</p>
+                </div>
+                {/* Plank drawing — allineato a sinistra */}
+                <div className="flex justify-start mb-3">
                   <div className="flex flex-col items-center">
                     <div className={`relative transition-all duration-200 ${
-                      isSelected ? 'bg-green-400/50 ring-1 ring-green-500' : 'bg-gray-200'
+                      isSelected ? 'bg-green-400/40 ring-1 ring-green-400' : 'bg-gray-200/70'
                     }`}
                       style={{ width: `${Math.max(h, 12)}px`, height: `${Math.max(w, 5)}px` }}>
                       {/* Width label right at the edge of plank */}
-                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-1 flex items-center gap-0.5 whitespace-nowrap">
+                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-1.5 flex items-center gap-0.5 whitespace-nowrap">
                         <svg className={`w-2.5 h-2.5 shrink-0 ${isSelected ? 'text-green-400' : 'text-gray-300'}`} viewBox="0 0 8 8" fill="none">
                           <line x1="4" y1="0" x2="4" y2="8" stroke="currentColor" strokeWidth="1" />
                           <polyline points="2,6 4,8 6,6" fill="none" stroke="currentColor" strokeWidth="0.8" />
                         </svg>
-                        <span className={`text-[9px] font-bold ${isSelected ? 'text-green-500' : 'text-gray-400'} whitespace-nowrap`}>{p.scaleW} mm</span>
+                        <span className={`text-[10px] font-semibold ${isSelected ? 'text-green-500' : 'text-gray-400'} whitespace-nowrap`}>{p.scaleW} mm</span>
                       </div>
                     </div>
                     {/* Length label below, centered on plank */}
-                    <div className="flex items-center gap-0.5 whitespace-nowrap mt-0.5">
+                    <div className="flex items-center gap-0.5 whitespace-nowrap mt-1">
                       <svg className={`w-2.5 h-2.5 shrink-0 ${isSelected ? 'text-green-400' : 'text-gray-300'}`} viewBox="0 0 8 8" fill="none">
                         <line x1="0" y1="4" x2="8" y2="4" stroke="currentColor" strokeWidth="1" />
                         <polyline points="2,2 0,4 2,6" fill="none" stroke="currentColor" strokeWidth="0.8" />
                       </svg>
-                      <span className={`text-[9px] font-bold ${isSelected ? 'text-green-500' : 'text-gray-400'} whitespace-nowrap`}>{p.scaleH} mm</span>
+                      <span className={`text-[10px] font-semibold ${isSelected ? 'text-green-500' : 'text-gray-400'} whitespace-nowrap`}>{p.scaleH} mm</span>
                     </div>
                   </div>
                 </div>
-                {/* Name + price below */}
-                <div className="flex items-baseline justify-between gap-2 pt-0.5">
-                  <p className={`text-sm font-bold leading-tight ${isSelected ? 'text-green-700' : 'text-gray-800'}`}>{p.name}</p>
-                  <div className="text-right shrink-0">
-                    <span className={`text-base font-black leading-tight ${isSelected ? 'text-yellow-500' : 'text-gray-800'}`}>€{conPosa ? p.prezzoSconto : p.prezzoPieno}</span>
-                    <span className={`text-[9px] font-semibold leading-tight ml-0.5 ${isSelected ? 'text-green-600' : 'text-gray-400'}`}>/mq</span>
-                  </div>
+                {/* Prezzo in fondo */}
+                <div className="flex items-baseline justify-center gap-1.5 pt-1 border-t border-dashed border-gray-100">
+                  {conPosa && (
+                    <span className="text-xs text-red-400 line-through font-medium">€{p.prezzoPieno}</span>
+                  )}
+                  <span className={`text-lg font-black leading-none ${isSelected ? 'text-green-600' : 'text-gray-800'}`}>€{conPosa ? p.prezzoSconto : p.prezzoPieno}</span>
+                  <span className={`text-[10px] font-semibold ${isSelected ? 'text-green-500' : 'text-gray-400'}`}>/mq</span>
                 </div>
               </button>
             );
@@ -896,8 +869,6 @@ const Calculator = () => {
           <div className="absolute top-1/2 -translate-y-1/2 left-0 h-4 bg-gradient-to-r from-green-500 to-emerald-400 rounded-full transition-all duration-200" style={{ width: `${sliderPercent}%` }} />
           <input type="range" min="10" max="200" step="5" value={sqm}
             onChange={(e) => handleSqmChange(Number(e.target.value))}
-            onPointerUp={handleSqmRelease}
-            onKeyUp={handleSqmRelease}
             className="relative w-full h-4 bg-transparent rounded-full appearance-none cursor-grab active:cursor-grabbing
               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-10 [&::-webkit-slider-thumb]:h-10
               [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-xl
@@ -910,71 +881,114 @@ const Calculator = () => {
         </div>
       </div>
 
-      {/* MATERASSINO EXTRA — solo per formato Spina */}
+      {/* MATERASSINO EXTRA — obbligatorio per formato Spina */}
       {selectedProduct.id === 'spina' && (
-        <button onClick={() => { setConMaterassino(!conMaterassino); if (showPrice) setShowMqMode(false); }}
-          className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 cursor-pointer mb-3 ${
-            conMaterassino ? 'bg-violet-50 border-2 border-violet-400 shadow-lg' : 'bg-gray-50 border-2 border-gray-200 hover:border-gray-300'
-          }`}>
+        <div className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-violet-50 border-2 border-violet-400 mb-3">
           <div className="flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-full border-2 overflow-hidden shrink-0 flex items-center justify-center transition-all duration-300 ${conMaterassino ? 'border-violet-400 shadow-md bg-violet-100' : 'border-gray-300 bg-gray-100'}`}>
-              <Layers className={`w-5 h-5 ${conMaterassino ? 'text-violet-600' : 'text-gray-400'}`} strokeWidth={2} />
+            <div className="w-12 h-12 rounded-full border-2 border-violet-400 overflow-hidden shrink-0 flex items-center justify-center bg-violet-100">
+              <Layers className="w-5 h-5 text-violet-600" strokeWidth={2} />
             </div>
             <div className="text-left">
-              <p className={`text-sm font-bold ${conMaterassino ? 'text-violet-700' : 'text-gray-700'}`}>Materassino fonoassorbente extra</p>
-              <p className={`text-[11px] ${conMaterassino ? 'text-violet-600 font-semibold' : 'text-gray-400'}`}>
-                {conMaterassino ? `€2,6/mq × ${displaySqm} mq = ${formatEuro(prezzoMaterassino * displaySqm)}` : 'Il formato Spina non include il materassino'}
+              <p className="text-sm font-bold text-violet-700">Materassino fonoassorbente</p>
+              <p className="text-[11px] text-violet-600 font-semibold">
+                Incluso obbligatoriamente · €2,6/mq × {displaySqm} mq = {formatEuro(prezzoMaterassino * displaySqm)}
               </p>
             </div>
           </div>
-          <div className={`relative w-14 h-8 rounded-full transition-colors duration-300 ${conMaterassino ? 'bg-violet-400' : 'bg-gray-300'}`}>
-            <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${conMaterassino ? 'left-7' : 'left-1'}`} />
+          <div className="shrink-0">
+            <Check className="w-5 h-5 text-violet-600" strokeWidth={3} />
           </div>
-        </button>
+        </div>
       )}
 
-      {/* TOGGLE POSA */}
-      <button onClick={handleTogglePosa}
-        className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 cursor-pointer ${
-          conPosa ? 'bg-green-50 border-2 border-green-500 shadow-lg' : 'bg-gray-50 border-2 border-gray-200 hover:border-gray-300'
-        }`}>
-        <div className="flex items-center gap-3">
-          <div className={`w-12 h-12 rounded-full border-2 overflow-hidden shrink-0 transition-all duration-300 ${conPosa ? 'border-green-500 shadow-md' : 'border-gray-300'}`}>
-            <img src={teamPhoto} alt="Andrea e Oni" className="w-full h-full object-cover" />
-          </div>
-          <div className="text-left">
-            <p className={`text-sm font-bold ${conPosa ? 'text-green-700' : 'text-gray-700'}`}>Aggiungi la Posa</p>
-            <p className={`text-[11px] ${conPosa ? 'text-green-600 font-semibold' : 'text-gray-400'}`}>
-              {conPosa ? (
-                <><span className="text-red-400 line-through">€{prezzoPieno}/mq</span> → <span className="text-green-600">€{prezzoSconto}/mq</span></>
-              ) : 'Attiva sconto 40% sul pavimento'}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          {/* Risparmio preview */}
-          {conPosa && (
-            <div className="flex flex-col items-end">
-              <span className="text-[9px] text-green-600 font-bold uppercase tracking-wide">Risparmi</span>
-              <span className="text-sm font-bold text-green-700">{formatEuro(risparmio)}</span>
+      {/* ── CARD POSA: video + toggle + spiegazione ── */}
+      <div className={`mb-6 rounded-2xl overflow-hidden transition-all duration-300 border-2 ${
+        conPosa ? 'border-green-500 shadow-lg shadow-green-100' : 'border-gray-200'
+      }`}>
+        <div onClick={handleTogglePosa} className="cursor-pointer">
+          {/* Video */}
+          <div className="relative w-full h-36 md:h-44 overflow-hidden bg-gray-100">
+            <video
+              src={spcPosaVideo}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            {/* Badge stato */}
+            <div className="absolute top-3 right-3">
+              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm backdrop-blur-sm transition-all duration-300 ${
+                conPosa 
+                  ? 'bg-green-500/90 text-white' 
+                  : 'bg-gray-500/70 text-white'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${conPosa ? 'bg-white animate-pulse' : 'bg-white/50'}`} />
+                {conPosa ? 'Posa inclusa' : 'Solo materiale'}
+              </span>
             </div>
-          )}
-          <div className={`relative w-14 h-8 rounded-full transition-colors duration-300 ${conPosa ? 'bg-green-500' : 'bg-gray-300'}`}>
-            <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${conPosa ? 'left-7' : 'left-1'}`} />
+          </div>
+
+          {/* Toggle + prezzi */}
+          <div className={`px-4 py-3 transition-colors duration-300 ${conPosa ? 'bg-green-50' : 'bg-white'}`}>
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-left min-w-0 flex-1">
+                <p className={`text-sm font-bold ${conPosa ? 'text-green-700' : 'text-gray-700'}`}>
+                  {conPosa ? 'Posa inclusa' : 'Aggiungi la posa'}
+                </p>
+                <div className="flex items-baseline gap-1.5 mt-0.5 flex-wrap">
+                  {conPosa ? (
+                    <span className="text-[11px] text-gray-600">
+                      Pavimento <span className="text-red-400 line-through">€{prezzoPieno}/mq</span>{' '}
+                      <span className="text-green-600 font-bold">€{prezzoSconto}/mq</span>{' '}
+                      <span className="text-gray-300">·</span>{' '} <br />
+                      Posa <span className="font-bold text-gray-800">€{prezzoPosa}/mq</span>
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-gray-400 font-semibold">Attiva subito lo sconto del 40% sul pavimento</span>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {conPosa && (
+                  <div className="flex flex-col items-end">
+                    <span className="text-[9px] text-green-600 font-bold uppercase tracking-wide">Risparmi</span>
+                    <span className="text-sm font-bold text-green-700">{formatEuro(risparmio)}</span>
+                  </div>
+                )}
+                <div className={`relative w-12 h-7 rounded-full transition-colors duration-300 shrink-0 ${conPosa ? 'bg-green-500' : 'bg-gray-300'}`}>
+                  <div className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${conPosa ? 'left-[22px]' : 'left-0.5'}`} />
+                </div>
+              </div>
+            </div>
+
+            {/* Prezzo posa — visibile quando disattivo */}
+            {!conPosa && (
+              <div className="mt-2 flex items-center justify-between bg-gray-100 rounded-lg px-3 py-2">
+                <span className="text-[11px] font-semibold text-gray-500">Posa in opera</span>
+                <span className="text-[11px] font-bold text-gray-700">€{prezzoPosa}/mq</span>
+              </div>
+            )}
           </div>
         </div>
-      </button>
 
-      {/* Promo explanation + social proof */}
-      <div className="mb-6 space-y-3">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-          <p className="text-sm text-amber-800 leading-relaxed">
-            <span className="font-bold">Come funziona?</span> Aggiungendo la posa, il pavimento passa da <span className="line-through text-red-400">€{prezzoPieno}/mq</span> a <span className="font-bold text-green-600">€{prezzoSconto}/mq</span> (risparmi <span className="font-bold text-green-600">{formatEuro(risparmio)}</span> su {sqm} mq). <br />
-            Ci occupiamo noi di tutto: posa a regola d'arte, movimentazione mobili e pulizia finale. 
-            <span className="font-bold"> Zero pensieri, prezzo finale trasparente.</span>
+        {/* Spiegazione */}
+        <div className={`px-4 py-2.5 border-t transition-colors duration-300 ${
+          conPosa ? 'border-green-100 bg-green-50/50' : 'border-gray-100 bg-gray-50/50'
+        }`}>
+          <p className={`text-[11px] leading-relaxed ${conPosa ? 'text-green-800' : 'text-gray-500'}`}>
+            {conPosa
+              ? 'Pavimento scontato del 40% + posa a regola d\'arte inclusa. Ci occupiamo noi di movimentazione mobili e pulizia finale. Prezzo finale trasparente, senza sorprese.'
+              : <>Attiva la posa e il pavimento passa da <span className="text-red-400 line-through">€{prezzoPieno}/mq</span> a <span className="font-bold text-green-600">€{prezzoSconto}/mq</span> con lo sconto del 40%. Un unico fornitore per materiale e installazione, zero pensieri.</>
+            }
           </p>
         </div>
-        {/* Social proof — carosello lavori SPC recenti */}
+      </div>
+
+      {/* Social proof — carosello lavori SPC recenti */}
+      <div className="mb-6">
         <WorkCarousel />
       </div>
 
@@ -1042,9 +1056,9 @@ export default function SPCFornituraPosaPage() {
           {/* 3 BENEFIT CHECK sotto il titolo */}
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 mb-6">
             {[
-              { text: 'Garanzia 100% soddisfatti', icon: '🏆' },
+              { text: 'Garanzia 15 anni', icon: '🏆' },
               { text: 'Senza demolizioni', icon: '⚡' },
-              { text: 'Pronto in 1-2 giorni', icon: '⚡' },
+              { text: 'Pronto in soli 1-2 giorni', icon: '⚡' },
             ].map(({ text, icon }) => (
               <div key={text} className="flex items-center gap-1.5">
                 <div className="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center shrink-0">
@@ -1052,7 +1066,7 @@ export default function SPCFornituraPosaPage() {
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
-                <span className="text-xs font-semibold text-gray-600">{text}</span>
+                <span className="text-xs font-semibold text-gray-500">{text}</span>
               </div>
             ))}
           </div>
@@ -1060,6 +1074,9 @@ export default function SPCFornituraPosaPage() {
           <Calculator />
         </div>
       </section>
+
+      {/* Carte dei parquettisti */}
+      <Temparquettisti />
 
       <ServiceExplainerSection service={spcService} />
       <RecentWorks category="spc" title="Lavori SPC reali" />
