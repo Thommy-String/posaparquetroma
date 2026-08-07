@@ -1,6 +1,13 @@
 const GLOBAL_CONVERSION_ID = 'AW-18310459317/JQxpCKv_y9IcELXfjZtE';
 
 export const gtagReportConversion = ({ value = 1.0, currency = 'EUR', redirectUrl }) => {
+  // Assicura che lo script gtag sia caricato PRIMA di inviare l'evento.
+  // gtag viene caricato solo dopo il consenso cookie (lazy). Se l'utente ha
+  // già accettato, __loadGtag è idempotente (non ricarica lo script).
+  if (typeof window.__loadGtag === 'function') {
+    window.__loadGtag();
+  }
+
   const navigate = () => {
     if (!redirectUrl) return;
     window.location.href = redirectUrl;
