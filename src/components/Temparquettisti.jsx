@@ -1,7 +1,7 @@
 import { Ruler, ThumbsUp, Euro } from 'lucide-react';
 import teamPhoto from '../assets/images/andrea-oni-parquettisti.webp';
 import andreaPhoto from '../assets/images/primaDopoLavori/barbaraPrimaSPC.webp';
-import oniPhoto from '../assets/images/Oni/onisim-parquettista.webp';
+import oniPhoto from '../assets/images/Oni/onisim parquettista eseperto.webp';
 import teamVideo from '../assets/videos/andreaPosaSPC.webm';
 
 const members = [
@@ -115,7 +115,7 @@ export default function Temparquettisti() {
                 {guarantees.map((g) => (
                   <div key={g.label} className="flex items-center gap-1">
                     <g.icon className="w-3.5 h-3.5 text-white/80 shrink-0" />
-                    <span className="text-[12px] font-medium text-white/90">{g.label}</span>
+                    <span className="text-[12px] tracking-tight font-medium text-white/90">{g.label}</span>
                   </div>
                 ))}
               </div>
