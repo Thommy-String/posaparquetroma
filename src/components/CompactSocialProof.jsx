@@ -169,8 +169,8 @@ function CompactSocialProof({ category }) {
 
             // Logica di scrolling
             if (!state.current.isDragging && !isPaused) {
-                // Velocità costante auto-scroll (regola il 0.5 per velocità)
-                state.current.pos += 0.5; 
+                // Velocità costante auto-scroll (regola il valore per velocità)
+                state.current.pos += 4.2; 
             }
 
             // Infinite Loop Logic

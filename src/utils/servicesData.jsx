@@ -92,11 +92,11 @@ export const servicesData = {
     layout: [
       { type: 'HeroHome' },
       { type: 'Temparquettisti' },
-      { type: 'RecentWorks', props: { category: 'prefinito', title: 'I nostri ultimi lavori' } },
+      { type: 'ServiceFAQ' },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
       { type: 'ServiceDescription' },
-      { type: 'ServiceFAQ' },
+      { type: 'RecentWorks', props: { category: 'prefinito', title: 'I nostri ultimi lavori' } },
     ],
     features: [
       {
@@ -201,11 +201,11 @@ export const servicesData = {
     layout: [
       { type: 'HeroHome' },
       { type: 'Temparquettisti' },
-      { type: 'RecentWorks', props: { category: 'prefinito-flottante', title: 'I nostri ultimi lavori' } },
+      { type: 'ServiceFAQ' },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
       { type: 'ServiceDescription' },
-      { type: 'ServiceFAQ' },
+      { type: 'RecentWorks', props: { category: 'prefinito-flottante', title: 'I nostri ultimi lavori' } },
     ],
     features: [
       {
@@ -304,11 +304,11 @@ export const servicesData = {
     layout: [
       { type: 'HeroHome' },
       { type: 'Temparquettisti' },
-      { type: 'RecentWorks', props: { category: 'prefinito-spina', title: 'I nostri ultimi lavori' } },
+      { type: 'ServiceFAQ' },
       { type: 'ServiceExplainerSection' },
       { type: 'ServicePainVsSolution' },
       { type: 'ServiceDescription' },
-      { type: 'ServiceFAQ' },
+      { type: 'RecentWorks', props: { category: 'prefinito-spina', title: 'I nostri ultimi lavori' } },
     ],
     features: [
       {

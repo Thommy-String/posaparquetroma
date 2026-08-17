@@ -4,14 +4,23 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import App from './App.jsx'
 import './index.css'
+import { captureClickContext } from './utils/analytics.js'
+
+// Inizializza il contesto di click (riferimento + parametri campagna) all'atterraggio
+captureClickContext();
 
 import HomePage from './pages/HomePage.jsx'
-import ServicePage from './pages/servizi/[slug].jsx'
+const ServicePage = lazy(() => import('./pages/servizi/[slug].jsx'))
 const PosaParquetPage = lazy(() => import('./pages/PosaParquetPage.jsx'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage.jsx'))
 const TitleVariantsSPC = lazy(() => import('./pages/TitleVariantsSPC.jsx'))
 const SPCInfoPage = lazy(() => import('./pages/SPCInfoPage.jsx'))
 const SPCFornituraPosaPage = lazy(() => import('./pages/SPCFornituraPosaPage.jsx'))
+
+// Landing page dedicate per campagne Google Ads — Roma
+const RomaPavimentoEsistentePage = lazy(() => import('./pages/landing/RomaPavimentoEsistentePage.jsx'))
+const RomaCostoRifacimentoPage = lazy(() => import('./pages/landing/RomaCostoRifacimentoPage.jsx'))
+const RomaRifareCasaAbitataPage = lazy(() => import('./pages/landing/RomaRifareCasaAbitataPage.jsx'))
 
 // Skeleton di caricamento per le pagine lazy — evita il flash bianco
 const PageSkeleton = () => (
@@ -53,10 +62,15 @@ waitForCriticalCss().finally(() => {
               <Route index element={<HomePage />} />
               
               {/* Questa è la rotta dinamica corretta */}
-              <Route path="servizi/:slug" element={<ServicePage />} />
+              <Route path="servizi/:slug" element={<Suspense fallback={<PageSkeleton />}><ServicePage /></Suspense>} />
               
               {/* Landing page standalone per campagne Google Ads — posa parquet prefinito */}
               <Route path="posaparquet" element={<Suspense fallback={<PageSkeleton />}><PosaParquetPage /></Suspense>} />
+              
+              {/* Landing page dedicate — Roma */}
+              <Route path="roma/pavimento-su-pavimento-esistente" element={<Suspense fallback={<PageSkeleton />}><RomaPavimentoEsistentePage /></Suspense>} />
+              <Route path="roma/quanto-costa-rifare-il-pavimento" element={<Suspense fallback={<PageSkeleton />}><RomaCostoRifacimentoPage /></Suspense>} />
+              <Route path="roma/rifare-pavimenti-casa-abitata" element={<Suspense fallback={<PageSkeleton />}><RomaRifareCasaAbitataPage /></Suspense>} />
               
               <Route path="privacy-policy" element={<Suspense fallback={<PageSkeleton />}><PrivacyPolicyPage /></Suspense>} />
               <Route path="title-variants-spc" element={<Suspense fallback={<PageSkeleton />}><TitleVariantsSPC /></Suspense>} />

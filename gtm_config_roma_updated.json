@@ -1,0 +1,49 @@
+{
+    "exportFormatVersion": 2,
+    "exportTime": "2026-08-17T15:00:00.000Z",
+    "comment": "Consent Mode v2. Meta Pixel spostato inline (index.html) per gestione consenso tramite _cb_load_meta(). GA4 e Google Ads restano via GTM.",
+    "containerVersion": {
+        "path": "accounts/6371357070/containers/261214502/versions/0",
+        "accountId": "6371357070",
+        "containerId": "261214502",
+        "containerVersionId": "0",
+        "container": {
+            "path": "accounts/6371357070/containers/261214502",
+            "accountId": "6371357070",
+            "containerId": "261214502",
+            "name": "Parquet Roma",
+            "publicId": "GTM-NS3NKFLN",
+            "usageContext": ["WEB"],
+            "fingerprint": "1",
+            "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/6371357070/containers/261214502/workspaces?apiLink=container"
+        },
+        "variable": [
+            {"name": "DLV - price", "type": "v", "parameter": [{"type": "INTEGER", "key": "dataLayerVersion", "value": "2"}, {"type": "BOOLEAN", "key": "setDefaultValue", "value": "false"}, {"type": "TEMPLATE", "key": "name", "value": "price"}]},
+            {"name": "DLV - service", "type": "v", "parameter": [{"type": "INTEGER", "key": "dataLayerVersion", "value": "2"}, {"type": "BOOLEAN", "key": "setDefaultValue", "value": "false"}, {"type": "TEMPLATE", "key": "name", "value": "service"}]},
+            {"name": "DLV - sqm", "type": "v", "parameter": [{"type": "INTEGER", "key": "dataLayerVersion", "value": "2"}, {"type": "BOOLEAN", "key": "setDefaultValue", "value": "false"}, {"type": "TEMPLATE", "key": "name", "value": "sqm"}]},
+            {"name": "DLV - price_band", "type": "v", "parameter": [{"type": "INTEGER", "key": "dataLayerVersion", "value": "2"}, {"type": "BOOLEAN", "key": "setDefaultValue", "value": "false"}, {"type": "TEMPLATE", "key": "name", "value": "price_band"}]},
+            {"name": "DLV - ref", "type": "v", "parameter": [{"type": "INTEGER", "key": "dataLayerVersion", "value": "2"}, {"type": "BOOLEAN", "key": "setDefaultValue", "value": "false"}, {"type": "TEMPLATE", "key": "name", "value": "ref"}]},
+            {"name": "DLV - gclid", "type": "v", "parameter": [{"type": "INTEGER", "key": "dataLayerVersion", "value": "2"}, {"type": "BOOLEAN", "key": "setDefaultValue", "value": "false"}, {"type": "TEMPLATE", "key": "name", "value": "gclid"}]},
+            {"name": "DLV - city", "type": "v", "parameter": [{"type": "INTEGER", "key": "dataLayerVersion", "value": "2"}, {"type": "BOOLEAN", "key": "setDefaultValue", "value": "false"}, {"type": "TEMPLATE", "key": "name", "value": "city"}]},
+            {"name": "DLV - source", "type": "v", "parameter": [{"type": "INTEGER", "key": "dataLayerVersion", "value": "2"}, {"type": "BOOLEAN", "key": "setDefaultValue", "value": "false"}, {"type": "TEMPLATE", "key": "name", "value": "source"}]},
+            {"name": "GA4 Measurement ID - Roma", "type": "c", "parameter": [{"type": "TEMPLATE", "key": "value", "value": "G-LY7XQBJ480"}]},
+            {"name": "Google Ads ID", "type": "c", "parameter": [{"type": "TEMPLATE", "key": "value", "value": "AW-18310459317"}]}
+        ],
+        "trigger": [
+            {"name": "Consent Initialization", "type": "CONSENT_INIT"},
+            {"name": "Event - Lead", "type": "CUSTOM_EVENT", "customEventFilter": [{"type": "MATCHES_REGEX", "parameter": [{"type": "TEMPLATE", "key": "arg0", "value": "{{_event}}"}, {"type": "TEMPLATE", "key": "arg1", "value": "^(cta_(whatsapp|call)_(quiz|sticky|header|footer|service_hero|pain_points|value_props|pricing)|quote_verifier_call)$"}]}]},
+            {"name": "Event - quiz_price_shown", "type": "CUSTOM_EVENT", "customEventFilter": [{"type": "EQUALS", "parameter": [{"type": "TEMPLATE", "key": "arg0", "value": "{{_event}}"}, {"type": "TEMPLATE", "key": "arg1", "value": "quiz_price_shown"}]}]}
+        ],
+        "tag": [
+            {"name": "GA4 - Config", "type": "googtag", "parameter": [{"type": "TEMPLATE", "key": "tagId", "value": "{{GA4 Measurement ID - Roma}}"}] , "firingTriggerId": ["2147479553"], "tagFiringOption": "once_per_event"},
+            {"name": "Google Ads - Lead", "type": "awct", "parameter": [{"type": "TEMPLATE", "key": "conversionId", "value": "{{Google Ads ID}}"}, {"type": "TEMPLATE", "key": "conversionLabel", "value": "jLvECMjlu-EcELXfjZtE"}, {"type": "TEMPLATE", "key": "value", "value": "{{DLV - price}}"}, {"type": "TEMPLATE", "key": "currencyCode", "value": "EUR"}], "firingTriggerId": ["Event - Lead"], "tagFiringOption": "once_per_event"},
+            {"name": "Google Ads - Quiz Prezzo Visto", "type": "awct", "parameter": [{"type": "TEMPLATE", "key": "conversionId", "value": "{{Google Ads ID}}"}, {"type": "TEMPLATE", "key": "conversionLabel", "value": "Ikf4CNCRr-EcELXfjZtE"}, {"type": "TEMPLATE", "key": "value", "value": "{{DLV - price}}"}, {"type": "TEMPLATE", "key": "currencyCode", "value": "EUR"}], "firingTriggerId": ["Event - quiz_price_shown"], "tagFiringOption": "once_per_event"},
+            {"name": "GA4 - Lead", "type": "gaawe", "parameter": [{"type": "TEMPLATE", "key": "eventName", "value": "Lead"}, {"type": "TEMPLATE", "key": "measurementIdOverride", "value": "{{GA4 Measurement ID - Roma}}"}, {"type": "LIST", "key": "eventParameters", "list": [{"type": "MAP", "map": [{"type": "TEMPLATE", "key": "name", "value": "currency"}, {"type": "TEMPLATE", "key": "value", "value": "EUR"}]}, {"type": "MAP", "map": [{"type": "TEMPLATE", "key": "name", "value": "value"}, {"type": "TEMPLATE", "key": "value", "value": "{{DLV - price}}"}]}]}] , "firingTriggerId": ["Event - Lead"], "tagFiringOption": "once_per_event"},
+            {"name": "GA4 - Quiz Prezzo Visto", "type": "gaawe", "parameter": [{"type": "TEMPLATE", "key": "eventName", "value": "quiz_price_shown"}, {"type": "TEMPLATE", "key": "measurementIdOverride", "value": "{{GA4 Measurement ID - Roma}}"}, {"type": "LIST", "key": "eventParameters", "list": [{"type": "MAP", "map": [{"type": "TEMPLATE", "key": "name", "value": "currency"}, {"type": "TEMPLATE", "key": "value", "value": "EUR"}]}, {"type": "MAP", "map": [{"type": "TEMPLATE", "key": "name", "value": "value"}, {"type": "TEMPLATE", "key": "value", "value": "{{DLV - price}}"}]}]}] , "firingTriggerId": ["Event - quiz_price_shown"], "tagFiringOption": "once_per_event"}
+        ]
+    },
+    "notes": {
+        "consent_mode_v2": "Consent Mode v2 implemented in index.html. Tags will not fire until consent is granted.",
+        "meta_pixel": "ID 15436009393, loaded inline from index.html only after consent. Lead events via fbq inline."
+    }
+}

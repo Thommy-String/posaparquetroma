@@ -53,7 +53,7 @@ const HeroComparisonCards = () => {
             afterImg={beaDopo} 
             price="€430" 
             timeDisplay="5 ore" 
-            label="Posa SPC roma"
+            label="Posa SPC Milano"
           />
 
            <ComparisonCard 

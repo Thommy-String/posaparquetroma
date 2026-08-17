@@ -2,6 +2,31 @@
 <html lang="it">
 
 <head>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2 — stato predefinito "denied" PRIMA di GTM, con wait_for_update.
+    // I tag GTM non sparano finché l'utente non interagisce col banner o scade il timeout (2000ms).
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted',
+      'wait_for_update': 2000
+    });
+    window.dataLayer.push({ event: 'consent_default_set' });
+  </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NS3NKFLN');</script>
+  <!-- End Google Tag Manager -->
+
   <meta charset="UTF-8" />
 
   <title>Servizio di posa di pavimento in legno a Roma</title>
@@ -51,52 +76,8 @@
     }
   })();
 
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-
-  // Carica gtag solo quando serve (consenso/idle), evitando costo su FCP/LCP.
-  window.__loadGtag = function __loadGtag() {
-    if (window.__gtagLoaded) return;
-    window.__gtagLoaded = true;
-
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18310459317';
-    s.onload = function () {
-      gtag('js', new Date());
-      gtag('config', 'AW-18310459317');
-    };
-    document.head.appendChild(s);
-  }
-
-  // Event snippet per conversioni: API compatibile con il codice esistente.
-  function gtag_report_conversion(url) {
-    var callback = function () {
-      if (typeof(url) !== 'undefined') {
-        window.location = url;
-      }
-    };
-
-    window.__loadGtag();
-    gtag('event', 'conversion', {
-      'send_to': 'AW-18310459317/VEeoCILfveAbEMqVm7ZC',
-      'value': 1.0,
-      'currency': 'EUR',
-      'event_callback': callback
-    });
-    return false;
-  }
-
-  // Se l'utente ha gia accettato in passato, inizializza in idle.
-  if (document.cookie.indexOf('gdpr_consent=accepted') !== -1) {
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(function () { window.__loadGtag(); }, { timeout: 2000 });
-    } else {
-      window.addEventListener('load', function () {
-        setTimeout(function () { window.__loadGtag(); }, 1200);
-      }, { once: true });
-    }
-  }
+  // Consent Mode v2: lo stato di default (denied) è già stato impostato prima di GTM.
+  // Il caricamento di gtag è gestito interamente tramite GTM.
   </script>
 
 
@@ -114,16 +95,32 @@
 </head>
 
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NS3NKFLN"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <div id="root"></div>
   <!-- Cookie Banner: lo script PRIMA del banner definisce le funzioni globali -->
   <script>
   function _cb_emit(v){try{window.dispatchEvent(new CustomEvent('gdpr-consent-changed',{detail:{value:v}}));}catch(e){}}
   function _cb_set(n,v){var d=new Date();d.setTime(d.getTime()+31536e6);document.cookie=n+'='+v+';expires='+d.toUTCString()+';path=/;SameSite=Lax';_cb_emit(v);}
   function _cb_hide(){var b=document.getElementById('cookie-banner');if(b)b.style.cssText='display:none!important';}
-  function _cb_accept(){_cb_hide();_cb_set('gdpr_consent','accepted');try{if(typeof window.__loadGtag==='function')window.__loadGtag();}catch(e){}}
-  function _cb_decline(){_cb_hide();_cb_set('gdpr_consent','declined');try{if(typeof gtag==='function')gtag('consent','update',{'analytics_storage':'denied','ad_storage':'denied'});}catch(e){}}
-  // Se il cookie esiste già, nascondi subito (prima ancora che il CSS carichi)
-  if(document.cookie.indexOf('gdpr_consent=')!==-1){document.write('<style>#cookie-banner{display:none!important}</style>');}
+  function _cb_grant(){gtag('consent','update',{'ad_storage':'granted','ad_user_data':'granted','ad_personalization':'granted','analytics_storage':'granted','functionality_storage':'granted','personalization_storage':'granted'});}
+  function _cb_deny(){gtag('consent','update',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'denied','personalization_storage':'denied'});}
+  function _cb_accept(){_cb_hide();_cb_set('gdpr_consent','accepted');try{if(typeof gtag==='function')_cb_grant();}catch(e){}}
+  function _cb_decline(){_cb_hide();_cb_set('gdpr_consent','declined');try{if(typeof gtag==='function')_cb_deny();}catch(e){}}
+  function _cb_read(n){var m=document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)'));return m?m[1]:null;}
+  // Se il cookie esiste già, riapplica lo stato di consenso e nascondi il banner.
+  // La chiamata update è differita (setTimeout 2000ms) per dare tempo a GTM di caricare
+  // completamente e registrare il suo listener per il consenso (wait_for_update:2000).
+  var _cb_existing=_cb_read('gdpr_consent');
+  if(_cb_existing){
+    setTimeout(function(){
+      if(_cb_existing==='accepted')_cb_grant();
+      else _cb_deny();
+    },2000);
+    document.write('<style>#cookie-banner{display:none!important}</style>');
+  }
   </script>
   <!-- Cookie Banner HTML -->
   <div id="cookie-banner">

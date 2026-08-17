@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
 import { quizDatabase } from '../utils/quizData';
-import { gtagReportConversion } from '../utils/analytics';
+import { track, getPriceBand, buildWhatsAppMessage, openWhatsAppWithTracking, openCallWithTracking } from '../utils/analytics';
 
 // --- IMPORTA TUTTE LE ICONE NECESSARIE ---
 import {
@@ -378,6 +378,13 @@ function InstallationQuiz({ service }) {
   const estimateRef = useRef(null);
   const calcIntervalRef = useRef(null);
   const calcTimeoutRef = useRef(null);
+  // ── Tracking: anti-duplicazione ──
+  const quizStartedRef = useRef(false);
+  const priceShownRef = useRef(false);
+  const lastPriceRef = useRef(null);
+  const serviceTrackedRef = useRef(null);
+  const lastSqmRef = useRef(null);
+
   const [answers, setAnswers] = useState({
     serviceType: '',
     subfloor: 'pavimento_esistente',
@@ -469,6 +476,46 @@ function InstallationQuiz({ service }) {
     setCalcStepIndex(0);
     setShowResult(false);
   };
+
+  // ── TRACKING: emissione eventi basata su cambi di stato ──
+
+  // 1. quiz_start — prima interazione con il configuratore (selezione servizio)
+  useEffect(() => {
+    if (answers.serviceType && !quizStartedRef.current) {
+      quizStartedRef.current = true;
+      track('quiz_start');
+    }
+  }, [answers.serviceType]);
+
+  // 2. quiz_service — servizio selezionato (si attiva insieme a quiz_start ma è separato)
+  useEffect(() => {
+    if (answers.serviceType && answers.serviceType !== serviceTrackedRef.current) {
+      serviceTrackedRef.current = answers.serviceType;
+      const serviceLabel = SERVICE_NAME_MAP[answers.serviceType] || answers.serviceType;
+      track('quiz_service', { service: serviceLabel });
+    }
+  }, [answers.serviceType]);
+
+  // 3. quiz_area — metri quadri inseriti (dopo che il servizio è stato scelto)
+  useEffect(() => {
+    if (answers.serviceType && isExpanded && Boolean(answers.serviceType) && unitValue !== lastSqmRef.current) {
+      lastSqmRef.current = unitValue;
+      track('quiz_area', { sqm: unitValue });
+    }
+  }, [unitValue, answers.serviceType, isExpanded]);
+
+  // 5. quiz_recalculate — l'utente modifica gli input DOPO aver visto il prezzo
+  // Si attiva quando showResult diventa false dopo essere stato true, o quando il prezzo cambia
+  const prevShowResultRef = useRef(false);
+  useEffect(() => {
+    const wasShowing = prevShowResultRef.current;
+    prevShowResultRef.current = showResult;
+
+    // L'utente aveva visto il prezzo e ora sta modificando (showResult passato da true a false)
+    if (wasShowing && !showResult && priceShownRef.current && lastPriceRef.current !== null) {
+      // Non tracciamo subito: aspettiamo il prossimo showResult per avere il nuovo prezzo
+    }
+  }, [showResult]);
 
   const handleCalculate = () => {
     if (!canShowDetails) return;
@@ -584,9 +631,9 @@ function InstallationQuiz({ service }) {
       unitPrice: baseUnitPrice,
       unitDisplay: unitLabel,
       displayQuantity: isMinTotalApplied
-        ? `${unitValue}${unitLabel} (prezzo a corpo)`
+        ? `${unitValue}${unitLabel} — prezzo a corpo €${minTotal.toLocaleString('it-IT')}`
         : isMinimumApplied
-          ? `${minMq}${unitLabel} (minimo)`
+          ? `${minMq}${unitLabel} — tariffa fissa di posa`
           : `~${unitValue}${unitLabel}`,
       total: baseCost,
       isMinimumApplied,
@@ -803,6 +850,38 @@ function InstallationQuiz({ service }) {
     // --- MODIFICA 2: Aggiunta 'pavimento_esistente' alla dipendenza ---
   }, [unitValue, answers, showExtraQuestions, isBattiscopa, unitLabel]);
 
+  // 4. quiz_price_shown — prezzo mostrato (UNA SOLA volta per sessione, anti-duplicazione)
+  useEffect(() => {
+    if (showResult && estimate && !priceShownRef.current) {
+      priceShownRef.current = true;
+      lastPriceRef.current = estimate.total;
+      const serviceLabel = SERVICE_NAME_MAP[answers.serviceType] || answers.serviceType;
+      track('quiz_price_shown', {
+        service: serviceLabel,
+        sqm: unitValue,
+        price: estimate.total,
+        price_band: getPriceBand(estimate.total),
+      });
+    }
+  }, [showResult, estimate, answers.serviceType, unitValue]);
+
+  // Traccia quiz_recalculate quando il prezzo viene ricalcolato e mostrato nuovamente
+  useEffect(() => {
+    if (showResult && estimate && priceShownRef.current && lastPriceRef.current !== null && estimate.total !== lastPriceRef.current) {
+      const priceBefore = lastPriceRef.current;
+      const priceAfter = estimate.total;
+      lastPriceRef.current = estimate.total;
+      const serviceLabel = SERVICE_NAME_MAP[answers.serviceType] || answers.serviceType;
+      track('quiz_recalculate', {
+        service: serviceLabel,
+        sqm: unitValue,
+        price_before: priceBefore,
+        price_after: priceAfter,
+        price_band: getPriceBand(priceAfter),
+      });
+    }
+  }, [showResult, estimate, answers.serviceType, unitValue]);
+
   useEffect(() => {
     if (!requiresGlueQuestion && answers.colla !== 'no') {
       setAnswers(prev => ({ ...prev, colla: 'no' }));
@@ -848,35 +927,16 @@ function InstallationQuiz({ service }) {
     return `${amount} €/${unitDisplay}`;
   };
 
-  // Funzione per SALVARE il preventivo (lo invia a sé stessi o apre WA)
+  // Funzione WhatsApp dal quiz — ora con tracking + riferimento
   const handleWhatsAppClick = () => {
     if (!estimate) return;
 
-    // 1. Prepara la lista
-    const allItems = [estimate.baseItem, ...estimate.variableItems].filter(Boolean);
-    const itemsList = allItems
-      .map(item => `- ${item.label}: ${item.displayQuantity}`)
-      .join('\n');
-
-    // 2. Pulisce il numero di telefono per il link
-    const cleanPhone = PHONE_NUMBER.replace(/[^0-9]/g, '');
-
-    // 3. Costruisce il messaggio rivolto all'azienda
-    const lines = [
-      "👋 Ciao, ho appena calcolato questo preventivo sul vostro sito e vorrei maggiori informazioni:",
-      "",
-      itemsList,
-      "",
-      `*Totale Stimato: ${formatCurrency(estimate.total)}*`,
-      "",
-      `Link configuratore: ${window.location.href}`
-    ];
-
-    const message = lines.join("\n");
-    const encodedMessage = encodeURIComponent(message);
-
-    gtagReportConversion({
-      redirectUrl: `https://wa.me/${cleanPhone}?text=${encodedMessage}`,
+    const serviceLabel = SERVICE_NAME_MAP[answers.serviceType] || answers.serviceType;
+    openWhatsAppWithTracking({
+      serviceLabel,
+      sqm: unitValue,
+      price: estimate.total,
+      source: 'quiz',
     });
   };
 
@@ -1532,11 +1592,18 @@ function InstallationQuiz({ service }) {
                       ))}
                     </div>
 
-                    {/* Nota Tecnica Minimi (solo se applicati) */}
-                    {(estimate.isMinimumApplied || estimate.isMinTotalApplied) && (
-                      <div className="p-4 bg-slate-50 rounded-2xl">
-                        <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                          Nota: Per piccoli interventi sotto i minimi d'opera (40mq o piccoli ml di battiscopa), viene applicata una tariffa a corpo per coprire i costi fissi di logistica e preparazione cantiere.
+                    {/* Nota Tariffa Minima — giallino per la posa */}
+                    {estimate.isMinimumApplied && (
+                      <div className="p-4 bg-amber-50 border border-amber-300 rounded-2xl">
+                        <p className="text-xs font-semibold text-amber-800 leading-relaxed">
+                          ⚡ Per superfici fino a 40 {unitLabel} si applica una tariffa fissa di posa. Il prezzo è già calcolato nel totale.
+                        </p>
+                      </div>
+                    )}
+                    {estimate.isMinTotalApplied && !estimate.isMinimumApplied && (
+                      <div className="p-4 bg-amber-50 border border-amber-300 rounded-2xl">
+                        <p className="text-xs font-semibold text-amber-800 leading-relaxed">
+                          ⚡ Per questo intervento è applicata una tariffa a corpo. Il prezzo è già calcolato nel totale.
                         </p>
                       </div>
                     )}
@@ -1582,9 +1649,7 @@ function InstallationQuiz({ service }) {
                     {/* CTA Chiama */}
                     <button
                       onClick={() => {
-                        gtagReportConversion({
-                          redirectUrl: `tel:${PHONE_NUMBER}`,
-                        });
+                        openCallWithTracking({ source: 'quiz' });
                       }}
                       className="group relative inline-flex items-center justify-center gap-4 bg-white border-[2.5px] border-slate-900 px-8 py-4 rounded-xl text-slate-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(59,130,246,1)] hover:shadow-[2px_2px_0px_0px_rgba(59,130,246,1)] hover:translate-x-1 hover:translate-y-1 active:bg-gray-50 w-full sm:flex-1"
                     >

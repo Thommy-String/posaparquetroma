@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { COMPANY_NAME, PHONE_NUMBER } from '../utils/constants';
-import { gtagReportConversion } from '../utils/analytics';
+import { openCallWithTracking } from '../utils/analytics';
 import { serviceNavLinks } from '../utils/serviceNavLinks';
 import logoImage from '../assets/logo/logo-96-white-bands.webp';
 
@@ -203,9 +203,7 @@ function Header() {
             {/* CTA TELEFONO CON ORARI (SOSTITUISCE HAMBURGER) */}
             <button 
               onClick={() => {
-                gtagReportConversion({
-                  redirectUrl: `tel:${PHONE_NUMBER}`,
-                });
+                openCallWithTracking({ source: 'sticky' });
               }}
               className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg hover:bg-green-50 transition-colors z-[61] border border-green-200"
             >
@@ -272,9 +270,7 @@ function Header() {
             {/* CONTATTI FOOTER DEL MENU */}
             <div className="mt-8 pt-6 border-t border-gray-200">
                 <button onClick={() => {
-                    gtagReportConversion({
-                      redirectUrl: `tel:${PHONE_NUMBER}`,
-                    });
+                    openCallWithTracking({ source: 'sticky' });
                   }} className="flex justify-center items-center gap-3 w-full py-4 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-colors text-base">
                 <PhoneIcon /> {PHONE_NUMBER}
                 </button>

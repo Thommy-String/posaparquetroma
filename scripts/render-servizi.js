@@ -69,12 +69,43 @@ function sanitizeService(service) {
 
 function escapeHtml(value) {
   return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
+    .replace(/&/g, '&')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '"')
     .replace(/'/g, '&#39;');
 }
+
+const consentHeadSnippet = `  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2 — stato predefinito "denied" PRIMA di GTM, con wait_for_update.
+    // I tag GTM non sparano finché l'utente non interagisce col banner o scade il timeout (2000ms).
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted',
+      'wait_for_update': 2000
+    });
+    window.dataLayer.push({ event: 'consent_default_set' });
+  </script>`;
+
+const gtmHeadSnippet = `  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NS3NKFLN');<\/script>
+  <!-- End Google Tag Manager -->`;
+
+const gtmBodySnippet = `  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NS3NKFLN"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->`;
 
 async function ensureDir(dirPath) {
   await fs.mkdir(dirPath, { recursive: true });
@@ -185,6 +216,8 @@ async function generateStaticPages() {
         '<html lang="it">',
         '<head>',
         '  <meta charset="utf-8">',
+        consentHeadSnippet,
+        gtmHeadSnippet,
         '  <meta name="viewport" content="width=device-width, initial-scale=1">',
         `  <title>${escapeHtml(pageTitle)}</title>`,
         metaDescription ? `  <meta name="description" content="${escapeHtml(metaDescription)}">` : '',
@@ -196,6 +229,7 @@ async function generateStaticPages() {
           : '',
         '</head>',
         '<body>',
+        gtmBodySnippet,
         `  <div id="root">${rewrittenMarkup}</div>`,
         '</body>',
         '</html>',
@@ -255,6 +289,8 @@ async function generateStaticPages() {
         '<html lang="it">',
         '<head>',
         '  <meta charset="utf-8">',
+        consentHeadSnippet,
+        gtmHeadSnippet,
         '  <meta name="viewport" content="width=device-width, initial-scale=1">',
         `  <title>${escapeHtml(landingTitle)}</title>`,
         `  <meta name="description" content="${escapeHtml(landingDescription)}">`,
@@ -266,6 +302,7 @@ async function generateStaticPages() {
           : '',
         '</head>',
         '<body>',
+        gtmBodySnippet,
         `  <div id="root">${rewrittenLandingMarkup}</div>`,
         '</body>',
         '</html>',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShieldOff, Sofa, BadgeEuro } from 'lucide-react';
-import { gtagReportConversion } from '../utils/analytics';
+import { openWhatsAppWithTracking } from '../utils/analytics';
 
 // Sezione Pain → Dream per SPC e Laminato — Copy Premium/Autorevole
 const PAIN_POINTS = {
@@ -162,9 +162,7 @@ const ServicePainPoints = ({ service }) => {
         <div className="flex justify-center mb-3 relative">
           <button
             onClick={() => {
-              gtagReportConversion({
-                redirectUrl: `https://wa.me/393342221212`,
-              });
+              openWhatsAppWithTracking({ source: 'sticky' });
             }}
             className="
               group relative inline-flex items-center gap-4

@@ -385,28 +385,6 @@ export function ServiceExplainerSection({ service }) {
           ))}
         </div>
 
-        {/* CTA — scroll al quiz */}
-        <div className="mt-10 flex justify-center">
-          <button
-            onClick={scrollToQuiz}
-            className="
-              inline-flex items-center gap-3
-              bg-[#FFF176] text-black
-              px-8 py-4 rounded-2xl
-              font-black uppercase tracking-tighter text-base
-              border-[3px] border-black
-              shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]
-              hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
-              hover:translate-x-1 hover:translate-y-1
-              transition-all duration-200
-            "
-          >
-            <Calculator className="w-5 h-5" />
-            Calcola il tuo preventivo online
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
-
       </div>
     </div>
   );

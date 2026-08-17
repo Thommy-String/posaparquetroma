@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
-import { gtagReportConversion } from '../utils/analytics';
+import { buildWhatsAppMessage, openWhatsAppWithTracking, openCallWithTracking } from '../utils/analytics';
 
 const HIDDEN_PATHS = ['/spc-fornitura-posa'];
 
@@ -34,17 +34,12 @@ const StickyGlassFooter = ({
     const cleanPhone = PHONE_NUMBER ? PHONE_NUMBER.replace(/\s+/g, '') : "393342221212";
 
     const handleWhatsApp = () => {
-        const message = "Ciao, vorrei un preventivo per posa parquet...";
-        const encodedMessage = encodeURIComponent(message);
-        gtagReportConversion({
-            redirectUrl: `https://wa.me/${cleanPhone}?text=${encodedMessage}`,
-        });
+        const message = buildWhatsAppMessage({ isSticky: true });
+        openWhatsAppWithTracking({ message, source: 'sticky' });
     };
 
     const handleCall = () => {
-        gtagReportConversion({
-            redirectUrl: `tel:${cleanPhone}`,
-        });
+        openCallWithTracking({ source: 'sticky' });
     };
 
     return (

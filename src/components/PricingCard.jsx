@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
-import { gtagReportConversion } from '../utils/analytics';
+import { track } from '../utils/analytics';
 
 function LazyVideo({ src, className }) {
   const containerRef = useRef(null);
@@ -187,9 +187,8 @@ export function PricingCard({ service, onShowProcessClick }) {
            {/* Bottone CTA */}
             <button 
              onClick={() => {
-                gtagReportConversion({
-                  redirectUrl: `tel:${PHONE_NUMBER}`,
-                });
+                track('cta_call_quiz', { source: 'quiz', price: quantity * pricePerUnit });
+                window.location.href = `tel:${PHONE_NUMBER.replace(/[^0-9]/g, '')}`;
              }}
              className="group relative flex items-center justify-center w-full bg-white border-[2.5px] border-slate-900 px-4 py-3.5 rounded-xl text-slate-900 font-bold uppercase tracking-tighter transition-all duration-200 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:bg-gray-50 text-sm"
            >

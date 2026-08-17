@@ -1,5 +1,6 @@
 import React from 'react';
 import { PRIMARY_CITY, PHONE_NUMBER } from '../utils/constants';
+import { track } from '../utils/analytics';
 import { pricingData } from '../utils/pricingData';
 import { Star, CheckCircle, Armchair, Hammer, Layers as Layers2, Paintbrush, Sofa, Puzzle, Footprints } from 'lucide-react';
 
@@ -96,13 +97,7 @@ function ServiceHero({ service }) {
 
                             <a
                                 href={`tel:${PHONE_NUMBER}`}
-                                onClick={(e) => {
-                                    if (typeof window.gtag !== 'undefined') {
-                                        window.gtag('event', 'conversion', {
-                                            'send_to': 'AW-XXXXXXXXX/YYYYYYYYYYYY',
-                                        });
-                                    }
-                                }}
+                                onClick={() => track('cta_call_service_hero', { source: 'service_hero' })}
                                 className="group relative flex items-center gap-4 w-full bg-blue-50 border-[2.5px] border-blue-900 px-8 py-4 rounded-xl text-blue-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(30,58,138,1)] hover:shadow-[2px_2px_0px_0px_rgba(30,58,138,1)] hover:translate-x-1 hover:translate-y-1 active:bg-blue-100 justify-center"
                             >
                                 <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
@@ -143,13 +138,7 @@ function ServiceHero({ service }) {
                                 href={`https://wa.me/${PHONE_NUMBER.replace(/[^0-9]/g, '')}?text=Ciao%20Posa%20Parquet%20roma%2C%20sono%20interessato%20a%20una%20consulenza%20gratuita`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                onClick={() => {
-                                    if (typeof window.gtag !== 'undefined') {
-                                        window.gtag('event', 'conversion', {
-                                            'send_to': 'AW-XXXXXXXXX/YYYYYYYYYYYY',
-                                        });
-                                    }
-                                }}
+                                onClick={() => track('cta_whatsapp_service_hero', { source: 'service_hero' })}
                                 className="group relative flex items-center gap-4 w-full bg-emerald-50 border-[2.5px] border-emerald-900 px-8 py-4 rounded-xl text-emerald-900 font-black uppercase tracking-tighter transition-all duration-200 shadow-[6px_6px_0px_0px_rgba(5,83,34,1)] hover:shadow-[2px_2px_0px_0px_rgba(5,83,34,1)] hover:translate-x-1 hover:translate-y-1 active:bg-emerald-100 justify-center"
                             >
                                 <div className="p-2 bg-emerald-100 rounded-lg group-hover:bg-emerald-200 transition-colors">

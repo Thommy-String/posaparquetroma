@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { COMPANY_NAME, PHONE_NUMBER } from '../utils/constants';
-import { gtagReportConversion } from '../utils/analytics';
+import { openCallWithTracking } from '../utils/analytics';
 import { serviceNavLinks } from '../utils/serviceNavLinks';
 import logoImage from '../assets/logo/logo-96-white-bands.webp';
 
@@ -71,9 +71,7 @@ function Footer() {
           <div className="flex flex-col items-center gap-3 sm:items-end">
             <button
               onClick={() => {
-                gtagReportConversion({
-                  redirectUrl: `tel:${PHONE_NUMBER}`,
-                });
+                openCallWithTracking({ source: 'sticky' });
               }}
               className="rounded-full border border-blue-100 bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-500/20 transition hover:bg-blue-700"
             >

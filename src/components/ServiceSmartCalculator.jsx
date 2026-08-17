@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Package, Layers, MessageCircle, Minus, Plus, Check, Trash2, Sofa, Lamp, DoorOpenIcon, DoorClosed, Send, SaveAllIcon, SaveIcon, LucideSave } from 'lucide-react';
-import { gtagReportConversion } from '../utils/analytics';
+import { Package, Layers, MessageCircle, Minus, Plus, Check, Trash2, Sofa, Lamp, DoorOpenIcon, DoorClosed, Send, SaveAllIcon, SaveIcon, LucideSave, Info } from 'lucide-react';
+import { track } from '../utils/analytics';
 
 // Definiamo gli Extra disponibili globalmente
 const GLOBAL_EXTRAS = [
@@ -117,9 +117,15 @@ function ServiceScientificCalc({ serviceData }) {
         );
     };
 
+    // --- TARIFFA MINIMA: sotto i 40 mq/ml si applica prezzo fisso (40 × prezzo al mq/ml) ---
+    const MINIMUM_FLOOR = 40;
+    const isPosaService = unitLabel === 'mq' || unitLabel === 'ml';
+    const effectiveQuantityForBase = isPosaService ? Math.max(quantity, MINIMUM_FLOOR) : quantity;
+    const isMinimumApplied = isPosaService && quantity < MINIMUM_FLOOR;
+
     // --- CALCOLI FINALI ---
     const { totalCost, estimatedDays, extrasCost } = useMemo(() => {
-        const base = quantity * basePrice;
+        const base = effectiveQuantityForBase * basePrice;
         let extrasTotal = 0;
         selectedExtras.forEach(id => {
             const option = availableExtras.find(opt => opt.id === id);
@@ -131,7 +137,7 @@ function ServiceScientificCalc({ serviceData }) {
         const days = Math.max(1, Math.ceil(quantity * (serviceData.timeFactorPerMq || 0.03)));
         
         return { totalCost: base + extrasTotal, estimatedDays: days, extrasCost: extrasTotal };
-    }, [quantity, selectedExtras, basePrice, serviceData.timeFactorPerMq, availableExtras]);
+    }, [quantity, selectedExtras, basePrice, serviceData.timeFactorPerMq, availableExtras, unitLabel]);
 
     const percentage = ((quantity - minVal) / (maxVal - minVal)) * 100;
 
@@ -142,16 +148,20 @@ function ServiceScientificCalc({ serviceData }) {
         // Messaggio leggermente diverso in base al bottone cliccato (opzionale, ma utile per te)
         const intro = actionType === 'write' ? "Ciao! Vorrei maggiori informazioni su questo preventivo:" : "Ciao! Sto salvando questo preventivo:";
 
+        const minimumNote = isMinimumApplied 
+            ? `📌 Per ${quantity} ${unitLabel} è applicata la tariffa fissa forfettaria (min. ${MINIMUM_FLOOR} ${unitLabel})\n`
+            : '';
+
         const text = `👋 ${intro} *${serviceData.name}*\n` +
                      `📐 Quantità: ${quantity} ${unitLabel}\n` +
                      `💶 Prezzo Base: €${basePrice}/${unitLabel}\n` +
+                     minimumNote +
                      (extraNames ? `➕ Extra richiesti: ${extraNames}\n` : '') +
                      `💰 *TOTALE STIMATO: €${totalCost}*\n` +
                      `⏱ Tempo previsto: ~${estimatedDays} gg lavorativi`;
         
-        gtagReportConversion({
-          redirectUrl: `https://wa.me/393342221212?text=${encodeURIComponent(text)}`,
-        });
+        track('cta_whatsapp_quiz', { source: 'quiz', price: totalCost });
+        window.open(`https://wa.me/393342221212?text=${encodeURIComponent(text)}`, '_blank');
     };
 
     return (
@@ -256,6 +266,17 @@ function ServiceScientificCalc({ serviceData }) {
                                 <span className="text-[11px] font-black uppercase">CHIAVI IN MANO</span>
                             </div>
                         </div>
+
+                        {/* NOTA TARIFFA MINIMA — elegante e discreta */}
+                        {isMinimumApplied && (
+                            <div className="mt-6 flex items-start gap-2 px-5 py-3 bg-white/10 rounded-xl border border-white/20 max-w-[320px]">
+                                <Info size={14} className="text-[#81D4FA] mt-0.5 flex-shrink-0" />
+                                <p className="text-[10px] leading-relaxed text-white/70">
+                                    Per superfici fino a 40 {unitLabel} viene applicata una tariffa fissa forfettaria.
+                                    Il prezzo finale è già calcolato nel totale.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
 

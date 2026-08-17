@@ -195,11 +195,11 @@ function HomePage() {
             <InstallationQuiz />
           </section>
 
+          {/* FAQ HOMEPAGE GENERICHE */}
+          <ServiceFAQ service={{ slug: 'home-general' }} />
+
           {/* Sezione Lavori Recenti */}
           <RecentWorks showFilter={true} />
-
-          {/* FAQ HOMEPAGE GENERICHE - Subito dopo le recensioni */}
-          <ServiceFAQ service={{ slug: 'home-general' }} />
 
           {/* Below-fold sections */}
           <PricingSection />

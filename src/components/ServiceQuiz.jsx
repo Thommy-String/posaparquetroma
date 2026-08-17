@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PHONE_NUMBER } from '../utils/constants';
 import { quizDatabase } from '../utils/quizData';
-import { gtagReportConversion } from '../utils/analytics';
+import { track } from '../utils/analytics';
 
 // --- IMPORT ICONE ---
 import {
@@ -349,9 +349,8 @@ function ServiceQuiz({ service }) {
 
     const message = lines.join("\n");
     const encodedMessage = encodeURIComponent(message);
-    gtagReportConversion({
-      redirectUrl: `https://wa.me/?text=${encodedMessage}`,
-    });
+    track('cta_whatsapp_quiz', { source: 'quiz' });
+    window.location.href = `https://wa.me/?text=${encodedMessage}`;
   };
 
   // Invia la stima all'azienda
@@ -377,9 +376,8 @@ function ServiceQuiz({ service }) {
 
     const message = lines.join("\n");
     const encodedMessage = encodeURIComponent(message);
-    gtagReportConversion({
-      redirectUrl: `https://wa.me/${cleanPhone}?text=${encodedMessage}`,
-    });
+    track('cta_whatsapp_quiz', { source: 'quiz' });
+    window.location.href = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
   };
 
   return (
@@ -681,7 +679,7 @@ function ServiceQuiz({ service }) {
                         <button onClick={handleSendToCompany} type="button" className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-green-200 transition hover:bg-green-600">
                             WhatsApp <MessageCircle className="w-4 h-4" />
                         </button>
-                        <button onClick={() => gtagReportConversion({ redirectUrl: `tel:${PHONE_NUMBER}` })} className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border-2 border-slate-700 bg-transparent px-6 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-100">
+                        <button onClick={() => { track('cta_call_quiz', { source: 'quiz' }); window.location.href = `tel:${PHONE_NUMBER}`; }} className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border-2 border-slate-700 bg-transparent px-6 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-100">
                           Chiamaci
                         </button>
                       </div>

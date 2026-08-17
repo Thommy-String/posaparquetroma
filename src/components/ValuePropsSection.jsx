@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, CheckCircle2, Banknote, ShieldCheck, Sofa, UserCheck, MessageCircle } from 'lucide-react';
+import { track } from '../utils/analytics';
 
 const ValuePropsSection = () => {
   const props = [
@@ -63,12 +64,8 @@ const ValuePropsSection = () => {
   ];
 
   const handleWhatsAppClick = (propTitle) => {
-    // Evento Conversione Google Ads
-    if (typeof window.gtag !== 'undefined') {
-      window.gtag('event', 'conversion', {
-        'send_to': 'AW-XXXXXXXXX/YYYYYYYYYYYY', // Sostituisci con il tuo ID reale
-      });
-    }
+    // Evento conversione Lead via dataLayer (GTM smista verso Google Ads).
+    track('cta_whatsapp_value_prop', { source: 'value_prop' });
 
     const phoneNumber = "393342221212";
     const message = encodeURIComponent(`Ciao! Vorrei informazioni su: ${propTitle}`);
